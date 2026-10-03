@@ -11,9 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('recipe_ingredients', function (Blueprint $table) {
+         Schema::create('recipe_ingredients', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->unsignedBigInteger('recipe_id');
+            $table->unsignedBigInteger('ingredient_id');
+            $table->decimal('amount', 8, 2);
+            $table->string('unit', 20)->nullable();
+
+            $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
+
+            $table->unique(['recipe_id', 'ingredient_id'], 'uq_recipe_ing');
+
+            $table->foreign('recipe_id', 'fk_ri_recipe')
+                ->references('id')->on('recipes')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+            $table->foreign('ingredient_id', 'fk_ri_ingredient')
+                ->references('id')->on('ingredients')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
         });
     }
 

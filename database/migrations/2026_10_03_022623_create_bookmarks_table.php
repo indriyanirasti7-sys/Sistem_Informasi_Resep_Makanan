@@ -11,9 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bookmarks', function (Blueprint $table) {
+         Schema::create('bookmarks', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('recipe_id');
+
+            $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
+
+            $table->unique(['user_id', 'recipe_id'], 'uq_bookmark');
+
+            $table->foreign('user_id', 'fk_bm_user')
+                ->references('id')->on('users')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+            $table->foreign('recipe_id', 'fk_bm_recipe')
+                ->references('id')->on('recipes')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

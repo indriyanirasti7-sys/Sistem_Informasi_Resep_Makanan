@@ -13,7 +13,20 @@ return new class extends Migration
     {
         Schema::create('recipe_steps', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->unsignedBigInteger('recipe_id');
+            $table->unsignedTinyInteger('step_number');
+            $table->text('instruction');
+            $table->unsignedSmallInteger('duration_minutes')->nullable();
+
+            $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
+
+            $table->unique(['recipe_id', 'step_number'], 'uq_step');
+
+            $table->foreign('recipe_id', 'fk_steps_recipe')
+                ->references('id')->on('recipes')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 
