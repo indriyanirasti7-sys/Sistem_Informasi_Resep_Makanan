@@ -11,9 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tips', function (Blueprint $table) {
+       Schema::create('tips', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('title', 150);
+            $table->string('slug', 180)->unique();
+            $table->text('content');
+            $table->string('image', 255)->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
+
+            $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
+
+            $table->foreign('user_id', 'fk_tips_user')
+                ->references('id')->on('users')
+                ->onDelete('set null')
+                ->onUpdate('cascade');
         });
     }
 
