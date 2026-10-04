@@ -3,7 +3,7 @@
     $navItems = [
         ['label' => 'Beranda',      'route' => 'home',          'active' => ['home']],
         ['label' => 'Daftar Resep', 'route' => 'recipes.index', 'active' => ['recipes.index', 'recipes.show']],
-        ['label' => 'Kategori',     'route' => 'recipes.index', 'active' => []],
+        ['label' => 'Favorit',     'route' => 'recipes.index', 'active' => []],
         ['label' => 'Tips Memasak', 'route' => 'tips.index',    'active' => ['tips.index', 'tips.show']],
     ];
 @endphp

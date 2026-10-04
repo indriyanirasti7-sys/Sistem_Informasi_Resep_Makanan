@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 
 class RecipeController extends Controller
 {
+    /* ============ READ ============ */
 
     public function index(Request $request)
     {
@@ -31,9 +32,18 @@ class RecipeController extends Controller
         return view('admin.recipes.index', compact('recipes'));
     }
 
+    public function show(Recipe $recipe)
+    {
+        $recipe->load(['category', 'user', 'steps', 'recipeIngredients.ingredient', 'ratings.user']);
+
+        return view('admin.recipes.show', compact('recipe'));
+    }
+
+    /* ============ CREATE ============ */
+
     public function create()
     {
-        $categories  = Category::all();
+        $categories  = Category::orderBy('name')->get();
         $ingredients = Ingredient::orderBy('name')->get();
 
         return view('admin.recipes.create', compact('categories', 'ingredients'));
@@ -63,21 +73,16 @@ class RecipeController extends Controller
         });
 
         return redirect()
-            ->route('admin.recipes.index')
+            ->route('admin.recipes.index')   // ✅ FIXED
             ->with('success', 'Resep berhasil ditambahkan.');
     }
 
-    public function show(Recipe $recipe)
-    {
-        $recipe->load(['category', 'user', 'steps', 'recipeIngredients.ingredient', 'ratings.user']);
-
-        return view('admin.recipes.show', compact('recipe'));
-    }
+    /* ============ UPDATE ============ */
 
     public function edit(Recipe $recipe)
     {
         $recipe->load(['steps', 'recipeIngredients']);
-        $categories  = Category::all();
+        $categories  = Category::orderBy('name')->get();
         $ingredients = Ingredient::orderBy('name')->get();
 
         return view('admin.recipes.edit', compact('recipe', 'categories', 'ingredients'));
@@ -112,6 +117,8 @@ class RecipeController extends Controller
             ->with('success', 'Resep berhasil diperbarui.');
     }
 
+    /* ============ DELETE ============ */
+
     public function destroy(Recipe $recipe)
     {
         $recipe->delete();
@@ -121,26 +128,26 @@ class RecipeController extends Controller
             ->with('success', 'Resep berhasil dihapus.');
     }
 
-    /* ---------------- Helpers ---------------- */
+    /* ============ HELPERS ============ */
 
     private function validateRecipe(Request $request, ?int $ignoreId = null): array
     {
         return $request->validate([
-            'title'                  => 'required|string|max:150',
-            'category_id'            => 'required|exists:categories,id',
-            'description'            => 'nullable|string',
-            'servings'               => 'required|integer|min:1|max:255',
-            'duration_minutes'       => 'nullable|integer|min:1|max:65535',
-            'difficulty'             => 'required|in:Mudah,Sedang,Sulit',
-            'calories'               => 'nullable|integer|min:1|max:65535',
-            'status'                 => 'required|in:draft,published',
-            'image'                  => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'ingredients'            => 'array',
-            'ingredients.*.id'       => 'required|exists:ingredients,id',
-            'ingredients.*.amount'   => 'required|numeric|min:0',
-            'ingredients.*.unit'     => 'nullable|string|max:20',
-            'steps'                  => 'array',
-            'steps.*.instruction'    => 'required|string',
+            'title'                    => 'required|string|max:150',
+            'category_id'              => 'required|exists:categories,id',
+            'description'              => 'nullable|string',
+            'servings'                 => 'required|integer|min:1|max:255',
+            'duration_minutes'         => 'nullable|integer|min:1|max:65535',
+            'difficulty'               => 'required|in:Mudah,Sedang,Sulit',
+            'calories'                 => 'nullable|integer|min:1|max:65535',
+            'status'                   => 'required|in:draft,published',
+            'image'                    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'ingredients'              => 'array',
+            'ingredients.*.id'         => 'required|exists:ingredients,id',
+            'ingredients.*.amount'     => 'required|numeric|min:0',
+            'ingredients.*.unit'       => 'nullable|string|max:20',
+            'steps'                    => 'array',
+            'steps.*.instruction'      => 'required|string',
             'steps.*.duration_minutes' => 'nullable|integer|min:1|max:65535',
         ]);
     }

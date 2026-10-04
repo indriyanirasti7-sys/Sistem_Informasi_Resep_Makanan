@@ -50,7 +50,7 @@ class RecipeController extends Controller
         $recipes    = $query->paginate(9)->withQueryString();
         $categories = Category::all();
 
-        return view('recipes.index', compact('recipes', 'categories'));
+        return view('recipes.daftar_resep', compact('recipes', 'categories'));
     }
 
     public function show(Recipe $recipe)
