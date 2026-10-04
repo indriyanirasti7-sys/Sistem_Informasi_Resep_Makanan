@@ -3,37 +3,34 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
-use App\Models\Rating;
-use App\Models\Recipe;
-use App\Models\Tip;
-use App\Models\User;
 
 class DashboardController extends Controller
 {
 
-    public function index()
+   // app/Http/Controllers/Admin/DashboardController.php
+
+public function index()
     {
-        $stats = [
-            'recipes_total'     => Recipe::count(),
-            'recipes_published' => Recipe::where('status', 'published')->count(),
-            'recipes_draft'     => Recipe::where('status', 'draft')->count(),
-            'categories_total'  => Category::count(),
-            'users_total'       => User::count(),
-            'ratings_total'     => Rating::count(),
-            'tips_total'        => Tip::count(),
-        ];
+    $stats = [
+        'recipes_total'     => \App\Models\Recipe::count(),
+        'recipes_published' => \App\Models\Recipe::where('status', 'published')->count(),
+        'recipes_draft'     => \App\Models\Recipe::where('status', 'draft')->count(),
+        'categories_total'  => \App\Models\Category::count(),
+        'users_total'       => \App\Models\User::count(),
+        'ratings_total'     => \App\Models\Rating::count(),
+        'tips_total'        => \App\Models\Tip::count(),
+    ];
 
-        $topRecipes = Recipe::with('category')
-            ->orderByDesc('views')
-            ->limit(5)
-            ->get();
+    $topRecipes = \App\Models\Recipe::with(['category', 'user', 'ratings'])
+        ->orderByDesc('views')
+        ->limit(5)
+        ->get();
 
-        $latestRatings = Rating::with(['user', 'recipe'])
-            ->latest()
-            ->limit(5)
-            ->get();
+    $latestRatings = \App\Models\Rating::with(['user', 'recipe'])
+        ->latest()
+        ->limit(5)
+        ->get();
 
-        return view('admin.dashboard', compact('stats', 'topRecipes', 'latestRatings'));
+    return view('admin.dashboard', compact('stats', 'topRecipes', 'latestRatings'));
     }
-} 
+}
