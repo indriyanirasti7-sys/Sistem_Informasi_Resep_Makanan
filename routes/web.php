@@ -16,12 +16,13 @@ Route::get('/resep', [RecipeController::class, 'index'])->name('recipes.index');
 Route::get('/resep/{recipe:slug}', [RecipeController::class, 'show'])->name('recipes.show');
 Route::get('/tips', [TipController::class, 'index'])->name('tips.index');
 Route::get('/tips/{tip:slug}', [TipController::class, 'show'])->name('tips.show');
+Route::get('/bookmark', [BookmarkController::class, 'favorit'])->name('bookmarks.favorit');
 
 require __DIR__.'/auth.php';
 
 // Auth required
 Route::middleware('auth')->group(function () {
-    Route::get('/bookmark', [BookmarkController::class, 'index'])->name('bookmarks.index');
+    Route::get('/bookmark', [BookmarkController::class, 'favorit'])->name('bookmarks.favorit');
     Route::post('/bookmark/{recipe:slug}', [BookmarkController::class, 'toggle'])->name('bookmarks.toggle');
     Route::delete('/bookmark/{bookmark}', [BookmarkController::class, 'destroy'])->name('bookmarks.destroy');
 

@@ -168,12 +168,18 @@
                             </span>
                         </div>
 
-                        @auth
-                            <button type="button" data-recipe-id="{{ $recipe->id }}"
-                                    class="bookmark-btn absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 backdrop-blur-md text-on-surface flex items-center justify-center hover:bg-white transition shadow-sm">
-                                <span class="material-symbols-outlined text-[20px]">favorite</span>
-                            </button>
-                        @endauth
+                            @auth
+                                <button type="button" data-recipe-id="{{ $recipe->id }}"
+                                        class="bookmark-btn absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 backdrop-blur-md text-on-surface flex items-center justify-center hover:bg-white transition shadow-sm">
+                                    <span class="material-symbols-outlined text-[20px]">favorite</span>
+                                </button>
+                            @else
+                                <a href="{{ route('login') }}?require_login=1"
+                                title="Masuk untuk menyimpan favorit"
+                                class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 backdrop-blur-md text-outline hover:text-error flex items-center justify-center hover:bg-white transition shadow-sm">
+                                    <span class="material-symbols-outlined text-[20px]">favorite_border</span>
+                                </a>
+                            @endauth
                     </div>
 
                     {{-- Body --}}
