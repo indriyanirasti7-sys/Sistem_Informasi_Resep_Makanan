@@ -44,7 +44,7 @@
 
     {{-- Search Bar --}}
     <div class="mb-6">
-        <form method="GET" action="{{ route('recipes.index') }}" 
+        <form method="GET" action="{{ route('recipes.daftar_resep') }}" 
               class="relative w-full flex items-center bg-surface-container-lowest rounded-full shadow-sm p-2 transition focus-within:shadow-md">
             <div class="flex items-center justify-center pl-4 pr-2 text-primary">
                 <span class="material-symbols-outlined text-[24px]">search</span>
@@ -54,7 +54,7 @@
                    class="w-full bg-transparent text-sm text-on-surface placeholder:text-outline focus:outline-none py-2"/>
             <div class="flex items-center gap-2 pr-2">
                 @if (request('q'))
-                    <a href="{{ route('recipes.index') }}"
+                    <a href="{{ route('recipes.daftar_resep') }}"
                        class="w-8 h-8 rounded-full flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container transition"
                        title="Bersihkan Pencarian">
                         <span class="material-symbols-outlined text-[18px]">close</span>
@@ -71,13 +71,13 @@
 
     {{-- Category Filter --}}
     <div class="flex items-center gap-2 overflow-x-auto pb-2 mb-6 scrollbar-none">
-        <a href="{{ route('recipes.index', array_merge(request()->except('category'), [])) }}"
+        <a href="{{ route('recipes.daftar_resep', array_merge(request()->except('category'), [])) }}"
            class="px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap transition
                   {{ !request('category') ? 'bg-primary-container text-white shadow-sm' : 'bg-surface-container text-on-surface hover:bg-surface-container-high' }}">
             Semua
         </a>
         @foreach ($categories as $cat)
-            <a href="{{ route('recipes.index', array_merge(request()->except('category'), ['category' => $cat->slug])) }}"
+            <a href="{{ route('recipes.daftar_resep', array_merge(request()->except('category'), ['category' => $cat->slug])) }}"
                class="px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap transition
                       {{ request('category') === $cat->slug ? 'bg-primary-container text-white shadow-sm' : 'bg-surface-container text-on-surface hover:bg-surface-container-high' }}">
                 {{ $cat->name }}
@@ -92,14 +92,14 @@
         <div class="flex flex-wrap items-center gap-2">
             <span class="text-[11px] uppercase tracking-wider text-outline font-bold mr-1">Tingkat:</span>
             @foreach (['Mudah', 'Sedang', 'Sulit'] as $level)
-                <a href="{{ route('recipes.index', array_merge(request()->except('difficulty'), ['difficulty' => $level])) }}"
+                <a href="{{ route('recipes.daftar_resep', array_merge(request()->except('difficulty'), ['difficulty' => $level])) }}"
                    class="px-4 py-1 rounded-full text-xs font-bold transition
                           {{ request('difficulty') === $level ? 'bg-secondary text-white' : 'bg-surface-container text-on-surface-variant hover:bg-secondary hover:text-white' }}">
                     {{ $level }}
                 </a>
             @endforeach
             @if (request('difficulty'))
-                <a href="{{ route('recipes.index', request()->except('difficulty')) }}"
+                <a href="{{ route('recipes.daftar_resep', request()->except('difficulty')) }}"
                    class="px-3 py-1 rounded-full text-xs text-error hover:bg-error-container/30 transition">
                     ✕ Reset
                 </a>
@@ -107,7 +107,7 @@
         </div>
 
         {{-- Sort --}}
-        <form method="GET" action="{{ route('recipes.index') }}" class="flex items-center gap-3">
+        <form method="GET" action="{{ route('recipes.daftar_resep') }}" class="flex items-center gap-3">
             @foreach (request()->except('sort') as $k => $v)
                 <input type="hidden" name="{{ $k }}" value="{{ $v }}">
             @endforeach
@@ -251,7 +251,7 @@
             <span class="material-symbols-outlined text-[64px] text-outline block mb-4">search_off</span>
             <h3 class="font-display text-xl font-bold text-primary mb-2">Tidak ada resep ditemukan</h3>
             <p class="text-sm text-on-surface-variant mb-6">Coba ubah filter atau kata kunci pencarian Anda.</p>
-            <a href="{{ route('recipes.index') }}"
+            <a href="{{ route('recipes.daftar_resep') }}"
                class="inline-flex items-center gap-2 px-6 py-3 bg-primary-container text-white rounded-full text-sm font-bold hover:bg-primary transition">
                 <span class="material-symbols-outlined text-[18px]">refresh</span>
                 <span>Reset Filter</span>

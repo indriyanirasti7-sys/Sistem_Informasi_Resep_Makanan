@@ -15,7 +15,7 @@ class RecipeController extends Controller
 {
     /* ============ READ ============ */
 
-    public function index(Request $request)
+    public function daftar_resep(Request $request)
     {
         $query = Recipe::with(['category', 'user']);
 

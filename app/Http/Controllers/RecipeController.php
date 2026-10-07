@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class RecipeController extends Controller
 {
-    public function index(Request $request)
+    public function daftar_resep(Request $request)
     {
         $query = Recipe::published()->with(['category', 'ratings']);
 

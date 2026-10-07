@@ -6,15 +6,17 @@ use App\Models\Tip;
 
 class TipController extends Controller
 {
-    public function index()
+    public function panduan()
     {
-        $tips = Tip::with('user')->latest()->paginate(9);
+        // Featured tip (paling baru)
+        $featured = Tip::with('user')->latest()->first();
 
-        return view('tips.index', compact('tips'));
-    }
+        // Tips reguler (semua kecuali featured)
+        $tips = Tip::with('user')
+            ->when($featured, fn($q) => $q->where('id', '!=', $featured->id))
+            ->latest()
+            ->paginate(9);
 
-    public function show(Tip $tip)
-    {
-        return view('tips.show', compact('tip'));
+        return view('tips.panduan', compact('featured', 'tips'));
     }
 }

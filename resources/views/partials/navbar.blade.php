@@ -1,10 +1,10 @@
 @php
     $currentRoute = request()->route()?->getName();
-    $navItems = [
-        ['label' => 'Beranda',      'route' => 'home',          'active' => ['home']],
-        ['label' => 'Daftar Resep', 'route' => 'recipes.index', 'active' => ['recipes.index', 'recipes.show']],
-        ['label' => 'Favorit', 'route' => 'bookmarks.favorit', 'active' => ['bookmarks.favorit']],
-        ['label' => 'Tips Memasak', 'route' => 'tips.index',    'active' => ['tips.index', 'tips.show']],
+        $navItems = [
+        ['label' => 'Beranda',      'route' => 'home',              'active' => ['home']],
+        ['label' => 'Daftar Resep', 'route' => 'recipes.daftar_resep',     'active' => ['recipes.daftar_resep', 'recipes.daftar_resep']],
+        ['label' => 'Favorit',      'route' => 'bookmarks.favorit', 'active' => ['bookmarks.favorit']],  // ✅ BENAR
+        ['label' => 'Tips Memasak', 'route' => 'tips.panduan',        'active' => ['tips.panduan', 'tips.panduan']],
     ];
 @endphp
 

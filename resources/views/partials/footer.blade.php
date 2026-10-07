@@ -26,9 +26,9 @@
             <div class="lg:col-span-2 flex flex-col gap-space-sm">
                 <span class="font-title-md text-title-md font-bold text-surface-bright mb-space-xs">Navigasi</span>
                 <a href="{{ route('home') }}" class="font-body-sm text-body-sm text-on-primary-container hover:text-surface-bright transition-colors">Beranda</a>
-                <a href="{{ route('recipes.index') }}" class="font-body-sm text-body-sm text-on-primary-container hover:text-surface-bright transition-colors">Daftar Resep</a>
-                <a href="{{ route('recipes.index') }}" class="font-body-sm text-body-sm text-on-primary-container hover:text-surface-bright transition-colors">Kategori</a>
-                <a href="{{ route('tips.index') }}" class="font-body-sm text-body-sm text-on-primary-container hover:text-surface-bright transition-colors">Tips Memasak</a>
+                <a href="{{ route('recipes.daftar_resep') }}" class="font-body-sm text-body-sm text-on-primary-container hover:text-surface-bright transition-colors">Daftar Resep</a>
+                <a href="{{ route('recipes.daftar_resep') }}" class="font-body-sm text-body-sm text-on-primary-container hover:text-surface-bright transition-colors">Kategori</a>
+                <a href="{{ route('tips.panduan') }}" class="font-body-sm text-body-sm text-on-primary-container hover:text-surface-bright transition-colors">Tips Memasak</a>
             </div>
 
             {{-- Eksplorasi --}}
