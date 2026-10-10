@@ -208,7 +208,7 @@
                 <div id="category-container" class="flex items-center gap-space-lg overflow-x-auto pb-4 pt-2 no-scrollbar scroll-smooth">
                     @foreach ($categories as $i => $cat)
                         @php $isActive = $i === 1; // Highlight default seperti desain asli @endphp
-                        <a href="{{ route('recipes.index', ['category' => $cat->slug]) }}"
+                        <a href="{{ route('recipes.daftar_resep', ['category' => $cat->slug]) }}"
                            class="category-card flex flex-col items-center gap-space-sm group cursor-pointer shrink-0 transition-transform hover:-translate-y-1"
                            data-cat="{{ $cat->slug }}">
                             <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1.5 transition-all
@@ -387,7 +387,7 @@
                     <h2 class="font-headline-md text-headline-md font-semibold text-primary">Tips &amp; Rahasia Dapur</h2>
                     <p class="font-body-md text-body-md text-on-surface-variant">Panduan praktis dari chef berpengalaman untuk memasak lebih percaya diri dan konsisten.</p>
                 </div>
-                <a href="{{ route('tips.index') }}" class="inline-flex items-center gap-1 font-label-md text-label-md text-secondary hover:text-primary font-bold transition-colors">
+                <a href="{{ route('tips.panduan') }}" class="inline-flex items-center gap-1 font-label-md text-label-md text-secondary hover:text-primary font-bold transition-colors">
                     <span>Lihat Semua Artikel Tips</span>
                     <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                 </a>

@@ -19,4 +19,15 @@ class TipController extends Controller
 
         return view('tips.panduan', compact('featured', 'tips'));
     }
+
+     public function show(Tip $tip)
+    {
+        $related = Tip::with('user')
+            ->where('id', '!=', $tip->id)
+            ->latest()
+            ->limit(3)
+            ->get();
+
+        return view('tips.detail_tips', compact('tip', 'related'));
+    }
 }

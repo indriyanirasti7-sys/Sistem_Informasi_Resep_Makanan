@@ -99,7 +99,7 @@
                                 @endif
                             </div>
 
-                            <a href="{{ route('tips.show', $featured->slug) }}"
+                            <a href="{{ route('tips.detail_tips', $featured->slug) }}"
                                class="inline-flex items-center gap-1.5 px-6 py-2.5 bg-white text-primary text-sm font-bold rounded-full shadow-md hover:bg-surface-container-high hover:scale-105 transition-all">
                                 <span>Baca Panduan Lengkap</span>
                                 <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -126,7 +126,7 @@
                              data-title="{{ strtolower($tip->title . ' ' . strip_tags($tip->content)) }}">
 
                         {{-- Image --}}
-                        <a href="{{ route('tips.show', $tip->slug) }}" class="relative w-full aspect-square overflow-hidden bg-surface-container block">
+                        <a href="{{ route('tips.detail_tips', $tip->slug) }}" class="relative w-full aspect-square overflow-hidden bg-surface-container block">
                             <img alt="{{ $tip->title }}"
                                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                  src="{{ $tip->image ? Storage::url($tip->image) : 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800' }}"/>

@@ -221,7 +221,7 @@
                     Ketuk ikon hati pada resep yang Anda suka, dan semuanya akan tersimpan rapi di sini untuk memudahkan Anda saat memasak.
                 </p>
 
-                <a href="{{ route('recipes.index') }}"
+                <a href="{{ route('recipes.daftar_resep') }}"
                    class="inline-flex items-center gap-2 bg-primary-container hover:bg-primary text-white text-sm font-bold px-8 py-3.5 rounded-full shadow-md hover:shadow-lg transition-all group">
                     <span class="material-symbols-outlined text-[20px] group-hover:rotate-45 transition-transform duration-300">explore</span>
                     <span>Jelajahi Resep Sekarang</span>
@@ -244,7 +244,7 @@
                             Mulai isi koleksi Anda dengan hidangan favorit komunitas koki kami.
                         </p>
                     </div>
-                    <a href="{{ route('recipes.index') }}"
+                    <a href="{{ route('recipes.daftar_resep') }}"
                        class="inline-flex items-center gap-1 text-sm text-secondary hover:text-on-surface transition-colors font-semibold">
                         <span>Lihat Koleksi Lengkap</span>
                         <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -337,7 +337,7 @@
                     </div>
                 </div>
 
-                <a href="{{ route('recipes.index') }}"
+                <a href="{{ route('recipes.daftar_resep') }}"
                    class="z-10 shrink-0 inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-primary-container hover:bg-primary text-white text-sm font-bold shadow-md transition-all group">
                     <span>Jelajahi Daftar Resep</span>
                     <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
