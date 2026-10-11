@@ -15,21 +15,34 @@ class RecipeController extends Controller
 {
     /* ============ READ ============ */
 
-    public function daftar_resep(Request $request)
+     public function index(Request $request)
     {
-        $query = Recipe::with(['category', 'user']);
+        $query = Recipe::with(['category', 'user', 'ratings']);
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
         if ($request->filled('q')) {
-            $query->search($request->q);
+            $q = $request->q;
+            $query->where('title', 'like', "%{$q}%");
         }
 
         $recipes = $query->latest()->paginate(10)->withQueryString();
 
-        return view('admin.recipes.index', compact('recipes'));
+        // Stats untuk mini cards
+        $stats = [
+            'total'     => Recipe::count(),
+            'published' => Recipe::where('status', 'published')->count(),
+            'draft'     => Recipe::where('status', 'draft')->count(),
+        ];
+
+
+        return view('admin.kelola_resep', compact('recipes'));
     }
 
     public function show(Recipe $recipe)
@@ -46,7 +59,7 @@ class RecipeController extends Controller
         $categories  = Category::orderBy('name')->get();
         $ingredients = Ingredient::orderBy('name')->get();
 
-        return view('admin.recipes.create', compact('categories', 'ingredients'));
+        return view('admin.tambah_resep', compact('categories', 'ingredients'));
     }
 
     public function store(Request $request)
@@ -73,7 +86,7 @@ class RecipeController extends Controller
         });
 
         return redirect()
-            ->route('admin.recipes.index')   // ✅ FIXED
+            ->route('admin.index')   // ✅ FIXED
             ->with('success', 'Resep berhasil ditambahkan.');
     }
 
@@ -113,7 +126,7 @@ class RecipeController extends Controller
         });
 
         return redirect()
-            ->route('admin.recipes.index')
+            ->route('admin.index')
             ->with('success', 'Resep berhasil diperbarui.');
     }
 
@@ -124,7 +137,7 @@ class RecipeController extends Controller
         $recipe->delete();
 
         return redirect()
-            ->route('admin.recipes.index')
+            ->route('admin.index')
             ->with('success', 'Resep berhasil dihapus.');
     }
 
