@@ -80,7 +80,7 @@
                     ['label' => 'Dashboard',       'route' => 'admin.dashboard',        'icon' => 'dashboard', 'pattern' => 'admin.dashboard'],
                     ['label' => 'Kelola Resep',    'route' => 'admin.recipes.index',    'icon' => 'menu_book', 'pattern' => 'admin.recipes.*'],
                     ['label' => 'Kelola Kategori', 'route' => 'admin.categories.index', 'icon' => 'category',  'pattern' => 'admin.categories.*'],
-                    ['label' => 'Kelola Tips',     'route' => null,                     'icon' => 'lightbulb', 'pattern' => null],
+                    ['label' => 'Kelola Tips',     'route' => 'admin.tips.index',   'icon' => 'lightbulb', 'pattern' => 'admin.tips.*'],
                     ['label' => 'Data User',       'route' => null,                     'icon' => 'group',     'pattern' => null],
                     ['label' => 'Ulasan',          'route' => null,                     'icon' => 'reviews',   'pattern' => null],
                     ['label' => 'Pengaturan',      'route' => null,                     'icon' => 'settings',  'pattern' => null],

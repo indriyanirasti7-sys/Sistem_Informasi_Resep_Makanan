@@ -40,6 +40,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     Route::resource('recipes', Admin\RecipeController::class);
     Route::resource('categories', Admin\CategoryController::class);
+    Route::resource('tips', Admin\TipController::class);  // 👈 TAMBAH INI
+
 
     Route::get('/export/recipes', [Admin\ExportController::class, 'recipes'])->name('export.recipes');
     Route::get('/export/users', [Admin\ExportController::class, 'users'])->name('export.users');

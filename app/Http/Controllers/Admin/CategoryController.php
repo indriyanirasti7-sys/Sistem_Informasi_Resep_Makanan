@@ -36,7 +36,7 @@ class CategoryController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.categories.index')
+            ->route('admin.categories.tambah')
             ->with('success', 'Kategori berhasil ditambahkan.');
     }
 
