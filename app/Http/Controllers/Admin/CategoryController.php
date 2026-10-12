@@ -14,12 +14,12 @@ class CategoryController extends Controller
     {
         $categories = Category::withCount('recipes')->latest()->paginate(10);
 
-        return view('admin.categories.index', compact('categories'));
+        return view('admin.categories.daftar_kategori', compact('categories'));
     }
 
     public function create()
     {
-        return view('admin.categories.create');
+        return view('admin.categories.tambah');
     }
 
     public function store(Request $request)
