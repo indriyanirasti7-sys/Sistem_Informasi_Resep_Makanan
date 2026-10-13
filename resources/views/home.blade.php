@@ -411,7 +411,7 @@
                                     <span>•</span>
                                     <span>Oleh {{ $tip->user->name ?? 'Tim Dapur' }}</span>
                                 </div>
-                                <a href="{{ route('tips.show', $tip->slug) }}">
+                                <a href="{{ route('tips.panduan', $tip->slug) }}">
                                     <h3 class="font-title-md text-title-md font-semibold text-primary group-hover:text-secondary transition-colors">
                                         {{ $tip->title }}
                                     </h3>
@@ -420,7 +420,7 @@
                                     {{ Str::limit(strip_tags($tip->content), 140) }}
                                 </p>
                             </div>
-                            <a href="{{ route('tips.show', $tip->slug) }}"
+                            <a href="{{ route('tips.detail_tips', $tip->slug) }}"
                                class="pt-2 flex items-center gap-1 font-label-md text-label-md text-primary group-hover:text-secondary font-semibold transition-colors">
                                 <span>Baca Selengkapnya</span>
                                 <span class="material-symbols-outlined text-[16px] transition-transform group-hover:translate-x-1">arrow_forward</span>

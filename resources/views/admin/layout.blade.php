@@ -81,7 +81,7 @@
                     ['label' => 'Kelola Resep',    'route' => 'admin.recipes.index',    'icon' => 'menu_book', 'pattern' => 'admin.recipes.*'],
                     ['label' => 'Kelola Kategori', 'route' => 'admin.categories.index', 'icon' => 'category',  'pattern' => 'admin.categories.*'],
                     ['label' => 'Kelola Tips',     'route' => 'admin.tips.index',   'icon' => 'lightbulb', 'pattern' => 'admin.tips.*'],
-                    ['label' => 'Data User',       'route' => null,                     'icon' => 'group',     'pattern' => null],
+                    ['label' => 'Data User',       'route' => 'admin.users.index',      'icon' => 'group',     'pattern' => 'admin.users.*'],
                     ['label' => 'Ulasan',          'route' => null,                     'icon' => 'reviews',   'pattern' => null],
                     ['label' => 'Pengaturan',      'route' => null,                     'icon' => 'settings',  'pattern' => null],
                 ];

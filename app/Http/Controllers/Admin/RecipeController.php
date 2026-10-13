@@ -42,7 +42,7 @@ class RecipeController extends Controller
         ];
 
 
-        return view('admin.kelola_resep', compact('recipes'));
+        return view('admin.recipes. kelola_resep', compact('recipes'));
     }
 
     public function show(Recipe $recipe)
