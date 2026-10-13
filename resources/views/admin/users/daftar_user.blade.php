@@ -73,6 +73,52 @@
     </div>
 </header>
 
+{{-- ========== FILTER & SEARCH ========== --}}
+<section class="bg-surface-container-lowest rounded-3xl p-4 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 mb-5">
+    <form method="GET" action="{{ route('admin.users.index') }}"
+          class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
+        <div class="relative flex-1 flex items-center">
+            <span class="material-symbols-outlined absolute left-4 text-[20px] text-on-surface-variant pointer-events-none">search</span>
+            <input type="search" name="q" value="{{ request('q') }}"
+                   placeholder="Cari nama atau email..."
+                   class="w-full pl-11 pr-4 py-2.5 rounded-full bg-surface-container-low text-on-surface placeholder:text-on-surface-variant/70 text-sm focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all"/>
+        </div>
+
+        <div class="relative min-w-[160px]">
+            <select name="role" onchange="this.form.submit()"
+                    class="w-full appearance-none px-4 py-2.5 pr-9 rounded-full bg-surface-container-low text-on-surface text-xs font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all">
+                <option value="all" @selected(request('role', 'all') === 'all')>Semua Peran</option>
+                <option value="admin" @selected(request('role') === 'admin')>Admin</option>
+                <option value="user" @selected(request('role') === 'user')>User</option>
+            </select>
+            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant pointer-events-none">expand_more</span>
+        </div>
+
+        <div class="relative min-w-[220px]">
+            <select name="sort" onchange="this.form.submit()"
+                    class="w-full appearance-none px-4 py-2.5 pr-9 rounded-full bg-surface-container-low text-on-surface text-xs font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all">
+                <option value="newest" @selected(request('sort', 'newest') === 'newest')>Urutkan: Paling Baru</option>
+                <option value="name_asc" @selected(request('sort') === 'name_asc')>Urutkan: Nama A-Z</option>
+                <option value="name_desc" @selected(request('sort') === 'name_desc')>Urutkan: Nama Z-A</option>
+            </select>
+            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant pointer-events-none">expand_more</span>
+        </div>
+    </form>
+
+    <div class="flex items-center justify-between lg:justify-end gap-4">
+        <a href="{{ route('admin.users.index') }}"
+           class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-on-surface-variant hover:text-primary hover:bg-surface-container transition text-xs font-bold">
+            <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+            <span>Reset</span>
+        </a>
+        <div class="h-4 w-px bg-outline-variant hidden sm:block"></div>
+        <span class="text-xs text-on-surface-variant whitespace-nowrap">
+            Menampilkan <strong class="text-primary font-bold">{{ $users->firstItem() ?? 0 }}–{{ $users->lastItem() ?? 0 }}</strong>
+            dari <strong class="text-primary font-bold">{{ number_format($users->total(), 0, ',', '.') }}</strong> pengguna
+        </span>
+    </div>
+</section>
+
 {{-- ========== TABEL USER ========== --}}
 <section class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm">
     <div class="w-full overflow-x-auto">
