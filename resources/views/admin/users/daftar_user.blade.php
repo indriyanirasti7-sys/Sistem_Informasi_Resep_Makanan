@@ -19,13 +19,13 @@
     </div>
 </header>
 
-{{-- ========== TABEL USER (KERANGKA) ========== --}}
+{{-- ========== TABEL USER ========== --}}
 <section class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm">
     <div class="w-full overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-surface-container-low/70 text-on-surface-variant text-[11px] uppercase tracking-wider font-bold">
-                    <th class="py-3.5 px-4 rounded-l-2xl">Nama</th>
+                    <th class="py-3.5 px-4 rounded-l-2xl">Pengguna</th>
                     <th class="py-3.5 px-4">Email</th>
                     <th class="py-3.5 px-4">Peran</th>
                     <th class="py-3.5 px-4 rounded-r-2xl">Bergabung</th>
@@ -33,16 +33,48 @@
             </thead>
             <tbody class="divide-y divide-surface-container-high/40 text-on-surface">
                 @forelse ($users as $user)
-                    <tr class="hover:bg-surface-container-low/40 transition-colors">
-                        <td class="py-4 px-4 font-bold text-primary">{{ $user->name }}</td>
+                    @php
+                        $isMe = auth()->id() === $user->id;
+                        $initials = collect(explode(' ', $user->name))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('');
+                    @endphp
+                    <tr class="hover:bg-surface-container-low/40 transition-colors {{ $isMe ? 'bg-surface-container-high/20' : '' }}">
+                        <td class="py-4 px-4">
+                            <div class="flex items-center gap-3">
+                                @if ($user->avatar)
+                                    <img src="{{ asset('storage/' . $user->avatar) }}"
+                                         alt="{{ $user->name }}"
+                                         class="w-10 h-10 rounded-full object-cover ring-2 ring-primary-container/20"/>
+                                @else
+                                    <div class="w-10 h-10 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-bold text-sm">
+                                        {{ $initials }}
+                                    </div>
+                                @endif
+                                <div class="flex flex-col min-w-0">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-bold text-primary truncate">{{ $user->name }}</span>
+                                        @if ($isMe)
+                                            <span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed text-[10px] font-bold">Anda</span>
+                                        @endif
+                                    </div>
+                                    <span class="text-[11px] text-on-surface-variant">
+                                        {{ $user->role === 'admin' ? 'Kepala Kurator Gastronomi' : 'Anggota Komunitas' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </td>
                         <td class="py-4 px-4 text-sm text-on-surface-variant">{{ $user->email }}</td>
                         <td class="py-4 px-4">
-                            <span class="px-3 py-1 rounded-full text-[11px] font-bold
-                                {{ $user->role === 'admin'
-                                    ? 'bg-primary-container text-white'
-                                    : 'bg-secondary-container text-on-secondary-fixed-variant' }}">
-                                {{ ucfirst($user->role) }}
-                            </span>
+                            @if ($user->role === 'admin')
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-container text-white text-[11px] font-bold">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                    <span>Admin</span>
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-fixed-variant text-[11px] font-bold">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                                    <span>User</span>
+                                </span>
+                            @endif
                         </td>
                         <td class="py-4 px-4 text-xs text-on-surface-variant">
                             {{ optional($user->created_at)->translatedFormat('d M Y') }}
