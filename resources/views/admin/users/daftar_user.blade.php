@@ -128,7 +128,10 @@
                     <th class="py-3.5 px-4 rounded-l-2xl">Pengguna</th>
                     <th class="py-3.5 px-4">Email</th>
                     <th class="py-3.5 px-4">Peran</th>
-                    <th class="py-3.5 px-4 rounded-r-2xl">Bergabung</th>
+                    <th class="py-3.5 px-4 text-center">Resep Disimpan</th>
+                    <th class="py-3.5 px-4 text-center">Ulasan Dibuat</th>
+                    <th class="py-3.5 px-4">Bergabung</th>
+                    <th class="py-3.5 px-4 text-right rounded-r-2xl">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-surface-container-high/40 text-on-surface">
@@ -138,6 +141,7 @@
                         $initials = collect(explode(' ', $user->name))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('');
                     @endphp
                     <tr class="hover:bg-surface-container-low/40 transition-colors {{ $isMe ? 'bg-surface-container-high/20' : '' }}">
+                        {{-- Pengguna --}}
                         <td class="py-4 px-4">
                             <div class="flex items-center gap-3">
                                 @if ($user->avatar)
@@ -162,7 +166,11 @@
                                 </div>
                             </div>
                         </td>
+
+                        {{-- Email --}}
                         <td class="py-4 px-4 text-sm text-on-surface-variant">{{ $user->email }}</td>
+
+                        {{-- Peran --}}
                         <td class="py-4 px-4">
                             @if ($user->role === 'admin')
                                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-container text-white text-[11px] font-bold">
@@ -176,14 +184,70 @@
                                 </span>
                             @endif
                         </td>
+
+                        {{-- Resep Disimpan --}}
+                        <td class="py-4 px-4 text-center">
+                            <div class="inline-flex items-center gap-1.5 text-sm text-on-surface">
+                                <span class="material-symbols-outlined text-[16px] text-secondary">bookmark</span>
+                                <span class="font-bold">{{ $user->bookmarks_count ?? 0 }}</span>
+                            </div>
+                        </td>
+
+                        {{-- Ulasan Dibuat --}}
+                        <td class="py-4 px-4 text-center">
+                            <div class="inline-flex items-center gap-1.5 text-sm text-on-surface">
+                                <span class="material-symbols-outlined text-[16px] text-tertiary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="font-bold">{{ $user->ratings_count ?? 0 }}</span>
+                            </div>
+                        </td>
+
+                        {{-- Bergabung --}}
                         <td class="py-4 px-4 text-xs text-on-surface-variant">
                             {{ optional($user->created_at)->translatedFormat('d M Y') }}
+                        </td>
+
+                        {{-- Aksi --}}
+                        <td class="py-4 px-4 text-right">
+                            <div class="inline-flex items-center justify-end gap-1">
+                                <a href="{{ route('admin.users.show', $user->id) }}"
+                                   class="w-9 h-9 rounded-full bg-surface-container-high hover:bg-surface-container text-on-surface-variant hover:text-primary flex items-center justify-center transition" title="Lihat Detail">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </a>
+                                <button type="button"
+                                        class="edit-role-btn w-9 h-9 rounded-full bg-surface-container-high hover:bg-surface-container text-on-surface-variant hover:text-primary flex items-center justify-center transition"
+                                        data-user-name="{{ $user->name }}"
+                                        data-user-email="{{ $user->email }}"
+                                        data-user-role="{{ $user->role }}"
+                                        data-update-url="{{ route('admin.users.update', $user->id) }}"
+                                        title="Ubah Peran">
+                                    <span class="material-symbols-outlined text-[18px]">manage_accounts</span>
+                                </button>
+                                @unless ($isMe)
+                                    <button type="button"
+                                            class="delete-btn w-9 h-9 rounded-full bg-error-container/60 hover:bg-error-container text-error flex items-center justify-center transition"
+                                            data-user-name="{{ $user->name }}"
+                                            data-user-bookmarks="{{ $user->bookmarks_count ?? 0 }}"
+                                            data-user-ratings="{{ $user->ratings_count ?? 0 }}"
+                                            data-delete-url="{{ route('admin.users.destroy', $user->id) }}"
+                                            title="Hapus User">
+                                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                                    </button>
+                                @endunless
+                            </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="py-16 text-center text-sm text-on-surface-variant">
-                            Belum ada user terdaftar.
+                        <td colspan="7" class="py-16 text-center">
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center text-secondary">
+                                    <span class="material-symbols-outlined text-[32px]">group</span>
+                                </div>
+                                <h3 class="font-display text-xl text-primary font-bold">Tidak Ada Pengguna</h3>
+                                <p class="text-sm text-on-surface-variant max-w-md">
+                                    Tidak ada pengguna yang cocok dengan filter yang dipilih.
+                                </p>
+                            </div>
                         </td>
                     </tr>
                 @endforelse
