@@ -262,4 +262,107 @@
     @endif
 </section>
 
+{{-- ========== MODAL: Ubah Peran ========== --}}
+<div id="roleModal" class="fixed inset-0 z-50 bg-inverse-surface/40 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-surface-container-lowest rounded-3xl max-w-lg w-full p-8 shadow-[0_16px_40px_-6px_rgba(90,58,34,0.18)]">
+        <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[26px]">manage_accounts</span>
+            </div>
+            <div class="flex flex-col flex-1">
+                <h3 class="font-display text-2xl text-primary font-bold">Ubah Peran Pengguna</h3>
+                <p class="text-sm text-on-surface-variant mt-1">
+                    Pilih tingkat hak akses untuk <strong id="roleModalName">—</strong>
+                    (<span class="text-secondary" id="roleModalEmail">—</span>)
+                </p>
+            </div>
+        </div>
+
+        <form id="roleForm" method="POST" action="" class="mt-6">
+            @csrf
+            @method('PUT')
+            <div class="flex flex-col gap-3">
+                <label class="flex items-start gap-3 p-4 rounded-2xl bg-secondary-container/40 cursor-pointer shadow-sm hover:bg-secondary-container/60 transition">
+                    <input type="radio" name="role" value="user" class="mt-1 accent-primary w-4 h-4 role-radio"/>
+                    <div class="flex flex-col">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-primary">User</span>
+                            <span class="px-2 py-0.5 rounded-full bg-secondary text-white text-[10px] font-bold">Terbatas</span>
+                        </div>
+                        <span class="text-sm text-on-surface-variant mt-1">
+                            Akses menyimpan resep, memberi ulasan bintang, dan menyukai tips kuliner.
+                        </span>
+                    </div>
+                </label>
+                <label class="flex items-start gap-3 p-4 rounded-2xl bg-surface-container-low hover:bg-surface-container cursor-pointer transition">
+                    <input type="radio" name="role" value="admin" class="mt-1 accent-primary w-4 h-4 role-radio"/>
+                    <div class="flex flex-col">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-primary">Admin</span>
+                            <span class="px-2 py-0.5 rounded-full bg-primary-container text-white text-[10px] font-bold">Super Privilese</span>
+                        </div>
+                        <span class="text-sm text-on-surface-variant mt-1">
+                            Hak akses penuh mengelola resep, kategori, tips, dan data pengguna portal.
+                        </span>
+                    </div>
+                </label>
+            </div>
+            <div class="mt-5 p-4 rounded-2xl bg-tertiary-fixed/60 flex items-start gap-3">
+                <span class="material-symbols-outlined text-[20px] text-tertiary-container mt-0.5">info</span>
+                <p class="text-sm text-on-tertiary-fixed-variant leading-relaxed">
+                    <strong>Peringatan:</strong> Admin dapat mengelola, menyunting, dan menghapus seluruh isi situs L'Art de Cuisine.
+                </p>
+            </div>
+            <div class="flex items-center justify-end gap-3 mt-6 pt-5 border-t border-surface-container-high">
+                <button type="button" id="cancelRoleBtn"
+                        class="px-6 py-2.5 rounded-full bg-surface-container-high text-on-surface-variant hover:text-primary text-sm font-bold transition">
+                    Batal
+                </button>
+                <button type="submit"
+                        class="px-6 py-2.5 rounded-full bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary-container transition">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    const roleModal     = document.getElementById('roleModal');
+    const roleForm      = document.getElementById('roleForm');
+    const roleModalName = document.getElementById('roleModalName');
+    const roleModalEmail= document.getElementById('roleModalEmail');
+    const cancelRoleBtn = document.getElementById('cancelRoleBtn');
+
+    function openRoleModal(data) {
+        roleModalName.textContent  = data.name;
+        roleModalEmail.textContent = data.email;
+        roleForm.action = data.updateUrl;
+        document.querySelectorAll('.role-radio').forEach(r => { r.checked = r.value === data.role; });
+        roleModal.classList.remove('hidden');
+        roleModal.classList.add('flex');
+    }
+    function closeRoleModal() {
+        roleModal.classList.add('hidden');
+        roleModal.classList.remove('flex');
+    }
+    document.querySelectorAll('.edit-role-btn').forEach(btn => {
+        btn.addEventListener('click', () => openRoleModal({
+            name:      btn.dataset.userName,
+            email:     btn.dataset.userEmail,
+            role:      btn.dataset.userRole,
+            updateUrl: btn.dataset.updateUrl,
+        }));
+    });
+    cancelRoleBtn.addEventListener('click', closeRoleModal);
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeRoleModal();
+    });
+})();
+</script>
+@endpush
