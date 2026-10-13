@@ -17,6 +17,60 @@
             Pantau pengguna yang terdaftar di situs dan kelola hak aksesnya.
         </p>
     </div>
+
+    {{-- ========== STAT CARDS ========== --}}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-2">
+        <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm flex items-center justify-between">
+            <div class="flex flex-col">
+                <span class="text-xs text-on-surface-variant font-medium">Total User</span>
+                <div class="flex items-baseline gap-2 mt-1">
+                    <span class="font-display text-3xl text-primary font-bold">{{ number_format($totalUsers, 0, ',', '.') }}</span>
+                    <span class="text-xs text-on-surface-variant">Pengguna</span>
+                </div>
+                <span class="inline-flex items-center gap-1 mt-2 px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-bold w-fit">
+                    <span class="material-symbols-outlined text-[14px]">trending_up</span>
+                    <span>{{ $newUsersThisMonth }} baru bulan ini</span>
+                </span>
+            </div>
+            <div class="w-12 h-12 rounded-full bg-secondary/15 flex items-center justify-center text-secondary">
+                <span class="material-symbols-outlined text-[24px]">group</span>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm flex items-center justify-between">
+            <div class="flex flex-col">
+                <span class="text-xs text-on-surface-variant font-medium">Admin</span>
+                <div class="flex items-baseline gap-2 mt-1">
+                    <span class="font-display text-3xl text-primary font-bold">{{ $totalAdmins }}</span>
+                    <span class="text-xs text-on-surface-variant">Pengelola</span>
+                </div>
+                <span class="inline-flex items-center gap-1 mt-2 px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-[11px] font-bold w-fit">
+                    <span class="material-symbols-outlined text-[14px]">shield</span>
+                    <span>Akses penuh sistem</span>
+                </span>
+            </div>
+            <div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-[24px]">admin_panel_settings</span>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm flex items-center justify-between">
+            <div class="flex flex-col">
+                <span class="text-xs text-on-surface-variant font-medium">User Baru Bulan Ini</span>
+                <div class="flex items-baseline gap-2 mt-1">
+                    <span class="font-display text-3xl text-primary font-bold">{{ $newUsersThisMonth }}</span>
+                    <span class="text-xs text-on-surface-variant">Akun</span>
+                </div>
+                <span class="inline-flex items-center gap-1 mt-2 px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant text-[11px] font-bold w-fit">
+                    <span class="material-symbols-outlined text-[14px]">verified</span>
+                    <span>Terverifikasi aktif</span>
+                </span>
+            </div>
+            <div class="w-12 h-12 rounded-full bg-secondary-container/70 flex items-center justify-center text-secondary">
+                <span class="material-symbols-outlined text-[24px]">person_add</span>
+            </div>
+        </div>
+    </div>
 </header>
 
 {{-- ========== TABEL USER ========== --}}
