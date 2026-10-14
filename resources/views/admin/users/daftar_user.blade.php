@@ -92,7 +92,7 @@
                 <option value="user" @selected(request('role') === 'user')>User</option>
             </select>
             <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant pointer-events-none">expand_more</span>
-        </div>
+        </div> 
 
         <div class="relative min-w-[220px]">
             <select name="sort" onchange="this.form.submit()"
@@ -326,12 +326,58 @@
         </form>
     </div>
 </div>
+{{-- ========== MODAL: Konfirmasi Hapus ========== --}}
+<div id="deleteUserModal" class="fixed inset-0 z-50 bg-inverse-surface/40 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-surface-container-lowest rounded-3xl max-w-md w-full p-8 shadow-[0_16px_40px_-6px_rgba(90,58,34,0.18)]">
+        <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-full bg-error-container text-error flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[26px]">warning</span>
+            </div>
+            <div class="flex flex-col flex-1">
+                <h3 class="font-display text-2xl text-primary font-bold">Hapus User Ini?</h3>
+                <p class="text-sm text-on-surface-variant mt-1">
+                    Akun <strong id="deleteUserName">—</strong> akan dihapus permanen.
+                </p>
+            </div>
+        </div>
 
+        <div class="mt-5 p-4 rounded-2xl bg-error-container/40 flex items-start gap-3">
+            <span class="material-symbols-outlined text-[20px] text-error mt-0.5">delete_forever</span>
+            <p class="text-sm text-on-surface leading-relaxed">
+                <strong>Dampak:</strong> Seluruh riwayat bookmark
+                (<strong id="deleteUserBookmarks">0</strong> resep) dan
+                (<strong id="deleteUserRatings">0</strong> ulasan) akan otomatis terhapus.
+            </p>
+        </div>
+
+        <form id="deleteUserForm" method="POST" action="" class="flex items-center justify-end gap-3 mt-6 pt-5 border-t border-surface-container-high">
+            @csrf
+            @method('DELETE')
+            <button type="button" id="cancelDeleteUserBtn"
+                    class="px-6 py-2.5 rounded-full bg-surface-container-high text-on-surface-variant hover:text-primary text-sm font-bold transition">
+                Batal
+            </button>
+            <button type="submit"
+                    class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-error text-white text-sm font-bold shadow-sm hover:opacity-90 transition">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
+                <span>Ya, Hapus Akun</span>
+            </button>
+        </form>
+    </div>
+</div>
+
+{{-- ========== TOAST ========== --}}
+<div id="toastSuccess"
+     class="fixed bottom-6 right-6 z-50 bg-primary-container text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2.5 transition-all transform translate-y-24 opacity-0 pointer-events-none">
+    <span class="material-symbols-outlined text-[20px] text-secondary-fixed">check_circle</span>
+    <span class="text-sm font-bold" id="toastMessage">Berhasil!</span>
+</div>
 @endsection
 
 @push('scripts')
 <script>
 (function () {
+    /* ===== Modal Ubah Peran ===== */
     const roleModal     = document.getElementById('roleModal');
     const roleForm      = document.getElementById('roleForm');
     const roleModalName = document.getElementById('roleModalName');
@@ -360,9 +406,52 @@
     });
     cancelRoleBtn.addEventListener('click', closeRoleModal);
 
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeRoleModal();
+    /* ===== Modal Hapus ===== */
+    const deleteModal     = document.getElementById('deleteUserModal');
+    const deleteForm      = document.getElementById('deleteUserForm');
+    const deleteName      = document.getElementById('deleteUserName');
+    const deleteBookmarks = document.getElementById('deleteUserBookmarks');
+    const deleteRatings   = document.getElementById('deleteUserRatings');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteUserBtn');
+
+    function openDeleteModal(data) {
+        deleteName.textContent      = data.name;
+        deleteBookmarks.textContent = data.bookmarks;
+        deleteRatings.textContent   = data.ratings;
+        deleteForm.action = data.deleteUrl;
+        deleteModal.classList.remove('hidden');
+        deleteModal.classList.add('flex');
+    }
+    function closeDeleteModal() {
+        deleteModal.classList.add('hidden');
+        deleteModal.classList.remove('flex');
+    }
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => openDeleteModal({
+            name:      btn.dataset.userName,
+            bookmarks: btn.dataset.userBookmarks,
+            ratings:   btn.dataset.userRatings,
+            deleteUrl: btn.dataset.deleteUrl,
+        }));
     });
+    cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+
+    /* ===== Escape handler ===== */
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { closeRoleModal(); closeDeleteModal(); }
+    });
+
+    /* ===== Toast dari flash message ===== */
+    @if (session('success'))
+        (function () {
+            const toast = document.getElementById('toastSuccess');
+            document.getElementById('toastMessage').textContent = @json(session('success'));
+            toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+            }, 3200);
+        })();
+    @endif
 })();
 </script>
 @endpush
