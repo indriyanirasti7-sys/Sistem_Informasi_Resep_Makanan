@@ -82,7 +82,7 @@
                     ['label' => 'Kelola Kategori', 'route' => 'admin.categories.index', 'icon' => 'category',  'pattern' => 'admin.categories.*'],
                     ['label' => 'Kelola Tips',     'route' => 'admin.tips.index',   'icon' => 'lightbulb', 'pattern' => 'admin.tips.*'],
                     ['label' => 'Data User',       'route' => 'admin.users.index',      'icon' => 'group',     'pattern' => 'admin.users.*'],
-                    ['label' => 'Ulasan',          'route' => null,                     'icon' => 'reviews',   'pattern' => null],
+                    ['label' => 'Ulasan',          'route' => 'admin.reviews.index',    'icon' => 'rate_review',   'pattern' => 'admin.reviews.*'],
                     ['label' => 'Pengaturan',      'route' => null,                     'icon' => 'settings',  'pattern' => null],
                 ];
             @endphp

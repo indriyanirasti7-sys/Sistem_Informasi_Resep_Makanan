@@ -42,6 +42,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('categories', Admin\CategoryController::class);
     Route::resource('tips', Admin\TipController::class);  
     Route::resource('users', Admin\UserController::class)->except(['create', 'store', 'edit']);
+    Route::resource('reviews', Admin\ReviewController::class)->only(['index', 'destroy']); 
 
 
     Route::get('/export/recipes', [Admin\ExportController::class, 'recipes'])->name('export.recipes');
