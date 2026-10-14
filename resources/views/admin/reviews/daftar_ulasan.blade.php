@@ -19,18 +19,58 @@
     </div>
 </header>
 
-{{-- ========== LIST ULASAN (KERANGKA) ========== --}}
+{{-- ========== LIST ULASAN ========== --}}
 <section class="flex flex-col gap-4">
     @forelse ($reviews as $review)
-        <article class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm">
-            <div class="flex items-start justify-between gap-4">
-                <div class="flex flex-col">
-                    <h3 class="font-bold text-primary">{{ $review->user->name ?? 'Anonim' }}</h3>
-                    <span class="text-xs text-on-surface-variant">{{ $review->recipe->title ?? 'Resep dihapus' }}</span>
+        @php
+            $initials = collect(explode(' ', $review->user->name ?? 'Anonim'))
+                            ->map(fn($w) => strtoupper(substr($w, 0, 1)))
+                            ->take(2)
+                            ->join('');
+            $rating = (int) $review->rating;
+        @endphp
+
+        <article class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col gap-4">
+
+            {{-- Baris Atas: Info Pengulas + Bintang --}}
+            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+
+                {{-- Pengulas --}}
+                <div class="flex items-start gap-3">
+                    <div class="w-12 h-12 rounded-full bg-secondary-container text-secondary flex items-center justify-center font-bold text-sm shrink-0">
+                        {{ $initials }}
+                    </div>
+                    <div class="flex flex-col">
+                        <h3 class="font-bold text-primary">{{ $review->user->name ?? 'Anonim' }}</h3>
+                        <span class="text-xs text-on-surface-variant">
+                            {{ $review->created_at->diffForHumans() }}
+                        </span>
+                    </div>
                 </div>
-                <span class="text-sm font-bold text-primary">{{ $review->rating }} / 5 ⭐</span>
+
+                {{-- Bintang --}}
+                <div class="flex items-center gap-0.5 self-end sm:self-auto">
+                    @for ($i = 1; $i <= 5; $i++)
+                        <span class="material-symbols-outlined text-[20px] {{ $i <= $rating ? 'text-tertiary-container' : 'text-surface-container-highest' }}"
+                              style="font-variation-settings: 'FILL' 1;">star</span>
+                    @endfor
+                </div>
             </div>
-            <p class="text-sm text-on-surface mt-4">{{ $review->comment }}</p>
+
+            {{-- Komentar --}}
+            <p class="text-sm text-on-surface leading-relaxed">
+                “{{ $review->comment }}”
+            </p>
+
+            {{-- Pill Resep --}}
+            <div class="flex items-center justify-between flex-wrap gap-2 pt-1">
+                <div class="inline-flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-full">
+                    <span class="material-symbols-outlined text-[16px] text-primary">restaurant_menu</span>
+                    <span class="text-xs font-bold text-primary">
+                        {{ $review->recipe->title ?? 'Resep dihapus' }}
+                    </span>
+                </div>
+            </div>
         </article>
     @empty
         <div class="bg-surface-container-lowest rounded-3xl p-16 text-center shadow-sm">
