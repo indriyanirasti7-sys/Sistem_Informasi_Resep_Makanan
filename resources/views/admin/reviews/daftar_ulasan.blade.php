@@ -23,7 +23,10 @@
 <section class="flex flex-col gap-4">
     @forelse ($reviews as $review)
         @php
-            $initials = collect(explode(' ', $review->user->name ?? 'Anonim'))
+            $user = $review->user;
+            $isAdmin = $user && $user->role === 'admin';
+            $isVerified = $user && !is_null($user->email_verified_at);
+            $initials = collect(explode(' ', $user->name ?? 'Anonim'))
                             ->map(fn($w) => strtoupper(substr($w, 0, 1)))
                             ->take(2)
                             ->join('');
@@ -37,12 +40,31 @@
 
                 {{-- Pengulas --}}
                 <div class="flex items-start gap-3">
-                    <div class="w-12 h-12 rounded-full bg-secondary-container text-secondary flex items-center justify-center font-bold text-sm shrink-0">
+                    <div class="w-12 h-12 rounded-full {{ $isAdmin ? 'bg-primary-fixed text-primary' : 'bg-secondary-container text-secondary' }} flex items-center justify-center font-bold text-sm shrink-0">
                         {{ $initials }}
                     </div>
-                    <div class="flex flex-col">
-                        <h3 class="font-bold text-primary">{{ $review->user->name ?? 'Anonim' }}</h3>
+                    <div class="flex flex-col gap-0.5">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h3 class="font-bold text-primary">{{ $user->name ?? 'Anonim' }}</h3>
+
+                            @if ($isVerified)
+                                <span class="inline-flex items-center gap-1 bg-secondary-container px-2 py-0.5 rounded-full text-secondary text-[10px] font-bold">
+                                    <span class="material-symbols-outlined text-[12px]">verified</span>
+                                    Terverifikasi
+                                </span>
+                            @endif
+
+                            @if ($isAdmin)
+                                <span class="inline-flex items-center gap-1 bg-primary-container px-2 py-0.5 rounded-full text-white text-[10px] font-bold">
+                                    <span class="material-symbols-outlined text-[12px]">shield</span>
+                                    Admin
+                                </span>
+                            @endif
+                        </div>
+
                         <span class="text-xs text-on-surface-variant">
+                            {{ $isAdmin ? 'Kepala Kurator Gastronomi' : 'Anggota Komunitas' }}
+                            •
                             {{ $review->created_at->diffForHumans() }}
                         </span>
                     </div>
@@ -94,4 +116,4 @@
     </div>
 @endif
 
-@endsection
+@endsection 
