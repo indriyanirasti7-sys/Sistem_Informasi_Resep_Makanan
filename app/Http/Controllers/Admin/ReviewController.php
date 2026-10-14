@@ -14,6 +14,24 @@ class ReviewController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('admin.reviews.daftar_ulasan', compact('reviews'));
+        // Hitung statistik
+        $totalReviews   = Rating::count();
+        $averageRating  = round(Rating::avg('rating') ?? 0, 1);
+        $fiveStarCount  = Rating::where('rating', 5)->count();
+        $attentionCount = Rating::whereIn('rating', [1, 2])->count();
+
+        // Persentase bintang 5
+        $fiveStarPercent = $totalReviews > 0
+            ? round(($fiveStarCount / $totalReviews) * 100, 1)
+            : 0;
+
+        return view('admin.reviews.daftar_ulasan', compact(
+            'reviews',
+            'totalReviews',
+            'averageRating',
+            'fiveStarCount',
+            'fiveStarPercent',
+            'attentionCount'
+        ));
     }
 }
