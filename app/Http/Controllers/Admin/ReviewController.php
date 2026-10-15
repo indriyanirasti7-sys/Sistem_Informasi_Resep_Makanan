@@ -25,13 +25,25 @@ class ReviewController extends Controller
             ? round(($fiveStarCount / $totalReviews) * 100, 1)
             : 0;
 
+        // Distribusi bintang (5 sampai 1)
+        $distribution = [];
+        foreach ([5, 4, 3, 2, 1] as $star) {
+            $count = Rating::where('rating', $star)->count();
+            $percent = $totalReviews > 0 ? round(($count / $totalReviews) * 100, 1) : 0;
+            $distribution[$star] = [
+                'count'   => $count,
+                'percent' => $percent,
+            ];
+        }
+
         return view('admin.reviews.daftar_ulasan', compact(
             'reviews',
             'totalReviews',
             'averageRating',
             'fiveStarCount',
             'fiveStarPercent',
-            'attentionCount'
+            'attentionCount',
+            'distribution'
         ));
     }
 }

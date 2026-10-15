@@ -88,6 +88,74 @@
     </div>
 </header>
 
+{{-- ========== PANEL DISTRIBUSI BINTANG ========== --}}
+<section class="bg-surface-container-lowest rounded-3xl p-6 lg:p-8 shadow-sm mb-5">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+
+        {{-- Kiri: Skor Besar --}}
+        <div class="lg:col-span-5 flex flex-col items-center lg:items-start text-center lg:text-left gap-3 lg:pr-8 lg:border-r border-surface-container-high">
+            <span class="text-[11px] uppercase tracking-widest text-on-surface-variant font-bold">
+                Kualitas Gastronomi Terpadu
+            </span>
+            <div class="flex items-baseline gap-2">
+                <span class="font-display text-6xl text-primary leading-none font-bold">{{ $averageRating }}</span>
+                <span class="text-2xl text-on-surface-variant">/ 5.0</span>
+            </div>
+            <div class="flex items-center gap-1 text-tertiary-container">
+                @for ($i = 1; $i <= 5; $i++)
+                    <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                @endfor
+            </div>
+            <span class="text-sm font-bold text-primary">
+                {{ number_format($totalReviews, 0, ',', '.') }} Penilaian Global
+            </span>
+            <div class="inline-flex items-center gap-2 bg-secondary-container px-4 py-1.5 rounded-full mt-1">
+                <span class="material-symbols-outlined text-secondary text-[18px]">thumb_up</span>
+                <span class="text-xs font-bold text-secondary">
+                    {{ $fiveStarPercent }}% pengunjung kasih bintang 5
+                </span>
+            </div>
+        </div>
+
+        {{-- Kanan: Bar Chart Distribusi --}}
+        <div class="lg:col-span-7 flex flex-col gap-3">
+            @foreach ([5, 4, 3, 2, 1] as $star)
+                @php
+                    $count   = $distribution[$star]['count'];
+                    $percent = $distribution[$star]['percent'];
+
+                    // Warna bar beda-beda per tingkat bintang
+                    $barColor = match($star) {
+                        5 => 'bg-tertiary-container',
+                        4 => 'bg-tertiary-fixed-dim',
+                        3 => 'bg-secondary-fixed-dim',
+                        2 => 'bg-primary-fixed-dim',
+                        1 => 'bg-error',
+                    };
+                @endphp
+
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-1 w-24 shrink-0">
+                        <span class="text-xs font-bold text-on-surface">{{ $star }} Bintang</span>
+                        <span class="material-symbols-outlined text-tertiary-container text-[14px]"
+                              style="font-variation-settings: 'FILL' 1;">star</span>
+                    </div>
+
+                    <div class="flex-1 h-3 rounded-full bg-surface-container overflow-hidden">
+                        <div class="h-full rounded-full {{ $barColor }} transition-all duration-500"
+                             style="width: {{ $percent }}%;"></div>
+                    </div>
+
+                    <div class="w-24 text-right flex justify-end gap-1 shrink-0">
+                        <span class="text-xs font-bold text-on-surface">{{ number_format($count, 0, ',', '.') }}</span>
+                        <span class="text-[11px] text-on-surface-variant">({{ $percent }}%)</span>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
 {{-- ========== LIST ULASAN ========== --}}
 <section class="flex flex-col gap-4">
     @forelse ($reviews as $review)
