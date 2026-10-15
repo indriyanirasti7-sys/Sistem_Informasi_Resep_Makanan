@@ -88,6 +88,91 @@
     </div>
 </header>
 
+{{-- ========== FILTER & SEARCH ========== --}}
+<section class="bg-surface-container-low rounded-3xl p-4 shadow-sm mb-5">
+    <form method="GET" action="{{ route('admin.reviews.index') }}"
+          class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+
+        {{-- Search --}}
+        <div class="md:col-span-5 relative flex items-center">
+            <span class="material-symbols-outlined absolute left-4 text-[20px] text-on-surface-variant pointer-events-none">search</span>
+            <input type="search" name="q" value="{{ request('q') }}"
+                   placeholder="Cari komentar, pengguna, atau resep..."
+                   class="w-full pl-11 pr-4 py-2.5 rounded-full bg-surface-container-lowest text-on-surface placeholder:text-on-surface-variant/70 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all"/>
+        </div>
+
+        {{-- Filter Bintang --}}
+        <div class="md:col-span-2 relative">
+            <select name="rating" onchange="this.form.submit()"
+                    class="w-full appearance-none px-4 py-2.5 pr-9 rounded-full bg-surface-container-lowest text-on-surface text-xs font-bold cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all">
+                <option value="all" @selected(request('rating', 'all') === 'all')>Semua Bintang</option>
+                <option value="5" @selected(request('rating') === '5')>⭐ 5 Sempurna</option>
+                <option value="4" @selected(request('rating') === '4')>⭐ 4 Sangat Baik</option>
+                <option value="3" @selected(request('rating') === '3')>⭐ 3 Cukup</option>
+                <option value="2" @selected(request('rating') === '2')>⭐ 2 Perlu Perbaikan</option>
+                <option value="1" @selected(request('rating') === '1')>⭐ 1 Kurang Puas</option>
+            </select>
+            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant pointer-events-none">expand_more</span>
+        </div>
+
+        {{-- Filter Resep --}}
+        <div class="md:col-span-3 relative">
+            <select name="recipe_id" onchange="this.form.submit()"
+                    class="w-full appearance-none px-4 py-2.5 pr-9 rounded-full bg-surface-container-lowest text-on-surface text-xs font-bold cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all">
+                <option value="all" @selected(request('recipe_id', 'all') === 'all')>
+                    Semua Resep ({{ $recipesForFilter->count() }})
+                </option>
+                @foreach ($recipesForFilter as $r)
+                    <option value="{{ $r->id }}" @selected(request('recipe_id') == $r->id)>
+                        {{ \Illuminate\Support\Str::limit($r->title, 40) }}
+                    </option>
+                @endforeach
+            </select>
+            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant pointer-events-none">expand_more</span>
+        </div>
+
+        {{-- Reset --}}
+        <div class="md:col-span-2 flex justify-end">
+            <a href="{{ route('admin.reviews.index') }}"
+               class="w-full py-2.5 px-4 rounded-full bg-surface-container-high hover:bg-surface-container text-on-surface text-xs font-bold flex items-center justify-center gap-1.5 transition">
+                <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+                <span>Reset</span>
+            </a>
+        </div>
+
+        {{-- Sort (baris terpisah di bawah) --}}
+        <div class="md:col-span-12 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-surface-container-high/60">
+            <div class="flex items-center gap-2 text-xs text-on-surface-variant">
+                <span class="material-symbols-outlined text-[16px]">sort</span>
+                <span>Urutkan:</span>
+            </div>
+
+            <div class="relative min-w-[200px]">
+                <select name="sort" onchange="this.form.submit()"
+                        class="w-full appearance-none px-4 py-2 pr-9 rounded-full bg-surface-container-lowest text-on-surface text-xs font-bold cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all">
+                    <option value="newest" @selected(request('sort', 'newest') === 'newest')>Paling Baru</option>
+                    <option value="oldest" @selected(request('sort') === 'oldest')>Paling Lama</option>
+                    <option value="rating_high" @selected(request('sort') === 'rating_high')>Rating Tertinggi</option>
+                    <option value="rating_low" @selected(request('sort') === 'rating_low')>Rating Terendah</option>
+                </select>
+                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant pointer-events-none">expand_more</span>
+            </div>
+        </div>
+    </form>
+
+    {{-- Counter hasil filter --}}
+    <div class="flex items-center justify-between pt-3 px-2">
+        <span class="text-xs text-on-surface-variant">
+            Menampilkan <strong class="text-primary font-bold">{{ $reviews->firstItem() ?? 0 }}–{{ $reviews->lastItem() ?? 0 }}</strong>
+            dari <strong class="text-primary font-bold">{{ number_format($reviews->total(), 0, ',', '.') }}</strong> ulasan
+        </span>
+        <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-secondary"></span>
+            <span class="text-[11px] text-on-surface-variant font-medium">Auto-sinkron kurasi aktif</span>
+        </div>
+    </div>
+</section>
+
 {{-- ========== PANEL DISTRIBUSI BINTANG ========== --}}
 <section class="bg-surface-container-lowest rounded-3xl p-6 lg:p-8 shadow-sm mb-5">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
