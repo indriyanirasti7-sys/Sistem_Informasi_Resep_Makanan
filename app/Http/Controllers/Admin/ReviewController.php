@@ -77,4 +77,19 @@ class ReviewController extends Controller
             'recipesForFilter'
         ));
     }
+
+     public function destroy($review)
+    {
+        $rating = Rating::findOrFail($review);
+
+        // Ambil info dulu sebelum dihapus (untuk flash message)
+        $userName   = $rating->user->name ?? 'Anonim';
+        $recipeName = $rating->recipe->title ?? 'Resep';
+
+        $rating->delete();
+
+        return redirect()
+            ->route('admin.reviews.index')
+            ->with('success', "Ulasan dari {$userName} pada resep '{$recipeName}' berhasil dihapus.");
+    }
 }

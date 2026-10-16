@@ -156,7 +156,7 @@
                     <option value="rating_low" @selected(request('sort') === 'rating_low')>Rating Terendah</option>
                 </select>
                 <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant pointer-events-none">expand_more</span>
-            </div>
+            </div> 
         </div>
     </form>
 
@@ -289,11 +289,24 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-0.5 self-end sm:self-auto">
-                    @for ($i = 1; $i <= 5; $i++)
-                        <span class="material-symbols-outlined text-[20px] {{ $i <= $rating ? 'text-tertiary-container' : 'text-surface-container-highest' }}"
-                              style="font-variation-settings: 'FILL' 1;">star</span>
-                    @endfor
+                {{-- Bintang + Tombol Hapus --}}
+                <div class="flex items-center gap-3 self-end sm:self-auto">
+                    <div class="flex items-center gap-0.5">
+                        @for ($i = 1; $i <= 5; $i++)
+                            <span class="material-symbols-outlined text-[20px] {{ $i <= $rating ? 'text-tertiary-container' : 'text-surface-container-highest' }}"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                        @endfor
+                    </div>
+
+                    <button type="button"
+                            class="delete-btn w-9 h-9 rounded-full bg-surface-container hover:bg-error-container text-on-surface-variant hover:text-error flex items-center justify-center transition"
+                            data-author="{{ $user->name ?? 'Anonim' }}"
+                            data-recipe="{{ $review->recipe->title ?? 'Resep dihapus' }}"
+                            data-comment="{{ $review->comment }}"
+                            data-delete-url="{{ route('admin.reviews.destroy', $review->id) }}"
+                            title="Hapus Ulasan">
+                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                    </button>
                 </div>
             </div>
 
@@ -331,4 +344,115 @@
     </div>
 @endif
 
+{{-- ========== MODAL: Konfirmasi Hapus Ulasan ========== --}}
+<div id="deleteReviewModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-inverse-surface/40 backdrop-blur-sm hidden">
+    <div class="bg-surface-container-lowest rounded-3xl p-8 max-w-lg w-full shadow-[0_16px_40px_-6px_rgba(90,58,34,0.18)] flex flex-col gap-5">
+
+        {{-- Header --}}
+        <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-full bg-error-container text-error flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[26px]">delete_forever</span>
+            </div>
+            <div class="flex flex-col gap-1">
+                <h3 class="font-display text-2xl text-primary font-bold">Hapus Ulasan Ini?</h3>
+                <p class="text-sm text-on-surface-variant">
+                    Apakah Anda yakin ingin menghapus ulasan dari
+                    <strong class="text-on-surface" id="modalAuthorName">Pengguna</strong>?
+                    Tindakan ini permanen dan skor rata-rata resep
+                    <strong class="text-on-surface" id="modalRecipeName">Resep</strong>
+                    akan dihitung ulang otomatis.
+                </p>
+            </div>
+        </div>
+
+        {{-- Preview Kutipan Komentar --}}
+        <div class="p-4 rounded-2xl bg-surface-container-low flex flex-col gap-2">
+            <span class="text-[11px] uppercase tracking-wider text-on-surface-variant font-bold">
+                Kutipan Komentar yang Dihapus
+            </span>
+            <p class="text-sm italic text-on-surface leading-relaxed" id="modalCommentQuote">
+                “Komentar yang dipilih akan muncul di sini...”
+            </p>
+        </div>
+
+        {{-- Action Buttons --}}
+        <form id="deleteReviewForm" method="POST" action="" class="flex items-center justify-end gap-3 pt-2">
+            @csrf
+            @method('DELETE')
+            <button type="button" id="cancelDeleteReviewBtn"
+                    class="px-6 py-2.5 rounded-full bg-surface-container-high text-on-surface-variant hover:text-primary text-sm font-bold transition">
+                Batal
+            </button>
+            <button type="submit"
+                    class="px-6 py-2.5 rounded-full bg-error text-white text-sm font-bold shadow-sm hover:opacity-90 transition">
+                Ya, Hapus Ulasan
+            </button>
+        </form>
+    </div>
+</div>
+
+{{-- ========== TOAST ========== --}}
+<div id="toastSuccess"
+     class="fixed bottom-6 right-6 z-50 bg-primary-container text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2.5 transition-all transform translate-y-24 opacity-0 pointer-events-none">
+    <span class="material-symbols-outlined text-[20px] text-secondary-fixed">check_circle</span>
+    <span class="text-sm font-bold" id="toastMessage">Berhasil!</span>
+</div>
+
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    /* ===== Modal Hapus Ulasan ===== */
+    const deleteModal  = document.getElementById('deleteReviewModal');
+    const deleteForm   = document.getElementById('deleteReviewForm');
+    const modalAuthor  = document.getElementById('modalAuthorName');
+    const modalRecipe  = document.getElementById('modalRecipeName');
+    const modalComment = document.getElementById('modalCommentQuote');
+    const cancelBtn    = document.getElementById('cancelDeleteReviewBtn');
+
+    function openDeleteModal(data) {
+        modalAuthor.textContent  = data.author;
+        modalRecipe.textContent  = data.recipe;
+        modalComment.textContent = '“' + data.comment + '”';
+        deleteForm.action = data.deleteUrl;
+
+        deleteModal.classList.remove('hidden');
+        deleteModal.classList.add('flex');
+    }
+
+    function closeDeleteModal() {
+        deleteModal.classList.add('hidden');
+        deleteModal.classList.remove('flex');
+    }
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => openDeleteModal({
+            author:    btn.dataset.author,
+            recipe:    btn.dataset.recipe,
+            comment:   btn.dataset.comment,
+            deleteUrl: btn.dataset.deleteUrl,
+        }));
+    });
+
+    cancelBtn.addEventListener('click', closeDeleteModal);
+
+    /* Escape menutup modal */
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeDeleteModal();
+    });
+
+    /* Flash message dari server → tampilkan toast */
+    @if (session('success'))
+        (function () {
+            const toast = document.getElementById('toastSuccess');
+            document.getElementById('toastMessage').textContent = @json(session('success'));
+            toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+            }, 3200);
+        })();
+    @endif
+})();
+</script>
+@endpush
