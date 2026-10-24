@@ -174,7 +174,42 @@
             </div>
         </div>
 
-        
+                <!-- 4. Step-by-Step Cooking Instructions -->
+        <div class="bg-surface-container-lowest rounded-xl p-6 sm:p-8 shadow-sm flex flex-col">
+            <div class="flex items-center justify-between pb-4 border-b border-surface-container-high mb-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[22px]">skillet</span>
+                    </div>
+                    <div>
+                        <h2 class="font-['Playfair_Display'] text-2xl text-primary font-bold leading-tight">Instruksi &amp; Tahapan Memasak</h2>
+                        <p class="text-xs text-on-surface-variant">Protokol teknis langkah demi langkah</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex flex-col gap-4">
+                @foreach($recipe->steps as $step)
+                    <div class="bg-surface-container-low rounded-lg p-4 flex flex-col sm:flex-row gap-4 items-start">
+                        <div class="flex sm:flex-col items-center justify-between w-full sm:w-20 gap-2 shrink-0">
+                            <span class="w-10 h-10 rounded-full bg-primary text-white font-bold text-sm flex items-center justify-center">
+                                {{ str_pad($step->step_number, 2, '0', STR_PAD_LEFT) }}
+                            </span>
+                            @if($step->duration_minutes)
+                                <span class="px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant text-[10px] font-bold">
+                                    {{ $step->duration_minutes }} Mnt
+                                </span>
+                            @endif
+                        </div>
+                        <div class="flex flex-col min-w-0 mt-2 sm:mt-0">
+                            <p class="text-sm text-on-surface-variant leading-relaxed">
+                                {{ $step->instruction }}
+                            </p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
 
     </div>
 </div>
