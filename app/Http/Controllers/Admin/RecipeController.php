@@ -15,7 +15,7 @@ class RecipeController extends Controller
 {
     /* ============ READ ============ */
 
-     public function index(Request $request)
+    public function index(Request $request)
     {
         $query = Recipe::with(['category', 'user', 'ratings']);
 
@@ -41,8 +41,7 @@ class RecipeController extends Controller
             'draft'     => Recipe::where('status', 'draft')->count(),
         ];
 
-
-        return view('admin.recipes.kelola_resep', compact('recipes'));
+        return view('admin.recipes.kelola_resep', compact('recipes', 'stats'));
     }
 
     public function show(Recipe $recipe)
@@ -59,7 +58,8 @@ class RecipeController extends Controller
         $categories  = Category::orderBy('name')->get();
         $ingredients = Ingredient::orderBy('name')->get();
 
-        return view('admin.tambah_resep', compact('categories', 'ingredients'));
+        // ✅ FIX: Path view disesuaikan dengan folder recipes
+        return view('admin.recipes.tambah_resep', compact('categories', 'ingredients'));
     }
 
     public function store(Request $request)
@@ -85,8 +85,9 @@ class RecipeController extends Controller
             $this->syncSteps($recipe, $request->input('steps', []));
         });
 
+        // ✅ FIX: Redirect ke daftar resep
         return redirect()
-            ->route('admin.index')   // ✅ FIXED
+            ->route('admin.recipes.index')
             ->with('success', 'Resep berhasil ditambahkan.');
     }
 
@@ -118,6 +119,7 @@ class RecipeController extends Controller
                 'image'            => $this->handleImageUpload($request) ?? $recipe->image,
             ]);
 
+            // Hapus bahan & langkah lama sebelum menyimpan yang baru
             $recipe->recipeIngredients()->delete();
             $recipe->steps()->delete();
 
@@ -125,8 +127,9 @@ class RecipeController extends Controller
             $this->syncSteps($recipe, $request->input('steps', []));
         });
 
+        // ✅ FIX: Redirect ke daftar resep
         return redirect()
-            ->route('admin.index')
+            ->route('admin.recipes.index')
             ->with('success', 'Resep berhasil diperbarui.');
     }
 
@@ -136,8 +139,9 @@ class RecipeController extends Controller
     {
         $recipe->delete();
 
+        // ✅ FIX: Redirect ke daftar resep
         return redirect()
-            ->route('admin.index')
+            ->route('admin.recipes.index')
             ->with('success', 'Resep berhasil dihapus.');
     }
 
@@ -154,12 +158,15 @@ class RecipeController extends Controller
             'difficulty'               => 'required|in:Mudah,Sedang,Sulit',
             'calories'                 => 'nullable|integer|min:1|max:65535',
             'status'                   => 'required|in:draft,published',
-            'image'                    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'ingredients'              => 'array',
-            'ingredients.*.id'         => 'required|exists:ingredients,id',
+            'image'                    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            
+            // ✅ FIX: Validasi disesuaikan dengan form UI baru (Name, Amount, Unit)
+            'ingredients'              => 'required|array',
+            'ingredients.*.name'       => 'required|string|max:100',
             'ingredients.*.amount'     => 'required|numeric|min:0',
-            'ingredients.*.unit'       => 'nullable|string|max:20',
-            'steps'                    => 'array',
+            'ingredients.*.unit'       => 'required|string|max:20',
+            
+            'steps'                    => 'required|array',
             'steps.*.instruction'      => 'required|string',
             'steps.*.duration_minutes' => 'nullable|integer|min:1|max:65535',
         ]);
@@ -174,10 +181,16 @@ class RecipeController extends Controller
     private function syncIngredients(Recipe $recipe, array $items): void
     {
         foreach ($items as $item) {
-            if (empty($item['id']) || !isset($item['amount'])) continue;
+            if (empty($item['name']) || !isset($item['amount'])) continue;
+
+            // ✅ FIX: Cari bahan berdasarkan nama, kalau tidak ada, buat baru otomatis
+            $ingredient = Ingredient::firstOrCreate(
+                ['name' => $item['name']],
+                ['unit' => $item['unit'] ?? 'gram'] // Satuan default jika bahan baru
+            );
 
             $recipe->recipeIngredients()->create([
-                'ingredient_id' => $item['id'],
+                'ingredient_id' => $ingredient->id,
                 'amount'        => $item['amount'],
                 'unit'          => $item['unit'] ?? null,
             ]);
