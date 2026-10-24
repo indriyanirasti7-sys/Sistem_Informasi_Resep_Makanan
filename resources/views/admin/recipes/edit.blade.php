@@ -5,7 +5,7 @@
 
 @section('content')
 
-<div class="max-w-5xl mx-auto pb-12 pt-6">
+<div class="w-full mx-auto pb-12 pt-6">
     
     {{-- Header --}}
     <header class="flex flex-col gap-1 mb-6">
@@ -72,13 +72,8 @@
                 </div>
             </div>
             
-        </div>
-    </form>
-</div>
-
             {{-- 2. DETAIL MASAK & FOTO --}}
             <div class="flex flex-col gap-4">
-                {{-- Porsi, Waktu, Kesulitan --}}
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
                     <div class="flex flex-col gap-1.5">
                         <label class="text-xs font-bold text-primary">Jumlah Porsi Saji</label>
@@ -133,7 +128,7 @@
                 </div>
             </div>
 
-                        {{-- 3. DAFTAR BAHAN --}}
+            {{-- 3. DAFTAR BAHAN --}}
             <div class="flex flex-col gap-4">
                 <div class="flex items-center justify-between pb-2 border-b border-surface-container-high">
                     <div class="flex items-center gap-2">
@@ -175,11 +170,67 @@
                 </div>
             </div>
 
+            {{-- 4. LANGKAH MEMASAK --}}
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center justify-between pb-2 border-b border-surface-container-high">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-[20px]">skillet</span>
+                        <h2 class="text-lg font-bold text-primary">Tahapan & Panduan Memasak Naratif</h2>
+                    </div>
+                    <button type="button" onclick="addStepRow()" class="px-4 py-1.5 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-bold hover:bg-secondary/20 transition flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[16px]">add</span> Tambah Tahapan
+                    </button>
+                </div>
+
+                <div class="flex flex-col gap-3" id="steps-container">
+                    {{-- Looping data langkah yang sudah ada --}}
+                    @foreach($recipe->steps as $index => $step)
+                        <div class="step-card bg-surface-container-low/40 rounded-xl p-4 flex flex-col gap-3 relative">
+                            <div class="flex items-center gap-2 w-fit bg-surface-container-high px-3 py-1 rounded-md">
+                                <span class="step-label text-[11px] font-bold text-primary">Langkah {{ $index + 1 }}</span>
+                            </div>
+                            <div class="flex flex-col md:flex-row gap-3 items-start">
+                                <textarea name="steps[{{ $index }}][instruction]" rows="2" required class="w-full flex-1 bg-surface-container-lowest p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-secondary/40 resize-none">{{ $step->instruction }}</textarea>
+                                <div class="w-full md:w-32 shrink-0">
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-outline text-[16px]">timer</span>
+                                        <input type="number" name="steps[{{ $index }}][duration_minutes]" value="{{ $step->duration_minutes }}" placeholder="Timer (Menit)" min="0" class="w-full bg-surface-container-lowest pl-8 pr-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-secondary/40"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" onclick="this.closest('.step-card').remove(); updateStepNumbers();" class="absolute top-4 right-4 text-error hover:bg-error-container p-1.5 rounded-full transition">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+        </div> {{-- Penutup CARD UTAMA --}}
+
+        {{-- FOOTER ACTIONS --}}
+        <div class="flex items-center justify-between pt-2">
+            <a href="{{ route('admin.recipes.index') }}" class="text-sm font-bold text-on-surface-variant hover:text-primary transition">
+                Kembali
+            </a>
+            <div class="flex items-center gap-3">
+                <button type="submit" class="px-8 py-2.5 rounded-full bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary-container transition flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    Perbarui Resep
+                </button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
 @endsection
+
 @push('scripts')
 <script>
     // Mulai index dari jumlah data yang sudah ada agar tidak bentrok
     let ingredientIdx = {{ count($recipe->recipeIngredients) }};
+    let stepIdx = {{ count($recipe->steps) }};
 
     function addIngredientRow() {
         const container = document.getElementById('ingredients-container');
@@ -203,6 +254,53 @@
         `;
         container.appendChild(row);
         ingredientIdx++;
+    }
+
+    function addStepRow() {
+        const container = document.getElementById('steps-container');
+        const num = stepIdx + 1;
+        const row = document.createElement('div');
+        row.className = 'step-card bg-surface-container-low/40 rounded-xl p-4 flex flex-col gap-3 relative';
+        row.innerHTML = `
+            <div class="flex items-center gap-2 w-fit bg-surface-container-high px-3 py-1 rounded-md">
+                <span class="step-label text-[11px] font-bold text-primary">Langkah ${num}</span>
+            </div>
+            <div class="flex flex-col md:flex-row gap-3 items-start">
+                <textarea name="steps[${stepIdx}][instruction]" rows="2" required placeholder="Tuliskan instruksi detail langkah ini..." class="w-full flex-1 bg-surface-container-lowest p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-secondary/40 resize-none"></textarea>
+                <div class="w-full md:w-32 shrink-0">
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-outline text-[16px]">timer</span>
+                        <input type="number" name="steps[${stepIdx}][duration_minutes]" placeholder="Timer (Menit)" min="0" class="w-full bg-surface-container-lowest pl-8 pr-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-secondary/40"/>
+                    </div>
+                </div>
+            </div>
+            <button type="button" onclick="this.closest('.step-card').remove(); updateStepNumbers();" class="absolute top-4 right-4 text-error hover:bg-error-container p-1.5 rounded-full transition">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
+            </button>
+        `;
+        container.appendChild(row);
+        stepIdx++;
+    }
+
+    function updateStepNumbers() {
+        const steps = document.querySelectorAll('#steps-container .step-label');
+        steps.forEach((el, index) => { el.innerText = 'Langkah ' + (index + 1); });
+    }
+
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById('imagePreview');
+        const placeholder = document.getElementById('imagePlaceholder');
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
     }
 </script>
 @endpush
