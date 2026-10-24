@@ -19,10 +19,8 @@
             <nav class="flex items-center gap-2 text-sm text-on-surface-variant flex-wrap">
                 <a href="{{ route('home') }}" class="hover:text-primary transition-colors">Beranda</a>
                 <span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
-                <a href="{{ route('recipes.index') }}" class="hover:text-primary transition-colors">Daftar Resep</a>
                 <span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
                 @if ($recipe->category)
-                    <a href="{{ route('recipes.index', ['category' => $recipe->category->slug]) }}"
                        class="hover:text-primary transition-colors">{{ $recipe->category->name }}</a>
                     <span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
                 @endif

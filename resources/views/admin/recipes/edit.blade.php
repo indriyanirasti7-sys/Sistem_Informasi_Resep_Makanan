@@ -110,11 +110,14 @@
                 <div class="flex flex-col gap-1.5 pt-2">
                     <label class="text-xs font-bold text-primary">Foto Hasil Masakan (Biarkan kosong jika tidak diubah)</label>
                     <div class="relative w-full h-32 rounded-xl bg-surface-container-lowest border border-dashed border-outline-variant flex items-center justify-between px-6 cursor-pointer overflow-hidden group">
-                        <input type="file" name="image" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewImage(event)">
                         
-                        {{-- Tampilkan gambar lama jika ada --}}
+                        {{-- Tambahkan z-20 di sini agar bisa diklik --}}
+                        <input type="file" name="image" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="previewImage(event)">
+                        
+                        {{-- Gambar Lama --}}
                         <img id="imagePreview" class="{{ $recipe->image ? '' : 'hidden' }} absolute inset-0 w-full h-full object-cover z-10" src="{{ $recipe->image ? asset('storage/'.$recipe->image) : '' }}"/>
                         
+                        {{-- Placeholder --}}
                         <div id="imagePlaceholder" class="{{ $recipe->image ? 'hidden' : '' }} flex items-center gap-4 z-0">
                             <div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
                                 <span class="material-symbols-outlined text-[24px]">add_photo_alternate</span>

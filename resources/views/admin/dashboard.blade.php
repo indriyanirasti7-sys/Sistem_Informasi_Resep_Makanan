@@ -275,7 +275,7 @@
                             </td>
                             <td class="py-4 px-3 text-right">
                                 <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('admin.recipes.edit', $r->id) }}"
+                                    <a href="{{ route('admin.recipes.edit', $r->slug) }}"
                                        class="p-2 rounded-full hover:bg-surface-container text-primary transition-all" title="Edit">
                                         <span class="material-symbols-outlined text-[19px]">edit</span>
                                     </a>

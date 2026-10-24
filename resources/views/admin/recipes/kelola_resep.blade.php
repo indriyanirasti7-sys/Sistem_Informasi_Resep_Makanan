@@ -218,7 +218,7 @@
                         {{-- Aksi --}}
                         <td class="py-4 px-4 text-right whitespace-nowrap">
                             <div class="flex items-center justify-end gap-1">
-                                <a href="{{ route('recipes.show', $recipe->slug) }}" target="_blank"
+                                <a href="{{ route('admin.recipes.detail_tampilan', $recipe->slug) }}" target="_blank"
                                    class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-full transition" title="Lihat">
                                     <span class="material-symbols-outlined text-[18px]">visibility</span>
                                 </a>

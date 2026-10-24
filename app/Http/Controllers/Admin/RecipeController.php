@@ -44,11 +44,11 @@ class RecipeController extends Controller
         return view('admin.recipes.kelola_resep', compact('recipes', 'stats'));
     }
 
-    public function show(Recipe $recipe)
+    public function detail_tampilan(Recipe $recipe)
     {
         $recipe->load(['category', 'user', 'steps', 'recipeIngredients.ingredient', 'ratings.user']);
 
-        return view('admin.recipes.show', compact('recipe'));
+        return view('admin.recipes.detail_tampilan', compact('recipe'));
     }
 
     /* ============ CREATE ============ */
