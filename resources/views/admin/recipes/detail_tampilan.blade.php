@@ -117,6 +117,65 @@
             </div>
         </div>
 
+                <!-- 2. Spesifikasi Dapur (Full Width Grid) -->
+        <div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm">
+            <div class="flex items-center gap-2 pb-3 mb-4 border-b border-surface-container-high">
+                <span class="material-symbols-outlined text-secondary text-[22px]">restaurant</span>
+                <h2 class="font-['Playfair_Display'] text-lg text-primary font-bold">Spesifikasi Dapur</h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div class="flex flex-col bg-surface-container-low p-3 rounded-lg">
+                    <span class="text-on-surface-variant text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">timer</span> Total Waktu</span>
+                    <span class="font-bold text-primary mt-1">{{ $recipe->duration_minutes }} Menit</span>
+                </div>
+                <div class="flex flex-col bg-surface-container-low p-3 rounded-lg">
+                    <span class="text-on-surface-variant text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">group</span> Kapasitas</span>
+                    <span class="font-bold text-primary mt-1">{{ $recipe->servings }} Orang</span>
+                </div>
+                <div class="flex flex-col bg-surface-container-low p-3 rounded-lg">
+                    <span class="text-on-surface-variant text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">speed</span> Kesulitan</span>
+                    <span class="font-bold text-primary mt-1">{{ $recipe->difficulty }}</span>
+                </div>
+                <div class="flex flex-col bg-surface-container-low p-3 rounded-lg">
+                    <span class="text-on-surface-variant text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">local_fire_department</span> Kalori</span>
+                    <span class="font-bold text-primary mt-1">{{ $recipe->calories ? $recipe->calories . ' kkal' : '-' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Bahan & Takaran -->
+        <div class="bg-surface-container-lowest rounded-xl p-6 sm:p-8 shadow-sm flex flex-col">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 gap-3 border-b border-surface-container-high mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[22px]">grocery</span>
+                    </div>
+                    <div>
+                        <h2 class="font-['Playfair_Display'] text-2xl text-primary font-bold leading-tight">Bahan &amp; Takaran Presisi</h2>
+                        <p class="text-xs text-on-surface-variant">Daftar komposisi tervalidasi standar dapur kurator</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 bg-surface-container-high px-4 py-1.5 rounded-full text-on-surface-variant text-xs">
+                    <span class="material-symbols-outlined text-secondary text-[18px]">scale</span>
+                    <span>Dikalibrasi untuk <strong class="text-primary">{{ $recipe->servings }} Porsi</strong></span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @foreach($recipe->recipeIngredients as $ri)
+                    <div class="bg-surface-container-low rounded-lg p-4 flex items-start gap-3">
+                        <span class="material-symbols-outlined text-secondary text-[18px] mt-0.5">check_circle</span>
+                        <div class="text-sm">
+                            <span class="font-bold text-primary">{{ $ri->amount }} {{ $ri->unit ?? $ri->ingredient->unit }}</span>
+                            <span class="text-on-surface-variant block mt-0.5">{{ $ri->ingredient->name ?? 'Bahan' }}</span>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        
+
     </div>
 </div>
 @endsection
