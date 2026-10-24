@@ -133,4 +133,76 @@
                 </div>
             </div>
 
+                        {{-- 3. DAFTAR BAHAN --}}
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center justify-between pb-2 border-b border-surface-container-high">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-[20px]">grocery</span>
+                        <h2 class="text-lg font-bold text-primary">Daftar Bahan & Takaran Presisi</h2>
+                    </div>
+                    <button type="button" onclick="addIngredientRow()" class="px-4 py-1.5 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-bold hover:bg-secondary/20 transition flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[16px]">add</span> Tambah Baris Bahan
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-12 gap-3 text-[11px] font-bold text-on-surface-variant uppercase tracking-wider px-1">
+                    <div class="col-span-5">Nama Bahan</div>
+                    <div class="col-span-3">Takaran</div>
+                    <div class="col-span-3">Satuan Ukur</div>
+                    <div class="col-span-1 text-center">Aksi</div>
+                </div>
+
+                <div class="flex flex-col gap-2" id="ingredients-container">
+                    {{-- Looping data bahan yang sudah ada --}}
+                    @foreach($recipe->recipeIngredients as $index => $ri)
+                        <div class="ingredient-row grid grid-cols-12 gap-3 items-center bg-surface-container-low/40 p-2 rounded-xl">
+                            <div class="col-span-12 md:col-span-5">
+                                <input type="text" name="ingredients[{{ $index }}][name]" value="{{ $ri->ingredient->name ?? '' }}" required class="w-full bg-surface-container-lowest px-3 py-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-secondary/40"/>
+                            </div>
+                            <div class="col-span-4 md:col-span-3">
+                                <input type="number" step="0.01" name="ingredients[{{ $index }}][amount]" value="{{ $ri->amount }}" required class="w-full bg-surface-container-lowest px-3 py-2 rounded-lg text-sm text-center outline-none focus:ring-2 focus:ring-secondary/40"/>
+                            </div>
+                            <div class="col-span-6 md:col-span-3">
+                                <input type="text" name="ingredients[{{ $index }}][unit]" value="{{ $ri->unit ?? $ri->ingredient->unit ?? '' }}" required class="w-full bg-surface-container-lowest px-3 py-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-secondary/40"/>
+                            </div>
+                            <div class="col-span-2 md:col-span-1 flex justify-center">
+                                <button type="button" onclick="this.closest('.ingredient-row').remove()" class="w-8 h-8 rounded-full bg-error-container/60 text-error hover:bg-error hover:text-white flex items-center justify-center transition">
+                                    <span class="material-symbols-outlined text-[16px]">remove</span>
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
 @endsection
+@push('scripts')
+<script>
+    // Mulai index dari jumlah data yang sudah ada agar tidak bentrok
+    let ingredientIdx = {{ count($recipe->recipeIngredients) }};
+
+    function addIngredientRow() {
+        const container = document.getElementById('ingredients-container');
+        const row = document.createElement('div');
+        row.className = 'ingredient-row grid grid-cols-12 gap-3 items-center bg-surface-container-low/40 p-2 rounded-xl';
+        row.innerHTML = `
+            <div class="col-span-12 md:col-span-5">
+                <input type="text" name="ingredients[${ingredientIdx}][name]" placeholder="Contoh: Daging Sapi" required class="w-full bg-surface-container-lowest px-3 py-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-secondary/40"/>
+            </div>
+            <div class="col-span-4 md:col-span-3">
+                <input type="number" step="0.01" name="ingredients[${ingredientIdx}][amount]" placeholder="500" required class="w-full bg-surface-container-lowest px-3 py-2 rounded-lg text-sm text-center outline-none focus:ring-2 focus:ring-secondary/40"/>
+            </div>
+            <div class="col-span-6 md:col-span-3">
+                <input type="text" name="ingredients[${ingredientIdx}][unit]" placeholder="gram (gr)" required class="w-full bg-surface-container-lowest px-3 py-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-secondary/40"/>
+            </div>
+            <div class="col-span-2 md:col-span-1 flex justify-center">
+                <button type="button" onclick="this.closest('.ingredient-row').remove()" class="w-8 h-8 rounded-full bg-error-container/60 text-error hover:bg-error hover:text-white flex items-center justify-center transition">
+                    <span class="material-symbols-outlined text-[16px]">remove</span>
+                </button>
+            </div>
+        `;
+        container.appendChild(row);
+        ingredientIdx++;
+    }
+</script>
+@endpush
