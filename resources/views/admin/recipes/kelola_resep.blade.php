@@ -222,7 +222,7 @@
                                    class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-full transition" title="Lihat">
                                     <span class="material-symbols-outlined text-[18px]">visibility</span>
                                 </a>
-                                <a href="{{ route('admin.recipes.edit', $recipe->id) }}"
+                                <a href="{{ route('admin.recipes.edit', $recipe->slug) }}"
                                    class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-full transition" title="Edit">
                                     <span class="material-symbols-outlined text-[18px]">edit</span>
                                 </a>
