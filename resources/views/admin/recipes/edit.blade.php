@@ -76,4 +76,61 @@
     </form>
 </div>
 
+            {{-- 2. DETAIL MASAK & FOTO --}}
+            <div class="flex flex-col gap-4">
+                {{-- Porsi, Waktu, Kesulitan --}}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-primary">Jumlah Porsi Saji</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">room_service</span>
+                            <input type="number" name="servings" value="{{ old('servings', $recipe->servings) }}" min="1" required
+                                   class="w-full bg-surface-container-low pl-10 pr-4 py-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-secondary/40"/>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-primary">Estimasi Total Waktu (Menit)</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">schedule</span>
+                            <input type="number" name="duration_minutes" value="{{ old('duration_minutes', $recipe->duration_minutes) }}" min="1" required
+                                   class="w-full bg-surface-container-low pl-10 pr-4 py-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-secondary/40"/>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-primary">Tingkat Kesulitan</label>
+                        <div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-xl">
+                            @foreach(['Mudah', 'Sedang', 'Sulit'] as $diff)
+                                <label class="flex-1 text-center cursor-pointer">
+                                    <input type="radio" name="difficulty" value="{{ $diff }}" class="peer sr-only" {{ old('difficulty', $recipe->difficulty) == $diff ? 'checked' : '' }}>
+                                    <div class="py-2 rounded-lg text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">
+                                        {{ $diff }}
+                                    </div>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Upload Foto --}}
+                <div class="flex flex-col gap-1.5 pt-2">
+                    <label class="text-xs font-bold text-primary">Foto Hasil Masakan (Biarkan kosong jika tidak diubah)</label>
+                    <div class="relative w-full h-32 rounded-xl bg-surface-container-lowest border border-dashed border-outline-variant flex items-center justify-between px-6 cursor-pointer overflow-hidden group">
+                        <input type="file" name="image" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewImage(event)">
+                        
+                        {{-- Tampilkan gambar lama jika ada --}}
+                        <img id="imagePreview" class="{{ $recipe->image ? '' : 'hidden' }} absolute inset-0 w-full h-full object-cover z-10" src="{{ $recipe->image ? asset('storage/'.$recipe->image) : '' }}"/>
+                        
+                        <div id="imagePlaceholder" class="{{ $recipe->image ? 'hidden' : '' }} flex items-center gap-4 z-0">
+                            <div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined text-[24px]">add_photo_alternate</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold text-primary">Klik untuk ganti foto</span>
+                                <span class="text-[11px] text-on-surface-variant">Format: JPG, PNG, WebP (Maks. 5MB)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 @endsection
