@@ -133,6 +133,41 @@
             </div>
         </section>
         
+                <!-- Card C: Article Content -->
+        <section class="bg-surface-container-lowest rounded-2xl shadow-sm flex flex-col overflow-hidden">
+            <div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-surface-container-high">
+                <div class="flex items-center gap-3">
+                    <span class="p-2 bg-surface-container rounded-full text-primary">
+                        <span class="material-symbols-outlined text-[20px]">article</span>
+                    </span>
+                    <div>
+                        <h2 class="text-lg text-primary font-bold">Isi Artikel Tips</h2>
+                        <p class="text-xs text-on-surface-variant mt-0.5">Gunakan format teks kaya untuk menyusun naskah panduan kuliner</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dummy Toolbar -->
+            <div class="p-3 bg-surface-container-high/40 flex flex-wrap items-center gap-2 border-b border-surface-container-high">
+                <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center bg-surface-container-lowest text-primary font-bold shadow-sm hover:bg-surface-container"><span class="text-xs">B</span></button>
+                <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container"><span class="text-xs italic">I</span></button>
+                <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container"><span class="text-xs underline">U</span></button>
+                <div class="h-5 w-px bg-outline-variant mx-1"></div>
+                <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container"><span class="material-symbols-outlined text-[18px]">format_list_bulleted</span></button>
+                <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container"><span class="material-symbols-outlined text-[18px]">format_quote</span></button>
+                <button type="button" class="px-3 h-8 rounded-full flex items-center gap-1 bg-secondary-container text-on-secondary-container text-xs font-bold ml-auto"><span class="material-symbols-outlined text-[16px]">lightbulb</span> Kiat Koki</button>
+            </div>
+
+            <!-- Textarea for Content -->
+            <textarea name="content" rows="15" required placeholder="Mulai tulis artikel panduan Anda di sini..." 
+                      class="w-full p-6 text-sm text-on-surface leading-relaxed outline-none resize-y bg-transparent focus:ring-0 border-0">{{ old('content') }}</textarea>
+            
+            <div class="px-6 py-3 bg-surface-container-low/40 flex items-center justify-between text-on-surface-variant text-[11px]">
+                <span>Format: Rich Editorial Text</span>
+                <span class="flex items-center gap-1 text-secondary font-semibold"><span class="material-symbols-outlined text-[14px]">spellcheck</span> Koreksi Bahasa Aktif</span>
+            </div>
+        </section>
+
     </form>
 </div>
 
