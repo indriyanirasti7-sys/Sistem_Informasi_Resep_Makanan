@@ -167,8 +167,98 @@
                 <span class="flex items-center gap-1 text-secondary font-semibold"><span class="material-symbols-outlined text-[14px]">spellcheck</span> Koreksi Bahasa Aktif</span>
             </div>
         </section>
+                <!-- Grid for Status & Author (Dipindah ke Bawah) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Card D: Status Publikasi -->
+            <section class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col gap-4">
+                <div class="flex items-center justify-between border-b border-surface-container-high pb-3">
+                    <h3 class="text-base text-primary font-bold">Status Publikasi</h3>
+                    <span class="px-3 py-1 bg-surface-container text-on-surface-variant rounded-full text-[11px] font-bold flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">lock_clock</span> Draf
+                    </span>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <div class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-secondary text-[20px]">visibility</span>
+                            <span class="text-sm text-primary font-bold">Visibilitas</span>
+                        </div>
+                        <span class="text-sm text-secondary font-semibold">Publik (Terbuka)</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-secondary text-[20px]">comment</span>
+                            <span class="text-sm text-primary font-bold">Ulasan &amp; Diskusi</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="allow_comments" value="1" class="sr-only peer" checked>
+                            <div class="w-9 h-5 bg-surface-container peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-secondary"></div>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Card E: Penulis Kurator -->
+            <section class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col gap-4">
+                <div class="flex items-center justify-between border-b border-surface-container-high pb-3">
+                    <h3 class="text-base text-primary font-bold">Penulis / Kurator Ahli</h3>
+                </div>
+                <div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
+                    <div class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg shrink-0">
+                        {{ substr(auth()->user()->name ?? 'A', 0, 1) }}
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-bold text-primary">{{ auth()->user()->name ?? 'Chef Antoine' }}</span>
+                        <span class="text-xs text-secondary font-semibold">Super Admin • Grand Chef</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Sticky Bottom Action Bar -->
+        <div class="sticky bottom-6 z-30 w-full mt-4">
+            <div class="bg-surface-container-lowest/95 backdrop-blur-md p-4 md:px-6 rounded-full shadow-[0_16px_40px_-6px_rgba(90,58,34,0.14)] flex flex-wrap items-center justify-between gap-3 border border-surface-container-high">
+                
+                <a href="{{ route('admin.tips.index') }}" class="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all text-xs font-semibold">
+                    <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    Kembali
+                </a>
+                
+                <div class="flex items-center gap-3">
+                    <button type="submit" name="status" value="draft" class="flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-surface-container text-primary hover:bg-surface-container-high transition-all text-xs font-bold">
+                        <span class="material-symbols-outlined text-[18px]">save</span>
+                        Simpan Draf
+                    </button>
+                    <button type="submit" name="status" value="published" class="flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-white hover:bg-primary-container transition-all text-sm font-bold shadow-md">
+                        <span class="material-symbols-outlined text-[20px]">publish</span>
+                        Publikasikan Tips
+                    </button>
+                </div>
+            </div>
+        </div>
 
     </form>
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById('imagePreview');
+        const placeholder = document.getElementById('imagePlaceholder');
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+@endpush
