@@ -49,7 +49,89 @@
             </div>
         @endif
 
-        <!-- Konten akan ditambahkan di tahap selanjutnya -->
+                <!-- Card A: Basic Information -->
+        <section class="bg-surface-container-lowest p-6 md:p-8 rounded-2xl shadow-sm flex flex-col gap-5">
+            <div class="flex items-center justify-between pb-2 border-b border-surface-container-high">
+                <div class="flex items-center gap-3">
+                    <span class="p-2 bg-surface-container rounded-full text-primary">
+                        <span class="material-symbols-outlined text-[20px]">edit_note</span>
+                    </span>
+                    <div>
+                        <h2 class="text-lg text-primary font-bold">Informasi Dasar Tips</h2>
+                        <p class="text-xs text-on-surface-variant mt-0.5">Tentukan tajuk, rubrik gastronomi, dan tingkat kemahiran pembaca</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Title Field -->
+            <div class="flex flex-col gap-1.5">
+                <label class="text-sm font-bold text-primary flex items-center justify-between" for="title">
+                    <span>Judul Tips Gastronomi <span class="text-error">*</span></span>
+                </label>
+                <input type="text" id="title" name="title" required value="{{ old('title') }}" placeholder="Contoh: Teknik Dasar Memotong Bawang dengan Aman"
+                       class="w-full bg-surface-container-low text-on-surface px-4 py-3 rounded-xl outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/40 transition-all text-sm font-medium"/>
+            </div>
+
+            <!-- Category & Skill Level Split -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-sm font-bold text-primary" for="category">Kategori Rubrik <span class="text-error">*</span></label>
+                    <div class="relative">
+                        <select id="category" name="category" class="w-full appearance-none bg-surface-container-low text-on-surface px-4 py-3 rounded-xl text-sm outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/40 transition-all cursor-pointer">
+                            <option value="knife-skills">Knife Skills (Teknik Pisau Dapur)</option>
+                            <option value="baking-hacks">Baking &amp; Patisserie Hacks</option>
+                            <option value="kitchen-safety">Kitchen Safety &amp; Ergonomics</option>
+                            <option value="prep-storage">Food Prep, Marinade &amp; Storage</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[20px]">unfold_more</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-sm font-bold text-primary">Tingkat Keahlian</label>
+                    <div class="flex items-center gap-2 pt-1">
+                        <input type="radio" name="difficulty" id="pemula" value="Pemula" class="peer sr-only" checked>
+                        <label for="pemula" class="flex-1 text-center py-2 rounded-full text-xs font-semibold bg-surface-container-low text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white cursor-pointer transition-all">Pemula</label>
+
+                        <input type="radio" name="difficulty" id="menengah" value="Menengah" class="peer sr-only">
+                        <label for="menengah" class="flex-1 text-center py-2 rounded-full text-xs font-semibold bg-surface-container-low text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white cursor-pointer transition-all">Menengah</label>
+
+                        <input type="radio" name="difficulty" id="mahir" value="Mahir" class="peer sr-only">
+                        <label for="mahir" class="flex-1 text-center py-2 rounded-full text-xs font-semibold bg-surface-container-low text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white cursor-pointer transition-all">Mahir</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Short Summary -->
+            <div class="flex flex-col gap-1.5 pt-2">
+                <label class="text-sm font-bold text-primary" for="summary">Ringkasan Singkat / Lead-in Artikel</label>
+                <textarea id="summary" name="summary" rows="3" placeholder="Tuliskan hook pembuka artikel kuliner yang menggugah selera..."
+                          class="w-full bg-surface-container-low text-on-surface p-4 rounded-xl text-sm outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/40 transition-all resize-none">{{ old('summary') }}</textarea>
+            </div>
+        </section>
+
+        <!-- Card B: Featured Image Upload -->
+        <section class="bg-surface-container-lowest p-6 md:p-8 rounded-2xl shadow-sm flex flex-col gap-5">
+            <div class="flex items-center gap-3 border-b border-surface-container-high pb-4">
+                <span class="p-2 bg-surface-container rounded-full text-primary">
+                    <span class="material-symbols-outlined text-[20px]">image</span>
+                </span>
+                <div>
+                    <h2 class="text-lg text-primary font-bold">Foto Sampul &amp; Visual Utama</h2>
+                    <p class="text-xs text-on-surface-variant mt-0.5">Gambar utama dengan resolusi tinggi untuk banner pembuka</p>
+                </div>
+            </div>
+
+            <div class="relative w-full h-64 rounded-xl bg-surface-container-lowest border-2 border-dashed border-outline-variant hover:border-secondary flex flex-col items-center justify-center cursor-pointer transition-colors overflow-hidden group">
+                <input type="file" id="image" name="image" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="previewImage(event)">
+                <img id="imagePreview" class="hidden absolute inset-0 w-full h-full object-cover z-10"/>
+                <div id="imagePlaceholder" class="flex flex-col items-center justify-center gap-2 z-0">
+                    <span class="material-symbols-outlined text-[36px] text-primary group-hover:scale-110 transition-transform">add_photo_alternate</span>
+                    <span class="text-sm font-bold text-primary">Pilih foto atau seret ke area ini</span>
+                    <span class="text-[11px] text-on-surface-variant">Format: WebP, PNG, JPG (Maks. 5MB)</span>
+                </div>
+            </div>
+        </section>
         
     </form>
 </div>
