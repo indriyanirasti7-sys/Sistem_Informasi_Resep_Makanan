@@ -126,15 +126,15 @@
 
                         <td class="py-4 px-4 text-right whitespace-nowrap">
                             <div class="flex items-center justify-end gap-1">
-                                <a href="{{ route('admin.categories.show', $category->id) }}"
+                                <a href="{{ route('admin.categories.show', $category->slug) }}"
                                    class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-full transition" title="Lihat">
                                     <span class="material-symbols-outlined text-[18px]">visibility</span>
                                 </a>
-                                <a href="{{ route('admin.categories.edit', $category->id) }}"
+                                <a href="{{ route('admin.categories.edit', $category->slug) }}"
                                    class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-full transition" title="Edit">
                                     <span class="material-symbols-outlined text-[18px]">edit</span>
                                 </a>
-                                <form method="POST" action="{{ route('admin.categories.destroy', $category->id) }}"
+                                <form method="POST" action="{{ route('admin.categories.destroy', $category->slug) }}"
                                       onsubmit="return confirm('Hapus kategori {{ $category->name }}?')" class="inline">
                                     @csrf
                                     @method('DELETE')

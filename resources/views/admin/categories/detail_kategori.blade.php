@@ -49,7 +49,7 @@
 
             {{-- Actions --}}
             <div class="flex items-center gap-2 shrink-0">
-                <a href="{{ route('admin.categories.edit', $category->id) }}"
+                <a href="{{ route('admin.categories.edit', $category->slug) }}"
                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-bold rounded-full hover:bg-primary-container transition shadow-sm hover:shadow-md">
                     <span class="material-symbols-outlined text-[18px]">edit</span>
                     <span>Edit</span>

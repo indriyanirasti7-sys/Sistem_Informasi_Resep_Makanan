@@ -23,7 +23,7 @@
             Sunting: {{ $category->name }}
         </h1>
         <p class="text-sm text-on-surface-variant max-w-xl">
-            Perbarui nama, slug, atau deskripsi kategori. Perubahan akan langsung tampil di beranda.
+            Perbarui nama atau ikon visual kategori. Perubahan akan langsung tampil di beranda.
         </p>
     </div>
 </header>
@@ -33,7 +33,7 @@
 
     {{-- Kolom Kiri: Form --}}
     <div class="lg:col-span-2 bg-surface-container-lowest rounded-3xl p-6 md:p-8 shadow-sm">
-        <form method="POST" action="{{ route('admin.categories.update', $category->id) }}" class="flex flex-col gap-6">
+        <form method="POST" action="{{ route('admin.categories.update', $category->slug) }}" class="flex flex-col gap-6">
             @csrf
             @method('PUT')
 
@@ -54,48 +54,25 @@
             <div class="flex flex-col gap-2">
                 <div class="flex items-center justify-between">
                     <label for="slug" class="text-xs font-bold text-primary uppercase tracking-wider">
-                        Slug URL <span class="text-error">*</span>
+                        Slug URL
                     </label>
                     <span class="text-[11px] text-secondary">Otomatis dari nama</span>
                 </div>
                 <div class="relative flex items-center">
                     <span class="absolute left-4 text-sm text-on-surface-variant">/kategori/</span>
-                    <input type="text" id="slug" name="slug" required
+                    <input type="text" id="slug" name="slug" required readonly
                            value="{{ old('slug', $category->slug) }}"
-                           class="w-full bg-surface-container-low pl-24 pr-4 py-3 rounded-2xl text-on-surface text-sm outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/50 transition-all"/>
+                           class="w-full bg-surface-container px-4 py-3 rounded-2xl text-on-surface-variant pl-24 pr-4 text-sm outline-none cursor-not-allowed"/>
                 </div>
-                @error('slug')
-                    <span class="text-xs text-error">{{ $message }}</span>
-                @enderror
             </div>
 
-            {{-- Deskripsi --}}
-            <div class="flex flex-col gap-2">
-                <label for="description" class="text-xs font-bold text-primary uppercase tracking-wider">
-                    Deskripsi Singkat
-                </label>
-                <textarea id="description" name="description" rows="4"
-                          class="w-full bg-surface-container-low px-4 py-3 rounded-2xl text-on-surface text-sm outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/50 transition-all resize-none">{{ old('description', $category->description) }}</textarea>
-                @error('description')
-                    <span class="text-xs text-error">{{ $message }}</span>
-                @enderror
-            </div>
-
-            {{-- Status --}}
-            <label class="flex items-center gap-3 cursor-pointer select-none w-fit">
-                <input type="checkbox" name="is_active" value="1"
-                       @checked(old('is_active', $category->is_active ?? true))
-                       class="w-4 h-4 rounded accent-secondary"/>
-                <span class="text-sm text-on-surface-variant">Tampilkan kategori ini di beranda</span>
-            </label>
+            {{-- INI YANG TADI HILANG: Hidden Input untuk Menyimpan Ikon --}}
+            <input type="hidden" name="icon" id="iconInput" value="{{ old('icon', $category->icon ?? 'restaurant') }}"/>
 
             {{-- Actions --}}
             <div class="flex items-center justify-between gap-3 pt-4 border-t border-surface-container-high/60">
                 <div class="text-[11px] text-on-surface-variant">
                     Dibuat {{ $category->created_at->translatedFormat('d M Y') }}
-                    @if ($category->updated_at && $category->updated_at != $category->created_at)
-                        · Diperbarui {{ $category->updated_at->diffForHumans() }}
-                    @endif
                 </div>
 
                 <div class="flex items-center gap-3">
@@ -113,7 +90,7 @@
         </form>
     </div>
 
-    {{-- Kolom Kanan --}}
+    {{-- Kolom Kanan (Preview & Icon Picker) --}}
     <div class="flex flex-col gap-5">
 
         {{-- Preview --}}
@@ -135,10 +112,6 @@
                     </code>
                 </div>
             </div>
-
-            <p class="text-xs text-on-surface-variant mt-4 line-clamp-2" id="previewDesc">
-                {{ $category->description }}
-            </p>
         </div>
 
         {{-- Icon Picker --}}
@@ -167,7 +140,7 @@
                 Menghapus kategori ini akan memindahkan resep di dalamnya ke status <em>Uncategorized</em>.
             </p>
 
-            <form method="POST" action="{{ route('admin.categories.destroy', $category->id) }}"
+            <form method="POST" action="{{ route('admin.categories.destroy', $category->slug) }}"
                   onsubmit="return confirm('Hapus kategori {{ $category->name }}?')" class="mt-4">
                 @csrf
                 @method('DELETE')
@@ -188,12 +161,10 @@
 (function () {
     const nameInput = document.getElementById('name');
     const slugInput = document.getElementById('slug');
-    const descInput = document.getElementById('description');
-    const iconInput = document.querySelector('input[name="icon"]');
+    const iconInput = document.getElementById('iconInput'); // Sekarang ID ini ada di HTML
 
     const prevName  = document.getElementById('previewName');
     const prevSlug  = document.getElementById('previewSlug');
-    const prevDesc  = document.getElementById('previewDesc');
     const prevIcon  = document.getElementById('previewIcon');
 
     const iconBtns  = document.querySelectorAll('.icon-choice');
@@ -210,18 +181,10 @@
         prevSlug.textContent = '/kategori/' + s;
     });
 
-    slugInput.addEventListener('input', e => {
-        prevSlug.textContent = '/kategori/' + slugify(e.target.value);
-    });
-
-    descInput.addEventListener('input', e => {
-        prevDesc.textContent = e.target.value || '—';
-    });
-
     iconBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const icon = btn.dataset.icon;
-            if (iconInput) iconInput.value = icon;
+            if (iconInput) iconInput.value = icon; // Simpan ke hidden input
             prevIcon.textContent = icon;
 
             iconBtns.forEach(b => {

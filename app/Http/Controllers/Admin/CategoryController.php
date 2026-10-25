@@ -36,7 +36,7 @@ class CategoryController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.categories.tambah')
+            ->route('admin.categories.index')
             ->with('success', 'Kategori berhasil ditambahkan.');
     }
 
@@ -44,7 +44,7 @@ class CategoryController extends Controller
     {
         $category->load(['recipes' => fn($q) => $q->latest()->limit(10)]);
 
-        return view('admin.categories.show', compact('category'));
+        return view('admin.categories.detail_kategori', compact('category'));
     }
 
     public function edit(Category $category)

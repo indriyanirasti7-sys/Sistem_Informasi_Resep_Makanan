@@ -38,7 +38,7 @@ class TipController extends Controller
 
     public function create()
     {
-        return view('admin.tips.tambah');
+        return view('admin.tips.tambah_tips');
     }
 
     public function store(Request $request)
