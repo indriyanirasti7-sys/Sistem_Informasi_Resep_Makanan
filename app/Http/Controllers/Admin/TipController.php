@@ -49,9 +49,7 @@ class TipController extends Controller
             'image'   => 'nullable|image|max:2048',
         ]);
 
-        $validated['slug']    = Str::slug($validated['title']);
-        $validated['user_id'] = auth()->id();
-
+        
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('tips', 'public');
         }

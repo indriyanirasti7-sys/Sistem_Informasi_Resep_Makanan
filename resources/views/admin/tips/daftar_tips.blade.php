@@ -114,7 +114,7 @@
                     </h2>
 
                     <div class="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <a href="{{ route('admin.tips.edit', $tip->id) }}"
+                        <a href="{{ route('admin.tips.edit', $tip->slug) }}"
                            class="p-2 rounded-full text-on-surface-variant hover:text-primary hover:bg-surface-container transition"
                            title="Edit">
                             <span class="material-symbols-outlined text-[18px]">edit</span>
