@@ -139,7 +139,123 @@
             </div>
         </article>
 
-    </div>
+                <!-- Catatan Audit Internal -->
+        <section class="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col gap-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-container-high pb-4">
+                <div class="flex flex-col">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-[24px]">verified_user</span>
+                        <h2 class="text-xl text-primary font-bold">Catatan Audit & Evaluasi Internal</h2>
+                    </div>
+                    <p class="text-sm text-on-surface-variant mt-1">Log operasional tim kurator dan kepala koki dapur uji.</p>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-surface-container text-on-surface-variant text-xs font-bold self-start sm:self-auto">
+                    2 Log Aktif
+                </span>
+            </div>
 
-</div>
+            <!-- Timeline Log -->
+            <div class="flex flex-col gap-4" id="audit-log-container">
+                <!-- Log 1 -->
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-surface-container-low">
+                    <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold shrink-0">A</div>
+                    <div class="flex flex-col flex-grow">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-bold text-primary">{{ $tip->user->name ?? 'Admin' }}</span>
+                                <span class="px-2 py-0.5 rounded-full bg-primary-container text-white text-[10px] font-bold">Super Admin</span>
+                            </div>
+                            <span class="text-[11px] text-outline">{{ $tip->updated_at->translatedFormat('d F Y, H:i') }} WIB</span>
+                        </div>
+                        <p class="text-sm text-on-surface mt-2 leading-relaxed">
+                            Memperbarui naskah panduan, mengganti foto utama, dan menyelaraskan taksonomi tagar untuk kebutuhan SEO.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Log 2 -->
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-surface-container-low">
+                    <div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center font-bold shrink-0">M</div>
+                    <div class="flex flex-col flex-grow">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-bold text-primary">Maya Kartika</span>
+                                <span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold">Editor Konten</span>
+                            </div>
+                            <span class="text-[11px] text-outline">14 September 2026, 09:20 WIB</span>
+                        </div>
+                        <p class="text-sm text-on-surface mt-2 leading-relaxed">
+                            Menambahkan istilah terminologi Prancis (chiffonade & brunoise) serta mengoptimalkan meta deskripsi.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+                <!-- Form Tambah Catatan Baru -->
+        <div class="bg-surface-container-low rounded-2xl p-6 shadow-sm flex flex-col gap-4">
+            <label class="text-sm font-bold text-primary flex items-center gap-2" for="admin-note-input">
+                <span class="material-symbols-outlined text-[18px]">add_comment</span>
+                Tambah Catatan Operasional Baru
+            </label>
+            
+            <textarea id="admin-note-input" rows="3" placeholder="Tulis instruksi revisi, jadwal pembaruan materi, atau catatan penting..."
+                      class="w-full p-4 rounded-xl bg-surface-container-lowest text-on-surface placeholder:text-outline text-sm outline-none shadow-sm focus:ring-2 focus:ring-secondary/40 transition-all resize-y"></textarea>
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
+                <span class="text-[11px] text-on-surface-variant flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[15px] text-outline">lock</span>
+                    Catatan ini hanya dapat dibaca oleh staf editorial.
+                </span>
+                <button type="button" id="save-note-btn" class="px-6 py-2.5 rounded-full bg-primary-container text-white hover:bg-primary transition-all text-sm font-bold flex items-center justify-center gap-2 shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    Simpan Catatan
+                </button>
+            </div>
+        </div>
+
+    </div> <!-- Penutup Area Konten Utama -->
+</div> <!-- Penutup Container -->
+
 @endsection
+
+@push('scripts')
+<script>
+    document.getElementById('save-note-btn')?.addEventListener('click', function() {
+        const input = document.getElementById('admin-note-input');
+        const text = input.value.trim();
+        const container = document.getElementById('audit-log-container');
+
+        if (!text) {
+            input.focus();
+            return;
+        }
+
+        const date = new Date();
+        const options = { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+        const dateStr = date.toLocaleDateString('id-ID', options) + ' WIB';
+
+        const newLog = document.createElement('div');
+        newLog.className = 'flex items-start gap-4 p-4 rounded-xl bg-surface-container-lowest border border-secondary/30 shadow-sm animate-pulse';
+        newLog.innerHTML = `
+            <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold shrink-0">A</div>
+            <div class="flex flex-col flex-grow">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-bold text-primary">Anda</span>
+                        <span class="px-2 py-0.5 rounded-full bg-primary-container text-white text-[10px] font-bold">Super Admin</span>
+                    </div>
+                    <span class="text-[11px] text-outline">${dateStr}</span>
+                </div>
+                <p class="text-sm text-on-surface mt-2 leading-relaxed">${text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+            </div>
+        `;
+
+        container.prepend(newLog);
+        input.value = '';
+        
+        // Hapus animasi pulse setelah ditambahkan
+        setTimeout(() => newLog.classList.remove('animate-pulse', 'border-secondary/30'), 1000);
+    });
+</script>
+@endpush
