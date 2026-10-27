@@ -159,7 +159,112 @@
             </div>
         </section>
 
+                <!-- SECTION 3: Rich Text Editor -->
+        <section class="bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col gap-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-surface-container-high">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-[18px]">article</span>
+                    </div>
+                    <h2 class="text-xl text-primary font-bold">Isi Artikel Tips</h2>
+                </div>
+            </div>
+
+            <!-- Rich Text Editor Toolbar (UI Saja) -->
+            <div class="flex flex-wrap items-center gap-1.5 p-2 rounded-2xl bg-surface-container-low shadow-sm">
+                <button class="w-8 h-8 rounded-lg bg-surface-container-lowest text-primary font-bold shadow-sm flex items-center justify-center hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">format_bold</span></button>
+                <button class="w-8 h-8 rounded-lg text-on-surface-variant flex items-center justify-center hover:bg-surface-container-high hover:text-primary transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">format_italic</span></button>
+                <button class="w-8 h-8 rounded-lg text-on-surface-variant flex items-center justify-center hover:bg-surface-container-high hover:text-primary transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">format_underlined</span></button>
+                <div class="h-5 w-px bg-surface-variant mx-1"></div>
+                <button class="w-8 h-8 rounded-lg text-on-surface-variant flex items-center justify-center hover:bg-surface-container-high hover:text-primary transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">format_list_bulleted</span></button>
+                <button class="w-8 h-8 rounded-lg text-on-surface-variant flex items-center justify-center hover:bg-surface-container-high hover:text-primary transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">format_quote</span></button>
+            </div>
+
+            <!-- Editable Canvas -->
+            <textarea name="content" rows="16" required
+                      class="w-full p-6 rounded-2xl bg-surface-container-low text-primary text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all resize-y shadow-sm"
+                      placeholder="Tuliskan isi panduan di sini...">{{ old('content', $tip->content) }}</textarea>
+        </section>
+
+                <!-- Grid for Status & Author (Dipindah ke Bawah) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Status Publikasi -->
+            <section class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm flex flex-col gap-4">
+                <div class="flex items-center justify-between border-b border-surface-container-high pb-3">
+                    <h3 class="text-lg text-primary font-bold">Status Publikasi</h3>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <div class="flex items-center justify-between p-3.5 rounded-2xl bg-surface-container-low">
+                        <div class="flex flex-col">
+                            <span class="text-sm text-primary font-semibold">Visibilitas Publik</span>
+                            <span class="text-xs text-on-surface-variant">Tampil di portal umum</span>
+                        </div>
+                        <input type="checkbox" name="status" value="published" class="sr-only peer" {{ old('status', $tip->status) === 'published' ? 'checked' : '' }}>
+                        <div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary cursor-pointer relative"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Penulis Kurator -->
+            <section class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm flex flex-col gap-4">
+                <div class="flex items-center justify-between border-b border-surface-container-high pb-3">
+                    <h3 class="text-lg text-primary font-bold">Penulis &amp; Kurator</h3>
+                </div>
+                <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-surface-container-low">
+                    <div class="w-11 h-11 rounded-full bg-primary flex items-center justify-center text-on-primary shrink-0 shadow-sm font-bold text-lg">
+                        {{ substr($tip->user->name ?? 'A', 0, 1) }}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <span class="text-sm text-primary font-bold truncate block">{{ $tip->user->name ?? 'Anonim' }}</span>
+                        <span class="text-xs text-secondary truncate block">Super Admin</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Sticky Action Bar -->
+        <div class="sticky bottom-6 z-30 w-full mt-4">
+            <div class="bg-surface-container-lowest/95 backdrop-blur-md p-4 md:px-6 rounded-full shadow-[0_16px_40px_-6px_rgba(90,58,34,0.14)] flex flex-wrap items-center justify-between gap-3 border border-surface-container-high">
+                
+                <a href="{{ route('admin.tips.index') }}" class="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-error hover:bg-error-container transition-all text-xs font-bold">
+                    Batal & Kembali
+                </a>
+                
+                <div class="flex items-center gap-3">
+                    <button type="submit" name="status" value="draft" class="flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-surface-container text-primary hover:bg-surface-container-high transition-all text-xs font-bold">
+                        <span class="material-symbols-outlined text-[18px]">archive</span>
+                        Beralih ke Draf
+                    </button>
+                    <button type="submit" name="status" value="published" class="flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-white hover:bg-primary-container transition-all text-sm font-bold shadow-md">
+                        <span class="material-symbols-outlined text-[18px]">save</span>
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </form>
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById('imagePreview');
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+@endpush
+
+
