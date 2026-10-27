@@ -38,8 +38,8 @@
     </div>
 
     <!-- 2. Metadata & Status Banner -->
-    <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm flex flex-col gap-4">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-surface-container-high">
+    <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm flex flex-col gap-5">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-surface-container-high">
             <div class="flex flex-wrap items-center gap-2">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold">
                     <span class="relative flex h-2 w-2">
@@ -69,7 +69,7 @@
             </div>
         </div>
 
-        <!-- Quick Metrics Strip -->
+        <!-- Quick Metrics Strip (Dipindah ke dalam Banner) -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="bg-surface-container-low rounded-xl p-3 flex flex-col">
                 <span class="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold">Tanggal Dibuat</span>
@@ -86,7 +86,60 @@
         </div>
     </div>
 
-    <!-- Konten Utama akan ditambahkan di tahap berikutnya -->
+    <!-- 3. Area Konten Utama -->
+    <div class="w-full flex flex-col gap-6">
+        
+        <!-- A. Hero Image & Title -->
+        <article class="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col gap-6">
+            
+            <!-- Hero Image -->
+            <div class="relative w-full aspect-video rounded-xl overflow-hidden shadow-sm group bg-surface-container">
+                @if($tip->image)
+                    <img src="{{ asset('storage/'.$tip->image) }}" alt="{{ $tip->title }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"/>
+                @else
+                    <div class="w-full h-full flex items-center justify-center text-outline">
+                        <span class="material-symbols-outlined text-[64px]">image_not_supported</span>
+                    </div>
+                @endif
+            </div>
+
+            <!-- Title & Lead-in -->
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+                    <span class="text-[11px] uppercase tracking-widest text-secondary font-bold">Panduan Teknik Fundamental Dapur</span>
+                </div>
+                
+                <h1 class="font-display text-3xl sm:text-4xl text-primary font-bold leading-tight">
+                    {{ $tip->title }}
+                </h1>
+
+                <div class="bg-surface-container-low rounded-xl p-5 text-on-surface-variant italic text-sm leading-relaxed border-l-4 border-secondary">
+                    "{{ Str::limit(strip_tags($tip->content), 200) }}"
+                </div>
+            </div>
+        </article>
+
+        <!-- B. Isi Artikel & Tags -->
+        <article class="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col gap-6">
+            
+            <div class="prose prose-sm sm:prose-base max-w-none text-on-surface leading-relaxed">
+                {!! nl2br(e($tip->content)) !!}
+            </div>
+
+            <!-- Tags -->
+            <div class="flex flex-col gap-2 pt-6 border-t border-surface-container-high">
+                <span class="text-[11px] uppercase tracking-wider text-outline font-bold">Taksonomi & Kata Kunci Meta:</span>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 rounded-full bg-surface-container text-primary text-xs font-medium">#KnifeSkills</span>
+                    <span class="px-3 py-1 rounded-full bg-surface-container text-primary text-xs font-medium">#KeamananDapur</span>
+                    <span class="px-3 py-1 rounded-full bg-surface-container text-primary text-xs font-medium">#MiseEnPlace</span>
+                    <span class="px-3 py-1 rounded-full bg-surface-container text-primary text-xs font-medium">#GastronomiDasar</span>
+                </div>
+            </div>
+        </article>
+
+    </div>
 
 </div>
 @endsection
