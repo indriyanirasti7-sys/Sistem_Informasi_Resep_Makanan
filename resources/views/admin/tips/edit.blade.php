@@ -61,7 +61,62 @@
             </div>
         @endif
 
-        <!-- Konten akan ditambahkan di tahap selanjutnya -->
+                <!-- SECTION 1: Basic Tip Information -->
+        <section class="bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col gap-6">
+            <div class="flex items-center justify-between pb-2 border-b border-surface-container-high">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-[18px]">edit_note</span>
+                    </div>
+                    <h2 class="text-xl text-primary font-bold">Informasi Dasar Tips</h2>
+                </div>
+            </div>
+
+            <!-- Tip Title -->
+            <div class="flex flex-col gap-2">
+                <label class="text-sm text-primary font-bold" for="title">Judul Tips <span class="text-error">*</span></label>
+                <input type="text" id="title" name="title" required value="{{ old('title', $tip->title) }}"
+                       class="w-full px-5 py-3.5 rounded-2xl bg-surface-container-low text-primary text-lg focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all shadow-sm"/>
+            </div>
+
+            <!-- Meta Selector Row: Category & Difficulty -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Kategori Dropdown -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-sm text-primary font-bold">Kategori Kuliner</label>
+                    <div class="relative">
+                        <select name="category" class="w-full appearance-none px-4 py-3 rounded-2xl bg-surface-container-low text-primary text-sm focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all shadow-sm pr-10 cursor-pointer">
+                            <option value="knife-skills" {{ old('category', $tip->category ?? '') == 'knife-skills' ? 'selected' : '' }}>Knife Skills</option>
+                            <option value="sauces" {{ old('category', $tip->category ?? '') == 'sauces' ? 'selected' : '' }}>Saus Dasar</option>
+                            <option value="baking" {{ old('category', $tip->category ?? '') == 'baking' ? 'selected' : '' }}>Pastry & Bakery</option>
+                            <option value="plating" {{ old('category', $tip->category ?? '') == 'plating' ? 'selected' : '' }}>Plating Art</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[20px]">unfold_more</span>
+                    </div>
+                </div>
+
+                <!-- Tingkat Kesulitan -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-sm text-primary font-bold">Tingkat Kesulitan</label>
+                    <div class="flex items-center gap-1.5 p-1 rounded-2xl bg-surface-container-low">
+                        <input type="radio" name="difficulty" id="pemula" value="Pemula" class="peer sr-only" {{ old('difficulty', $tip->difficulty ?? '') == 'Pemula' ? 'checked' : '' }}>
+                        <label for="pemula" class="flex-1 text-center py-2 rounded-xl text-xs font-semibold bg-surface-container text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white cursor-pointer transition-all">Pemula</label>
+
+                        <input type="radio" name="difficulty" id="menengah" value="Menengah" class="peer sr-only" {{ old('difficulty', $tip->difficulty ?? '') == 'Menengah' ? 'checked' : '' }}>
+                        <label for="menengah" class="flex-1 text-center py-2 rounded-xl text-xs font-semibold bg-surface-container text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white cursor-pointer transition-all">Menengah</label>
+
+                        <input type="radio" name="difficulty" id="mahir" value="Mahir" class="peer sr-only" {{ old('difficulty', $tip->difficulty ?? '') == 'Mahir' ? 'checked' : '' }}>
+                        <label for="mahir" class="flex-1 text-center py-2 rounded-xl text-xs font-semibold bg-surface-container text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white cursor-pointer transition-all">Mahir</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ringkasan -->
+            <div class="flex flex-col gap-2">
+                <label class="text-sm text-primary font-bold" for="summary">Ringkasan Utama (Lead Text)</label>
+                <textarea id="summary" name="summary" rows="3" class="w-full p-4 rounded-2xl bg-surface-container-low text-primary text-sm focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all resize-none shadow-sm">{{ old('summary', $tip->summary ?? '') }}</textarea>
+            </div>
+        </section>
 
     </form>
 </div>
