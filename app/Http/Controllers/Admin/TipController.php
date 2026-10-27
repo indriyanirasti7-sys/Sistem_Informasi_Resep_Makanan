@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Tip;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class TipController extends Controller
 {
@@ -46,9 +45,11 @@ class TipController extends Controller
         $validated = $request->validate([
             'title'   => 'required|string|max:150',
             'content' => 'required|string',
-            'image'   => 'nullable|image|max:2048',
+            'image'   => 'nullable|image|max:5120',
         ]);
 
+        // ✅ FIX: Tambahkan user_id agar tidak error
+        $validated['user_id'] = auth()->id();
         
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('tips', 'public');
@@ -61,9 +62,9 @@ class TipController extends Controller
             ->with('success', 'Tips berhasil ditambahkan.');
     }
 
-    public function show(Tip $tip)
+    public function detail(Tip $tip)
     {
-        return view('admin.tips.show', compact('tip'));
+        return view('admin.tips.detail', compact('tip'));
     }
 
     public function edit(Tip $tip)
@@ -76,10 +77,9 @@ class TipController extends Controller
         $validated = $request->validate([
             'title'   => 'required|string|max:150',
             'content' => 'required|string',
-            'image'   => 'nullable|image|max:2048',
+            'image'   => 'nullable|image|max:5120',
         ]);
 
-        $validated['slug'] = Str::slug($validated['title']);
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('tips', 'public');

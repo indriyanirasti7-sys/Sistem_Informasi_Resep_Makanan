@@ -147,7 +147,7 @@
                     </span>
                 </div>
 
-                <a href="{{ route('admin.tips.show', $tip->id) }}"
+                <a href="{{ route('admin.tips.show', $tip->slug) }}"
                    class="inline-flex items-center gap-1 text-primary hover:text-tertiary-container text-xs font-bold transition">
                     <span>Baca</span>
                     <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
