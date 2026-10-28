@@ -100,6 +100,55 @@
 
         <!-- Two-Column User Details & Activity Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+            <!-- Admin Internal Notes Section -->
+    <div class="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col gap-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-surface-container-high pb-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[22px]">lock_person</span>
+                </div>
+                <div>
+                    <h2 class="text-xl text-primary font-bold">Catatan Internal Staf Admin</h2>
+                    <p class="text-sm text-on-surface-variant">Dokumentasi rahasia operasional untuk tim redaksi.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- History List -->
+        <div class="flex flex-col gap-3" id="admin-notes-container">
+            <!-- Note 1 -->
+            <div class="p-4 rounded-xl bg-surface-container-low flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shrink-0 font-bold text-xs">A</div>
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-sm font-bold text-primary">Admin</span>
+                            <span class="px-2 py-0.5 rounded-full bg-primary-container text-white text-[10px]">Super Admin</span>
+                            <span class="text-outline text-[11px]">• {{ now()->translatedFormat('d M Y') }}</span>
+                        </div>
+                        <p class="text-sm text-on-surface mt-1">Pengguna sangat aktif dan berwawasan luas dalam memberikan masukan teknik pembuatan bumbu dasar tradisional.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add New Note Form -->
+        <div class="flex flex-col gap-3 pt-2">
+            <label class="text-sm font-bold text-primary flex items-center gap-1.5" for="adminNoteInput">
+                <span class="material-symbols-outlined text-[16px]">edit_note</span> Tambahkan Catatan Baru:
+            </label>
+            <textarea id="adminNoteInput" rows="3" placeholder="Tuliskan catatan administratif baru, verifikasi manual..."
+                      class="w-full p-4 rounded-xl bg-surface-container-low text-on-surface text-sm outline-none focus:ring-2 focus:ring-secondary/40 transition-all resize-none"></textarea>
+            <div class="flex items-center justify-between flex-wrap gap-3">
+                <span class="text-[11px] text-outline flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">info</span> Catatan akan dicatat bersama identitas Anda.
+                </span>
+                <button type="button" id="btnSaveNote" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary-container transition-all">
+                    <span class="material-symbols-outlined text-[18px]">save</span> Simpan Catatan
+                </button>
+            </div>
+        </div>
+    </div>
         
         <!-- LEFT COLUMN: Account Details & Preferences (5 cols) -->
         <div class="lg:col-span-5 flex flex-col gap-6">
@@ -159,7 +208,82 @@
             </div>
         </div>
         
-        <!-- RIGHT COLUMN akan ditambahkan di tahap 3 -->
+                <!-- RIGHT COLUMN: Linimasa Aktivitas Terkini (7 cols) -->
+        <div class="lg:col-span-7 flex flex-col">
+            <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col h-full">
+                
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-surface-container-high">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-[18px]">history</span>
+                        </span>
+                        <h2 class="text-lg text-primary font-bold">Linimasa Aktivitas</h2>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="relative pl-6 pt-6 flex flex-col gap-6 flex-1">
+                    <div class="absolute left-2.5 top-8 bottom-4 w-0.5 bg-surface-container-highest"></div>
+                    
+                    <!-- Item 1 -->
+                    <div class="relative flex items-start gap-4 group">
+                        <div class="absolute -left-[22px] top-1 w-5 h-5 rounded-full bg-tertiary-fixed flex items-center justify-center ring-4 ring-surface-container-lowest">
+                            <span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+                        </div>
+                        <div class="flex-1 bg-surface-container-low/70 p-4 rounded-xl">
+                            <div class="flex items-center justify-between gap-2 mb-1">
+                                <span class="text-xs font-bold text-tertiary-container uppercase tracking-wider flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[15px]">bookmark</span> Menyimpan Resep
+                                </span>
+                                <span class="text-[11px] text-outline">Hari ini</span>
+                            </div>
+                            <p class="text-sm text-on-surface">Menyimpan resep <strong class="text-primary">Rendang Daging Sapi Karamel</strong> ke koleksi pribadi.</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="relative flex items-start gap-4 group">
+                        <div class="absolute -left-[22px] top-1 w-5 h-5 rounded-full bg-secondary-fixed flex items-center justify-center ring-4 ring-surface-container-lowest">
+                            <span class="w-2 h-2 rounded-full bg-secondary"></span>
+                        </div>
+                        <div class="flex-1 bg-surface-container-low/70 p-4 rounded-xl">
+                            <div class="flex items-center justify-between gap-2 mb-1">
+                                <span class="text-xs font-bold text-secondary uppercase tracking-wider flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[15px]">rate_review</span> Memberikan Ulasan
+                                </span>
+                                <span class="text-[11px] text-outline">Kemarin</span>
+                            </div>
+                            <div class="flex items-center gap-1 mb-1 text-tertiary-container">
+                                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                            </div>
+                            <p class="text-sm text-on-surface-variant italic border-l-2 border-secondary/40 pl-2">"Bumbu meresap sempurna dan tekstur daging sangat lembut!"</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="relative flex items-start gap-4 group">
+                        <div class="absolute -left-[22px] top-1 w-5 h-5 rounded-full bg-primary-fixed flex items-center justify-center ring-4 ring-surface-container-lowest">
+                            <span class="w-2 h-2 rounded-full bg-primary"></span>
+                        </div>
+                        <div class="flex-1 bg-surface-container-low/70 p-4 rounded-xl">
+                            <div class="flex items-center justify-between gap-2 mb-1">
+                                <span class="text-xs font-bold text-primary uppercase tracking-wider flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[15px]">how_to_reg</span> Pendaftaran Akun
+                                </span>
+                                <span class="text-[11px] text-outline">{{ $user->created_at->translatedFormat('d M Y') }}</span>
+                            </div>
+                            <p class="text-sm text-on-surface">Berhasil membuat akun di portal L'Art de Cuisine.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
     </div>
 
 </div>
