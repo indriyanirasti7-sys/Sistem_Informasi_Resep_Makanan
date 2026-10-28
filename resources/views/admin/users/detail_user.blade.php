@@ -98,7 +98,69 @@
         </div>
     </div>
 
-    <!-- Konten Utama akan ditambahkan di tahap berikutnya -->
+        <!-- Two-Column User Details & Activity Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+        
+        <!-- LEFT COLUMN: Account Details & Preferences (5 cols) -->
+        <div class="lg:col-span-5 flex flex-col gap-6">
+            
+            <!-- Box 1: Informasi Akun & Metadata -->
+            <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col gap-4">
+                <div class="flex items-center justify-between pb-2 border-b border-surface-container-high">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-[18px]">badge</span>
+                        </span>
+                        <h2 class="text-lg text-primary font-bold">Informasi Akun</h2>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col gap-3 text-sm">
+                    <div class="p-3 rounded-xl bg-surface-container-low/50 flex items-start justify-between gap-3">
+                        <div class="flex items-center gap-2 text-on-surface-variant">
+                            <span class="material-symbols-outlined text-[18px] text-outline">calendar_today</span>
+                            <span>Tanggal Pendaftaran</span>
+                        </div>
+                        <span class="font-semibold text-on-surface text-right">{{ $user->created_at->translatedFormat('d M Y, H:i') }} WIB</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-surface-container-low/50 flex items-start justify-between gap-3">
+                        <div class="flex items-center gap-2 text-on-surface-variant">
+                            <span class="material-symbols-outlined text-[18px] text-outline">verified</span>
+                            <span>Status Email</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-semibold text-secondary block">{{ $user->email_verified_at ? 'Terverifikasi' : 'Belum Verifikasi' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Box 2: Ringkasan Interaksi -->
+            <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col gap-4">
+                <div class="flex items-center gap-2.5 pb-2 border-b border-surface-container-high">
+                    <span class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-[18px]">local_dining</span>
+                    </span>
+                    <h2 class="text-lg text-primary font-bold">Interaksi & Preferensi</h2>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3 text-center">
+                    <div class="bg-surface-container-low p-3 rounded-xl flex flex-col items-center">
+                        <span class="material-symbols-outlined text-[20px] text-tertiary-container mb-1">bookmark</span>
+                        <span class="text-lg font-bold text-primary">{{ $user->bookmarks_count ?? 0 }}</span>
+                        <span class="text-[11px] text-on-surface-variant">Resep Disimpan</span>
+                    </div>
+                    <div class="bg-surface-container-low p-3 rounded-xl flex flex-col items-center">
+                        <span class="material-symbols-outlined text-[20px] text-secondary mb-1">rate_review</span>
+                        <span class="text-lg font-bold text-primary">{{ $user->ratings_count ?? 0 }}</span>
+                        <span class="text-[11px] text-on-surface-variant">Ulasan Diberikan</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- RIGHT COLUMN akan ditambahkan di tahap 3 -->
+    </div>
 
 </div>
 @endsection
