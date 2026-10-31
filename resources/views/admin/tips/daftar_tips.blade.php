@@ -147,7 +147,7 @@
                     </span>
                 </div>
 
-                <a href="{{ route('admin.tips.show', $tip->slug) }}"
+                <a href="{{ route('admin.tips.detail', $tip->slug) }}"
                    class="inline-flex items-center gap-1 text-primary hover:text-tertiary-container text-xs font-bold transition">
                     <span>Baca</span>
                     <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
@@ -243,16 +243,11 @@
             akan dihapus permanen dari portal. Tindakan ini tidak dapat dibatalkan.
         </p>
 
-        <form id="deleteForm" method="POST" action="" class="flex items-center gap-3 w-full mt-6">
+        <form method="POST" action="{{ route('admin.tips.destroy', $tip->slug) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tips ini?')">
             @csrf
             @method('DELETE')
-            <button type="button" id="cancelDeleteBtn"
-                    class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-on-surface-variant hover:bg-surface-container transition">
-                Batal
-            </button>
-            <button type="submit"
-                    class="flex-1 px-4 py-3 rounded-full bg-error text-white text-sm font-bold shadow-sm hover:opacity-90 transition">
-                Ya, Hapus
+            <button type="submit" class="p-2 text-error hover:bg-error-container/60 rounded-full transition" title="Hapus Tips">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
             </button>
         </form>
     </div>

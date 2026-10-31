@@ -99,7 +99,7 @@
 
     @include('partials.navbar')
 
-    <main class="w-full pt-20 bg-surface-container-low min-h-screen">
+    <main class="w-full pt-28 sm:pt-32 bg-surface-container-low min-h-screen">
         @yield('content')
     </main>
 

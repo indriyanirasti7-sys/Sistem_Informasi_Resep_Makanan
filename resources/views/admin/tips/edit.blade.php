@@ -49,7 +49,7 @@
         </div>
     </div>
 
-    <form method="POST" action="{{ route('admin.tips.update', $tip->id) }}" enctype="multipart/form-data" class="flex flex-col gap-6">
+    <form method="POST" action="{{ route('admin.tips.update', $tip->slug) }}" enctype="multipart/form-data" class="flex flex-col gap-6">
         @csrf
         @method('PUT')
 

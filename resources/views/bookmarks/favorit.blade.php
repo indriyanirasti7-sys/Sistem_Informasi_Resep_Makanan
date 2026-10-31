@@ -11,7 +11,7 @@
 @endpush
 
 @section('content')
-<div class="w-full max-w-[1280px] mx-auto px-5 lg:px-12 pt-6 pb-16">
+<div class="w-full max-w-[1280px] mx-auto px-5 lg:px-12 pt-32 pb-16">
 
     {{-- ========== HEADER ========== --}}
     <header class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8">
@@ -271,7 +271,7 @@
                                     {{-- Save Button --}}
                                     <button type="button"
                                             class="save-btn absolute top-3 right-3 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-outline hover:text-error hover:bg-white shadow-sm transition-all"
-                                            data-recipe-id="{{ $recipe->id }}"
+                                            data-recipe-id="{{ $recipe->slug }}"
                                             data-title="{{ $recipe->title }}"
                                             aria-label="Simpan ke favorit">
                                         <span class="material-symbols-outlined text-[20px] heart-icon">favorite_border</span>
@@ -436,12 +436,21 @@ document.querySelectorAll('.save-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        const id = btn.dataset.recipeId;
+        
+       
+        const slug = btn.dataset.recipeSlug; 
         const icon = btn.querySelector('.heart-icon');
         const title = btn.dataset.title;
 
+        // Cek jika slug undefined (berarti HTML masih salah)
+        if (!slug) {
+            console.error("Slug tidak ditemukan di tombol!");
+            return;
+        }
+
         try {
-            const res = await fetch(`/bookmark/${id}`, {
+            
+            const res = await fetch(`/bookmark/${slug}`, {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,

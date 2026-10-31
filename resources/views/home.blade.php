@@ -16,13 +16,7 @@
 @section('content')
 <div class="flex flex-col w-full">
 
-    {{-- AMBIENT BACKGROUNDS --}}
-    <div class="relative w-full overflow-hidden">
-        <div class="absolute -top-24 -left-20 w-[540px] h-[540px] bg-secondary-fixed/30 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse" style="animation-duration: 9s;"></div>
-        <div class="absolute top-80 -right-28 w-[620px] h-[620px] bg-primary-fixed/30 rounded-full blur-3xl pointer-events-none -z-10"></div>
-        <div class="absolute top-[1600px] left-1/3 w-[500px] h-[500px] bg-secondary-container/25 rounded-full blur-3xl pointer-events-none -z-10"></div>
-
-        {{-- ============================================================ --}}
+            {{-- ============================================================ --}}
         {{-- 1. HERO CAROUSEL --}}
         {{-- ============================================================ --}}
         @php
@@ -43,66 +37,67 @@
             })->values();
         @endphp
 
-        <section class="max-w-[1280px] mx-auto px-margin-mobile lg:px-margin pt-space-lg lg:pt-space-xl pb-space-2xl">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
+        <section class="w-full px-5 lg:px-12 pt-6 lg:pt-12 pb-12">
+            {{-- Menggunakan items-center agar teks & gambar sejajar vertikal --}}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
-                {{-- LEFT COLUMN --}}
-                <div class="lg:col-span-6 flex flex-col items-start gap-space-md z-10">
-                    <div class="inline-flex items-center gap-space-xs px-4 py-1.5 rounded-full bg-surface-container-high shadow-sm">
+                {{-- KOLOM KIRI: TEKS --}}
+                <div class="flex flex-col items-start gap-4 z-10">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container-high shadow-sm">
                         <span class="material-symbols-outlined text-[18px] text-on-tertiary-container" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
-                        <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Resep Unggulan Hari Ini</span>
+                        <span class="text-[11px] uppercase tracking-wider text-on-surface-variant font-bold">Resep Unggulan Hari Ini</span>
                         <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                        <span class="font-label-sm text-label-sm text-secondary font-bold" id="hero-carousel-index">1 / {{ max($heroDishes->count(), 1) }}</span>
+                        <span class="text-[11px] text-secondary font-bold" id="hero-carousel-index">1 / {{ max($heroDishes->count(), 1) }}</span>
                     </div>
 
                     <div class="min-h-[110px] lg:min-h-[140px] flex items-center">
-                        <h1 class="font-headline-lg text-headline-lg lg:text-display text-primary transition-opacity duration-300" id="hero-title">
+                        <h1 class="font-display text-4xl lg:text-5xl xl:text-6xl text-primary transition-opacity duration-300 font-bold leading-tight" id="hero-title">
                             {{ $heroDishes[0]['title'] ?? 'Belum ada resep' }}
                         </h1>
                     </div>
 
-                    <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl transition-opacity duration-300" id="hero-desc">
+                    <p class="text-base lg:text-lg text-on-surface-variant max-w-xl transition-opacity duration-300 leading-relaxed" id="hero-desc">
                         {{ $heroDishes[0]['desc'] ?? '' }}
                     </p>
 
                     {{-- Meta Chips --}}
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-space-xs w-full max-w-xl pt-space-xs">
-                        <div class="flex items-center gap-2 p-2.5 rounded-xl bg-surface-container-lowest shadow-sm">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-xl pt-2">
+                        <div class="flex items-center gap-2 p-3 rounded-xl bg-surface-container-lowest shadow-sm">
                             <span class="material-symbols-outlined text-secondary text-[22px]">timer</span>
                             <div class="flex flex-col min-w-0">
-                                <span class="font-label-sm text-[10px] uppercase text-outline">Waktu</span>
-                                <span class="font-label-md text-label-md text-on-surface font-semibold truncate" id="hero-time">{{ $heroDishes[0]['time'] ?? '-' }}</span>
+                                <span class="text-[10px] uppercase text-outline font-bold">Waktu</span>
+                                <span class="text-xs text-on-surface font-bold truncate" id="hero-time">{{ $heroDishes[0]['time'] ?? '-' }}</span>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2 p-2.5 rounded-xl bg-surface-container-lowest shadow-sm">
+                        <div class="flex items-center gap-2 p-3 rounded-xl bg-surface-container-lowest shadow-sm">
                             <span class="material-symbols-outlined text-secondary text-[22px]">group</span>
                             <div class="flex flex-col min-w-0">
-                                <span class="font-label-sm text-[10px] uppercase text-outline">Porsi</span>
-                                <span class="font-label-md text-label-md text-on-surface font-semibold truncate" id="hero-servings">{{ $heroDishes[0]['servings'] ?? '-' }}</span>
+                                <span class="text-[10px] uppercase text-outline font-bold">Porsi</span>
+                                <span class="text-xs text-on-surface font-bold truncate" id="hero-servings">{{ $heroDishes[0]['servings'] ?? '-' }}</span>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2 p-2.5 rounded-xl bg-surface-container-lowest shadow-sm">
+                        <div class="flex items-center gap-2 p-3 rounded-xl bg-surface-container-lowest shadow-sm">
                             <span class="material-symbols-outlined text-on-tertiary-container text-[22px]" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
                             <div class="flex flex-col min-w-0">
-                                <span class="font-label-sm text-[10px] uppercase text-outline">Tingkat</span>
-                                <span class="font-label-md text-label-md text-on-surface font-semibold truncate" id="hero-difficulty">{{ $heroDishes[0]['difficulty'] ?? '-' }}</span>
+                                <span class="text-[10px] uppercase text-outline font-bold">Tingkat</span>
+                                <span class="text-xs text-on-surface font-bold truncate" id="hero-difficulty">{{ $heroDishes[0]['difficulty'] ?? '-' }}</span>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2 p-2.5 rounded-xl bg-surface-container-lowest shadow-sm">
+                        <div class="flex items-center gap-2 p-3 rounded-xl bg-surface-container-lowest shadow-sm">
                             <span class="material-symbols-outlined text-error text-[22px]">local_fire_department</span>
                             <div class="flex flex-col min-w-0">
-                                <span class="font-label-sm text-[10px] uppercase text-outline">Kalori</span>
-                                <span class="font-label-md text-label-md text-on-surface font-semibold truncate" id="hero-calories">{{ $heroDishes[0]['calories'] ?? '-' }}</span>
+                                <span class="text-[10px] uppercase text-outline font-bold">Kalori</span>
+                                <span class="text-xs text-on-surface font-bold truncate" id="hero-calories">{{ $heroDishes[0]['calories'] ?? '-' }}</span>
                             </div>
                         </div>
                     </div>
 
                     {{-- Ingredients --}}
-                    <div class="flex flex-col gap-2 w-full pt-space-xs">
-                        <span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Bahan Kunci Pilihan</span>
+                    <div class="flex flex-col gap-2 w-full pt-2">
+                        <span class="text-[11px] uppercase tracking-wider text-outline font-bold">Bahan Kunci Pilihan</span>
                         <div class="flex flex-wrap items-center gap-2" id="hero-ingredients">
                             @foreach (($heroDishes[0]['ingredients'] ?? collect()) as $ing)
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-on-surface text-body-sm font-body-sm shadow-sm">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-on-surface text-xs font-medium shadow-sm">
                                     <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>{{ $ing }}
                                 </span>
                             @endforeach
@@ -110,60 +105,47 @@
                     </div>
 
                     {{-- Action Buttons --}}
-                    <div class="flex flex-wrap items-center gap-space-sm pt-space-sm">
+                    <div class="flex flex-wrap items-center gap-3 pt-4">
                         <a href="{{ $heroDishes[0]['url'] ?? '#' }}"
-                           class="inline-flex items-center gap-3 px-7 py-3.5 rounded-full bg-primary-container text-surface-bright font-label-lg text-label-lg shadow-md hover:bg-primary hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                           class="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-primary-container text-white text-sm font-bold shadow-md hover:bg-primary hover:shadow-lg transition-all transform hover:-translate-y-0.5">
                             <span>Lihat Resep Lengkap</span>
                             <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
                         </a>
                         <button type="button"
-                                class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-surface-container-lowest text-primary font-label-lg text-label-lg shadow-sm hover:bg-secondary-fixed/40 transition-all">
+                                class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-surface-container-lowest text-primary text-sm font-bold shadow-sm hover:bg-secondary-fixed/40 transition-all">
                             <span class="material-symbols-outlined text-secondary text-[22px]" style="font-variation-settings: 'FILL' 1;">skillet</span>
                             <span>Mulai Memasak</span>
                         </button>
                     </div>
                 </div>
 
-                {{-- RIGHT COLUMN --}}
-                <div class="lg:col-span-6 relative flex flex-col items-center justify-center mt-8 lg:mt-0">
-                    <div class="relative w-[340px] h-[340px] sm:w-[460px] sm:h-[460px] flex items-center justify-center">
-                        <svg class="absolute inset-0 w-full h-full text-secondary-fixed fill-current transition-transform duration-700 ease-out" id="hero-blob" viewBox="0 0 500 500">
+                {{-- KOLOM KANAN: GAMBAR --}}
+                <div class="relative flex flex-col items-center justify-center mt-10 lg:mt-0">
+                    {{-- Wadah Gambar (Dibuat lebih besar di layar besar) --}}
+                    <div class="relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] flex items-center justify-center">
+                        
+                        {{-- Efek Blob di belakang --}}
+                        <svg class="absolute inset-0 w-full h-full text-secondary-fixed/50 fill-current transition-transform duration-700 ease-out" id="hero-blob" viewBox="0 0 500 500">
                             <path d="M428.5,310Q407,370,351,408.5Q295,447,233.5,436.5Q172,426,121.5,386.5Q71,347,56.5,285Q42,223,80.5,166Q119,109,178,77.5Q237,46,303.5,67.5Q370,89,410,144.5Q450,200,428.5,310Z"></path>
                         </svg>
 
-                        <div class="absolute -top-4 right-10 w-12 h-12 rounded-full bg-surface-container-lowest/80 backdrop-blur-md flex items-center justify-center shadow-md animate-bounce" style="animation-duration: 4s;">
-                            <span class="text-xl">🌿</span>
-                        </div>
-                        <div class="absolute bottom-6 left-6 w-11 h-11 rounded-full bg-surface-container-lowest/80 backdrop-blur-md flex items-center justify-center shadow-md animate-bounce" style="animation-duration: 5s;">
-                            <span class="text-lg">🌶️</span>
-                        </div>
-                        <div class="absolute -bottom-2 right-16 w-10 h-10 rounded-full bg-surface-container-lowest/80 backdrop-blur-md flex items-center justify-center shadow-md animate-pulse">
-                            <span class="text-base">🧄</span>
-                        </div>
-
-                        <div class="absolute -top-12 z-20 flex gap-4 pointer-events-none opacity-40">
-                            <span class="w-1.5 h-16 bg-gradient-to-t from-surface-dim to-transparent rounded-full blur-[2px] animate-pulse" style="animation-duration: 2.2s;"></span>
-                            <span class="w-1.5 h-20 bg-gradient-to-t from-surface-dim to-transparent rounded-full blur-[2px] animate-pulse" style="animation-duration: 1.8s; animation-delay: 0.4s;"></span>
-                            <span class="w-1.5 h-14 bg-gradient-to-t from-surface-dim to-transparent rounded-full blur-[2px] animate-pulse" style="animation-duration: 2.6s; animation-delay: 0.8s;"></span>
-                        </div>
-
-                        <div class="relative w-[280px] h-[280px] sm:w-[380px] sm:h-[380px] rounded-full p-2 bg-surface-container-lowest shadow-[0_20px_50px_-12px_rgba(90,58,34,0.22)] z-10 transition-transform duration-700 ease-out" id="dish-rotate-wrapper">
+                        <div class="relative w-[260px] h-[260px] sm:w-[340px] sm:h-[340px] lg:w-[420px] lg:h-[420px] rounded-full p-2 bg-surface-container-lowest shadow-[0_20px_50px_-12px_rgba(90,58,34,0.22)] z-10 transition-transform duration-700 ease-out" id="dish-rotate-wrapper">
                             <img id="hero-plate-image"
                                  class="w-full h-full object-cover rounded-full shadow-inner select-none transition-opacity duration-300"
                                  src="{{ $heroDishes[0]['image'] ?? 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800' }}"
                                  alt="{{ $heroDishes[0]['title'] ?? '' }}" />
 
-                            <div class="absolute bottom-4 right-4 bg-surface-container-lowest/95 backdrop-blur-md px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
+                            <div class="absolute bottom-6 right-6 bg-surface-container-lowest/95 backdrop-blur-md px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
                                 <span class="material-symbols-outlined text-secondary text-[20px]" style="font-variation-settings: 'FILL' 1;">restaurant_menu</span>
-                                <span class="font-label-sm text-label-sm font-bold text-primary">Rekomendasi Chef</span>
+                                <span class="text-[11px] font-bold text-primary">Rekomendasi Chef</span>
                             </div>
                         </div>
                     </div>
 
                     {{-- Carousel Controls --}}
-                    <div class="flex items-center gap-space-md mt-space-lg z-20">
-                        <button id="carousel-prev" type="button" aria-label="Hidangan Sebelumnya"
-                                class="w-11 h-11 rounded-full bg-surface-container-lowest shadow-sm hover:bg-secondary-fixed/50 hover:shadow-md text-primary flex items-center justify-center transition-all">
+                    <div class="flex items-center gap-4 mt-6 z-20">
+                        <button id="carousel-prev" type="button" aria-label="Sebelumnya"
+                                class="w-11 h-11 rounded-full bg-surface-container-lowest shadow-sm hover:bg-secondary-fixed/50 text-primary flex items-center justify-center transition-all">
                             <span class="material-symbols-outlined text-[20px]">chevron_left</span>
                         </button>
 
@@ -175,8 +157,8 @@
                             @endforeach
                         </div>
 
-                        <button id="carousel-next" type="button" aria-label="Hidangan Berikutnya"
-                                class="w-11 h-11 rounded-full bg-surface-container-lowest shadow-sm hover:bg-secondary-fixed/50 hover:shadow-md text-primary flex items-center justify-center transition-all">
+                        <button id="carousel-next" type="button" aria-label="Berikutnya"
+                                class="w-11 h-11 rounded-full bg-surface-container-lowest shadow-sm hover:bg-secondary-fixed/50 text-primary flex items-center justify-center transition-all">
                             <span class="material-symbols-outlined text-[20px]">chevron_right</span>
                         </button>
                     </div>
@@ -184,44 +166,34 @@
             </div>
         </section>
 
-        {{-- ============================================================ --}}
         {{-- 2. CATEGORIES --}}
-        {{-- ============================================================ --}}
-        <section class="w-full bg-surface-container/60 py-space-2xl">
-            <div class="max-w-[1280px] mx-auto px-margin-mobile lg:px-margin flex flex-col gap-space-lg">
-                <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-sm">
+        <section class="w-full bg-surface-container/60 py-6">
+            <div class="w-full px-5 lg:px-12 flex flex-col gap-4">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-2">
                     <div class="flex flex-col gap-1">
-                        <span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-bold">Inspirasi Setiap Sesi Santap</span>
-                        <h2 class="font-headline-md text-headline-md font-semibold text-primary">Kategori Kuliner Pilihan</h2>
-                        <p class="font-body-md text-body-md text-on-surface-variant">Temukan resep sempurna untuk setiap momen, selera makan, dan kebutuhan gizi keluarga.</p>
-                    </div>
-                    <div class="flex items-center gap-2 shrink-0">
-                        <button id="cat-scroll-left" type="button" class="w-10 h-10 rounded-full bg-surface-container-lowest shadow-sm hover:bg-secondary-fixed/50 text-primary flex items-center justify-center transition-all">
-                            <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-                        </button>
-                        <button id="cat-scroll-right" type="button" class="w-10 h-10 rounded-full bg-surface-container-lowest shadow-sm hover:bg-secondary-fixed/50 text-primary flex items-center justify-center transition-all">
-                            <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
-                        </button>
+                        <span class="text-[10px] uppercase tracking-wider text-secondary font-bold">Inspirasi Sesi Santap</span>
+                        <h2 class="font-display text-xl md:text-2xl font-semibold text-primary">Kategori Pilihan</h2>
                     </div>
                 </div>
 
-                <div id="category-container" class="flex items-center gap-space-lg overflow-x-auto pb-4 pt-2 no-scrollbar scroll-smooth">
+                {{-- Container Scroll Horizontal --}}
+                <div class="flex items-center gap-4 overflow-x-auto pb-2 pt-2 no-scrollbar scroll-smooth">
                     @foreach ($categories as $i => $cat)
-                        @php $isActive = $i === 1; // Highlight default seperti desain asli @endphp
+                        @php $isActive = $i === 1; @endphp
                         <a href="{{ route('recipes.daftar_resep', ['category' => $cat->slug]) }}"
-                           class="category-card flex flex-col items-center gap-space-sm group cursor-pointer shrink-0 transition-transform hover:-translate-y-1"
-                           data-cat="{{ $cat->slug }}">
-                            <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1.5 transition-all
-                                        {{ $isActive ? 'bg-secondary shadow-[0_4px_20px_-2px_rgba(85,100,59,0.35)]' : 'bg-surface-container-lowest group-hover:shadow-md' }}">
-                                <div class="w-full h-full rounded-full bg-surface-container flex items-center justify-center text-3xl">
-                                    <span class="material-symbols-outlined text-primary text-[42px]">{{ $cat->icon ?? 'restaurant' }}</span>
+                           class="category-card flex flex-col items-center gap-2 group cursor-pointer shrink-0">
+                            {{-- Ukuran Ikon dikecilkan jadi w-16 di HP --}}
+                            <div class="w-16 h-16 md:w-24 md:h-24 rounded-full p-1 transition-all
+                                        {{ $isActive ? 'bg-secondary shadow-md' : 'bg-surface-container-lowest group-hover:shadow-sm' }}">
+                                <div class="w-full h-full rounded-full bg-surface-container flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-primary text-[28px] md:text-[36px]">{{ $cat->icon ?? 'restaurant' }}</span>
                                 </div>
                             </div>
                             <div class="flex flex-col items-center">
-                                <span class="font-title-md text-title-md {{ $isActive ? 'font-bold text-secondary' : 'font-semibold text-primary group-hover:text-secondary' }} transition-colors">
+                                <span class="text-xs md:text-sm {{ $isActive ? 'font-bold text-secondary' : 'font-semibold text-primary' }} text-center max-w-[70px] truncate">
                                     {{ $cat->name }}
                                 </span>
-                                <span class="font-label-sm text-label-sm {{ $isActive ? 'px-2.5 py-0.5 rounded-full bg-secondary/15 text-secondary font-semibold' : 'text-outline' }}">
+                                <span class="text-[9px] md:text-[11px] {{ $isActive ? 'text-secondary' : 'text-outline' }}">
                                     {{ $cat->recipes_count ?? 0 }}+ Resep
                                 </span>
                             </div>
@@ -234,84 +206,81 @@
         {{-- ============================================================ --}}
         {{-- 3. POPULAR RECIPES --}}
         {{-- ============================================================ --}}
-        <section class="max-w-[1280px] mx-auto px-margin-mobile lg:px-margin py-space-2xl flex flex-col gap-space-xl">
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+                {{-- 3. POPULAR RECIPES --}}
+        <section class="w-full px-5 lg:px-12 py-8 flex flex-col gap-6">
+            <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-1">
                     <div class="flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-secondary"></span>
-                        <span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-bold">Telah Dicoba Ribuan Koki Rumahan</span>
+                        <span class="text-[10px] uppercase tracking-wider text-secondary font-bold">Telah Dicoba Ribuan Koki</span>
                     </div>
-                    <h2 class="font-headline-md text-headline-md font-semibold text-primary">Resep Terpopuler Minggu Ini</h2>
+                    <h2 class="font-display text-xl md:text-2xl font-semibold text-primary">Resep Terpopuler</h2>
                 </div>
 
-                <div class="flex items-center gap-1.5 p-1.5 rounded-full bg-surface-container-high overflow-x-auto no-scrollbar">
-                    <button type="button" data-filter="all" class="popular-filter-btn px-4 py-1.5 rounded-full bg-primary-container text-surface-bright font-label-md text-label-md shadow-sm transition-all">Semua</button>
-                    <button type="button" data-filter="cepat" class="popular-filter-btn px-4 py-1.5 rounded-full text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all">Paling Cepat</button>
-                    <button type="button" data-filter="keluarga" class="popular-filter-btn px-4 py-1.5 rounded-full text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all">Keluarga</button>
-                    <button type="button" data-filter="sehat" class="popular-filter-btn px-4 py-1.5 rounded-full text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all">Sehat &amp; Rendah Kalori</button>
+                {{-- Filter dibuat bisa digeser ke samping --}}
+                <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                    <button type="button" data-filter="all" class="popular-filter-btn whitespace-nowrap px-4 py-1.5 rounded-full bg-primary-container text-white text-xs font-bold shadow-sm transition-all">Semua</button>
+                    <button type="button" data-filter="cepat" class="popular-filter-btn whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface text-xs font-bold transition-all">Paling Cepat</button>
+                    <button type="button" data-filter="keluarga" class="popular-filter-btn whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface text-xs font-bold transition-all">Keluarga</button>
+                    <button type="button" data-filter="sehat" class="popular-filter-btn whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface text-xs font-bold transition-all">Sehat & Rendah Kalori</button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+            {{-- GRID RESEP: 2 Kolom di HP, 4 Kolom di Laptop --}}
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
                 @forelse ($latest as $recipe)
                     @php
                         $isQuick   = $recipe->duration_minutes && $recipe->duration_minutes <= 30;
                         $isFamily  = $recipe->servings >= 4;
                         $isHealthy = $recipe->calories && $recipe->calories <= 400;
                         $tags = trim(($isQuick ? 'cepat ' : '') . ($isFamily ? 'keluarga ' : '') . ($isHealthy ? 'sehat' : ''));
-
-                        $badgeClass = match ($recipe->difficulty) {
-                            'Mudah' => 'bg-secondary-container text-on-secondary-container',
-                            'Sedang' => 'bg-primary-fixed text-primary',
-                            'Sulit' => 'bg-error-container text-on-error-container',
-                            default => 'bg-surface-container-high text-on-surface',
-                        };
                     @endphp
-                    <div class="group flex flex-col bg-surface-container-lowest rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
-                         data-category-tag="{{ $tags }}">
+                    <div class="group flex flex-col bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-xl transition-all overflow-hidden" data-category-tag="{{ $tags }}">
+                        
                         <div class="relative w-full aspect-[4/3] overflow-hidden bg-surface-container">
                             <a href="{{ route('recipes.show', $recipe->slug) }}">
-                                <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                      src="{{ $recipe->image ? Storage::url($recipe->image) : 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800' }}"
                                      alt="{{ $recipe->title }}" />
                             </a>
-                            <span class="absolute top-3 left-3 px-3 py-1 rounded-full {{ $badgeClass }} font-label-sm text-label-sm font-bold shadow-sm">
+                            {{-- Hapus badge tingkat kesulitan di HP agar lebih bersih --}}
+                            <span class="hidden md:block absolute top-3 left-3 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-primary text-[11px] font-bold shadow-sm">
                                 {{ $recipe->difficulty }}
                             </span>
-                            @auth
-                                <button type="button" data-recipe-id="{{ $recipe->id }}"
-                                        class="bookmark-btn absolute top-3 right-3 w-9 h-9 rounded-full bg-surface/90 backdrop-blur-md text-outline hover:text-error flex items-center justify-center shadow-sm transition-colors">
-                                    <span class="material-symbols-outlined text-[19px]">favorite</span>
-                                </button>
-                            @endauth
                         </div>
-                        <div class="p-5 flex flex-col flex-1 justify-between gap-space-sm">
-                            <div class="flex flex-col gap-2">
-                                <div class="flex items-center justify-between text-body-sm font-body-sm text-outline">
-                                    <span>{{ $recipe->category->name ?? 'Umum' }}</span>
-                                    <div class="flex items-center gap-1 text-on-tertiary-container font-semibold">
-                                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                        <span>{{ $recipe->average_rating }} <span class="text-outline font-normal">({{ $recipe->rating_count }})</span></span>
-                                    </div>
-                                </div>
+
+                        <div class="p-3 md:p-5 flex flex-col flex-1 justify-between gap-2">
+                            <div class="flex flex-col gap-1">
                                 <a href="{{ route('recipes.show', $recipe->slug) }}">
-                                    <h3 class="font-title-md text-title-md font-semibold text-primary group-hover:text-secondary transition-colors line-clamp-2">
+                                    <h3 class="font-display text-[13px] md:text-base font-bold text-primary group-hover:text-secondary transition line-clamp-2 leading-tight">
                                         {{ $recipe->title }}
                                     </h3>
                                 </a>
+                                <p class="text-[10px] text-on-surface-variant truncate">
+                                    {{ $recipe->user->name ?? 'Tim Dapur' }}
+                                </p>
                             </div>
-                            <div class="pt-3 flex items-center justify-between border-t border-surface-container">
-                                <div class="flex items-center gap-1.5 text-on-surface-variant font-label-sm text-label-sm">
-                                    <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
-                                    <span>{{ $recipe->duration_minutes ? $recipe->duration_minutes . ' mnt' : '-' }}</span>
+                            
+                            {{-- Metrik ala Dapur Umami (Bintang, Hati, Waktu) --}}
+                            <div class="flex items-center justify-between text-[10px] md:text-xs pt-2 border-t border-surface-container mt-1">
+                                <div class="flex items-center gap-1 text-tertiary font-bold">
+                                    <span class="material-symbols-outlined text-[14px] md:text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    {{ $recipe->average_rating }}
                                 </div>
-                                <span class="font-label-sm text-label-sm text-outline">Oleh {{ $recipe->user->name ?? 'Anonim' }}</span>
+                                <div class="flex items-center gap-1 text-on-surface-variant">
+                                    <span class="material-symbols-outlined text-[14px] md:text-[16px] text-error" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                                    {{ $recipe->bookmarks_count ?? 0 }}
+                                </div>
+                                <div class="flex items-center gap-1 text-on-surface-variant">
+                                    <span class="material-symbols-outlined text-[14px] md:text-[16px] text-secondary">timer</span>
+                                    {{ $recipe->duration_minutes ?? '-' }}m
+                                </div>
                             </div>
                         </div>
                     </div>
                 @empty
-                    <div class="col-span-4 text-center py-12 text-on-surface-variant">
-                        Belum ada resep yang dipublikasikan.
+                    <div class="col-span-2 lg:col-span-4 text-center py-10 text-sm text-on-surface-variant">
+                        Belum ada resep.
                     </div>
                 @endforelse
             </div>
@@ -320,7 +289,7 @@
         {{-- ============================================================ --}}
         {{-- 4. SMART PANTRY --}}
         {{-- ============================================================ --}}
-        <section class="max-w-[1280px] mx-auto px-margin-mobile lg:px-margin py-space-xl">
+        <section class="w-full px-5 lg:px-12 py-8">
             <div class="relative rounded-xl bg-surface-container-high p-space-lg lg:p-space-2xl overflow-hidden shadow-sm">
                 <div class="absolute -right-16 -bottom-16 w-80 h-80 rounded-full bg-secondary-fixed/20 pointer-events-none -z-0"></div>
                 <div class="relative z-10 flex flex-col gap-space-lg">
@@ -377,58 +346,74 @@
             </div>
         </section>
 
+                {{-- ============================================================ --}}
+        {{-- 5. TIPS (HORIZONTAL SCROLL) --}}
         {{-- ============================================================ --}}
-        {{-- 5. TIPS --}}
-        {{-- ============================================================ --}}
-        <section class="max-w-[1280px] mx-auto px-margin-mobile lg:px-margin py-space-2xl flex flex-col gap-space-xl">
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-sm">
+        <section class="w-full px-5 lg:px-12 py-8 flex flex-col gap-6">
+            
+            {{-- Header & Tombol Navigasi --}}
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div class="flex flex-col gap-1">
-                    <span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-bold">Wawasan Gastronomi</span>
-                    <h2 class="font-headline-md text-headline-md font-semibold text-primary">Tips &amp; Rahasia Dapur</h2>
-                    <p class="font-body-md text-body-md text-on-surface-variant">Panduan praktis dari chef berpengalaman untuk memasak lebih percaya diri dan konsisten.</p>
+                    <span class="text-[10px] uppercase tracking-wider text-secondary font-bold">Wawasan Gastronomi</span>
+                    <h2 class="font-display text-xl md:text-2xl font-semibold text-primary">Tips &amp; Rahasia Dapur</h2>
+                    <p class="text-sm text-on-surface-variant mt-1">Panduan praktis dari chef berpengalaman untuk memasak lebih percaya diri.</p>
                 </div>
-                <a href="{{ route('tips.panduan') }}" class="inline-flex items-center gap-1 font-label-md text-label-md text-secondary hover:text-primary font-bold transition-colors">
-                    <span>Lihat Semua Artikel Tips</span>
-                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-                </a>
+                
+                {{-- Tombol Geser Kiri Kanan --}}
+                <div class="flex items-center gap-2 shrink-0">
+                    <button id="tips-scroll-left" type="button" class="w-10 h-10 rounded-full bg-surface-container-lowest shadow-sm hover:bg-secondary-fixed/50 text-primary flex items-center justify-center transition-all">
+                        <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                    </button>
+                    <button id="tips-scroll-right" type="button" class="w-10 h-10 rounded-full bg-surface-container-lowest shadow-sm hover:bg-secondary-fixed/50 text-primary flex items-center justify-center transition-all">
+                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                    </button>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+            {{-- Container Scroll Horizontal --}}
+            <div id="tips-container" class="flex items-stretch gap-4 lg:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar scroll-smooth">
                 @forelse ($tips as $tip)
-                    <article class="flex flex-col bg-surface-container-lowest rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden group">
+                    <article class="snap-start shrink-0 w-[280px] sm:w-[320px] flex flex-col bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                        
+                        {{-- Gambar --}}
                         <div class="relative w-full aspect-[16/10] overflow-hidden bg-surface-container">
                             <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                  src="{{ $tip->image ? Storage::url($tip->image) : 'https://images.unsplash.com/photo-1556909212-d5b604d0c90d?w=800' }}"
                                  alt="{{ $tip->title }}" />
-                            <div class="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-surface-container-lowest/90 backdrop-blur-md font-label-sm text-label-sm text-primary font-bold">
+                            <div class="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-surface-container-lowest/90 backdrop-blur-md text-[10px] text-primary font-bold">
                                 Tips Dapur
                             </div>
                         </div>
-                        <div class="p-6 flex flex-col flex-1 justify-between gap-space-md">
-                            <div class="flex flex-col gap-space-xs">
-                                <div class="flex items-center gap-2 text-outline font-label-sm text-label-sm">
+
+                        {{-- Konten --}}
+                        <div class="p-5 flex flex-col flex-1 justify-between gap-4">
+                            <div class="flex flex-col gap-2">
+                                <div class="flex items-center gap-2 text-outline text-[10px] font-medium">
                                     <span>{{ ceil(str_word_count(strip_tags($tip->content)) / 200) }} mnt baca</span>
                                     <span>•</span>
-                                    <span>Oleh {{ $tip->user->name ?? 'Tim Dapur' }}</span>
+                                    <span class="truncate">Oleh {{ $tip->user->name ?? 'Tim Dapur' }}</span>
                                 </div>
-                                <a href="{{ route('tips.panduan', $tip->slug) }}">
-                                    <h3 class="font-title-md text-title-md font-semibold text-primary group-hover:text-secondary transition-colors">
+                                
+                                <a href="{{ route('tips.detail_tips', $tip->slug) }}">
+                                    <h3 class="font-display text-base font-bold text-primary group-hover:text-secondary transition-colors line-clamp-2 leading-snug">
                                         {{ $tip->title }}
                                     </h3>
                                 </a>
-                                <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
-                                    {{ Str::limit(strip_tags($tip->content), 140) }}
+                                
+                                <p class="text-xs text-on-surface-variant line-clamp-2 mt-1">
+                                    {{ Str::limit(strip_tags($tip->content), 100) }}
                                 </p>
                             </div>
+                            
                             <a href="{{ route('tips.detail_tips', $tip->slug) }}"
-                               class="pt-2 flex items-center gap-1 font-label-md text-label-md text-primary group-hover:text-secondary font-semibold transition-colors">
+                               class="pt-3 border-t border-surface-container flex items-center justify-between text-[11px] font-bold text-primary group-hover:text-secondary transition-colors">
                                 <span>Baca Selengkapnya</span>
                                 <span class="material-symbols-outlined text-[16px] transition-transform group-hover:translate-x-1">arrow_forward</span>
                             </a>
                         </div>
                     </article>
                 @empty
-                    <div class="col-span-3 text-center py-12 text-on-surface-variant">
+                    <div class="w-full text-center py-10 text-sm text-on-surface-variant">
                         Belum ada tips.
                     </div>
                 @endforelse
@@ -438,7 +423,7 @@
         {{-- ============================================================ --}}
         {{-- 6. CHEF QUOTE --}}
         {{-- ============================================================ --}}
-        <section class="max-w-[1280px] mx-auto px-margin-mobile lg:px-margin pb-space-2xl">
+        <section class="w-full px-5 lg:px-12 pb-12">
             <div class="p-space-lg lg:p-space-xl rounded-xl bg-surface-container text-center flex flex-col items-center justify-center gap-space-sm relative overflow-hidden">
                 <span class="material-symbols-outlined text-secondary/30 text-[64px] absolute -top-2 left-6 pointer-events-none select-none">format_quote</span>
                 <p class="font-headline-sm text-headline-sm font-display italic text-primary max-w-2xl relative z-10">
@@ -655,6 +640,17 @@
             icon.className = 'material-symbols-outlined text-[18px] text-outline';
         });
         updatePantryCount();
+    });
+
+        // ===========================================================
+    // 6. TIPS SCROLL (Geser Kiri / Kanan)
+    // ===========================================================
+    const tipsContainer = document.getElementById('tips-container');
+    document.getElementById('tips-scroll-left')?.addEventListener('click', () => {
+        tipsContainer.scrollBy({ left: -320, behavior: 'smooth' });
+    });
+    document.getElementById('tips-scroll-right')?.addEventListener('click', () => {
+        tipsContainer.scrollBy({ left: 320, behavior: 'smooth' });
     });
 
 })();

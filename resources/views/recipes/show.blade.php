@@ -12,7 +12,7 @@
         <span class="text-sm font-semibold" id="toastMessage">Tautan berhasil disalin!</span>
     </div>
 
-    <div class="max-w-[1280px] w-full mx-auto px-5 lg:px-12 py-6 flex flex-col gap-12">
+    <div class="max-w-[1280px] w-full mx-auto px-5 lg:px-12 pt-32 pb-6 flex flex-col gap-12">
 
         {{-- Breadcrumbs & Top Actions --}}
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-2">
@@ -81,6 +81,29 @@
 
     {{-- COOKING MODE MODAL --}}
     @include('recipes.partials.cooking_modal')
+
+        {{-- MODAL LOGIN PROMPT (Tambahkan di sini) --}}
+    <div id="loginPromptModal" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden">
+        <div class="bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-xl max-w-sm w-full text-center flex flex-col items-center gap-4">
+            <div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center text-secondary">
+                <span class="material-symbols-outlined text-[32px]">lock</span>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-primary mb-1">Harus Login Dulu</h3>
+                <p class="text-sm text-on-surface-variant">Silakan masuk ke akun Anda untuk menyimpan resep favorit ini ke koleksi pribadi.</p>
+            </div>
+            <div class="flex items-center gap-3 w-full mt-2">
+                <button type="button" onclick="document.getElementById('loginPromptModal').classList.add('hidden')" 
+                        class="flex-1 px-4 py-2.5 rounded-full bg-surface-container text-primary text-sm font-bold hover:bg-surface-container-high transition">
+                    Batal
+                </button>
+                <a href="{{ route('login') }}" 
+                   class="flex-1 px-4 py-2.5 rounded-full bg-primary text-white text-sm font-bold hover:bg-primary-container transition shadow-sm">
+                    Ke Halaman Login
+                </a>
+            </div>
+        </div>
+    </div>
 
 </div>
 @endsection

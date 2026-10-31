@@ -12,7 +12,7 @@
 @endpush
 
 @section('content')
-<div class="relative w-full max-w-[1280px] mx-auto px-5 lg:px-12 pt-6 pb-16">
+<div class="relative w-full max-w-[1280px] mx-auto px-5 lg:px-12 pt-32 pb-16">
 
     {{-- Ambient Glow --}}
     <div class="absolute top-12 left-1/3 w-96 h-96 bg-primary-fixed/30 rounded-full blur-3xl pointer-events-none -z-10"></div>
@@ -135,8 +135,9 @@
     </div>
 
     {{-- RECIPE GRID --}}
+        {{-- RECIPE GRID --}}
     @if ($recipes->count())
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-12">
             @foreach ($recipes as $recipe)
                 @php
                     $diffColor = match($recipe->difficulty) {
@@ -147,17 +148,19 @@
                     };
                 @endphp
 
-                <article class="group flex flex-col bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
-
-                    {{-- Image --}}
-                    <div class="relative w-full aspect-[4/3] overflow-hidden bg-surface-container">
-                        <a href="{{ route('recipes.show', $recipe->slug) }}">
+                {{-- Card: Flex Row di HP, Flex Col di Desktop --}}
+                <article class="group flex flex-row md:flex-col bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+                    
+                    {{-- IMAGE (Kiri di HP, Atas di Desktop) --}}
+                    <div class="relative w-[120px] sm:w-44 md:w-full aspect-square md:aspect-[4/3] shrink-0 overflow-hidden bg-surface-container">
+                        <a href="{{ route('recipes.show', $recipe->slug) }}" class="block w-full h-full">
                             <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                  src="{{ $recipe->image ? Storage::url($recipe->image) : 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800' }}"
                                  alt="{{ $recipe->title }}"/>
                         </a>
 
-                        <div class="absolute top-3 left-3 flex flex-wrap gap-1">
+                        {{-- Badge Kategori (Desktop Only) --}}
+                        <div class="absolute top-3 left-3 hidden md:flex flex-wrap gap-1">
                             @if ($recipe->category)
                                 <span class="px-3 py-0.5 rounded-full bg-white/90 backdrop-blur-md text-primary text-[11px] font-bold shadow-sm">
                                     {{ $recipe->category->name }}
@@ -168,79 +171,106 @@
                             </span>
                         </div>
 
-                            @auth
-                                <button type="button" data-recipe-id="{{ $recipe->id }}"
-                                        class="bookmark-btn absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 backdrop-blur-md text-on-surface flex items-center justify-center hover:bg-white transition shadow-sm">
-                                    <span class="material-symbols-outlined text-[20px]">favorite</span>
-                                </button>
-                            @else
-                                <a href="{{ route('login') }}?require_login=1"
-                                title="Masuk untuk menyimpan favorit"
-                                class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 backdrop-blur-md text-outline hover:text-error flex items-center justify-center hover:bg-white transition shadow-sm">
-                                    <span class="material-symbols-outlined text-[20px]">favorite_border</span>
-                                </a>
-                            @endauth
+                        {{-- Bookmark Button (Desktop Only) --}}
+                        @auth
+                            <button type="button" data-recipe-id="{{ $recipe->id }}"
+                                    class="bookmark-btn hidden md:flex absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 backdrop-blur-md text-on-surface items-center justify-center hover:bg-white transition shadow-sm">
+                                <span class="material-symbols-outlined text-[20px]">favorite</span>
+                            </button>
+                        @endauth
                     </div>
 
-                    {{-- Body --}}
-                    <div class="p-5 flex flex-col flex-1">
-
-                        {{-- Rating --}}
-                        <div class="flex items-center gap-1.5 text-on-tertiary-container mb-2">
-                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                            <span class="text-base font-bold text-on-surface">{{ $recipe->average_rating }}</span>
-                            <span class="text-xs text-outline">({{ $recipe->rating_count }} ulasan)</span>
-                        </div>
-
-                        {{-- Title --}}
-                        <a href="{{ route('recipes.show', $recipe->slug) }}">
-                            <h3 class="font-display text-lg font-semibold text-primary mb-2 group-hover:text-primary-container transition line-clamp-1">
-                                {{ $recipe->title }}
-                            </h3>
-                        </a>
-
-                        {{-- Description --}}
-                        <p class="text-sm text-on-surface-variant mb-4 line-clamp-2">
-                            {{ $recipe->description }}
-                        </p>
-
-                        {{-- Metrics --}}
-                        <div class="grid grid-cols-4 gap-1 p-2 rounded-2xl bg-surface-container-low mb-4 text-center">
-                            <div class="flex flex-col items-center">
-                                <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
-                                <span class="text-[10px] text-on-surface font-semibold mt-0.5">{{ $recipe->duration_minutes ?? '-' }} mnt</span>
+                    {{-- BODY (Kanan di HP, Bawah di Desktop) --}}
+                    <div class="p-3 md:p-5 flex flex-col flex-1 justify-between min-w-0">
+                        
+                        <div class="flex flex-col gap-1 md:gap-2">
+                            {{-- Rating (Desktop Only) --}}
+                            <div class="hidden md:flex items-center gap-1.5 text-on-tertiary-container mb-1">
+                                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="text-base font-bold text-on-surface">{{ $recipe->average_rating }}</span>
+                                <span class="text-xs text-outline">({{ $recipe->rating_count }} ulasan)</span>
                             </div>
-                            <div class="flex flex-col items-center">
-                                <span class="material-symbols-outlined text-[16px] text-secondary">group</span>
-                                <span class="text-[10px] text-on-surface font-semibold mt-0.5">{{ $recipe->servings }} Porsi</span>
-                            </div>
-                            <div class="flex flex-col items-center">
-                                <span class="material-symbols-outlined text-[16px] text-secondary">local_fire_department</span>
-                                <span class="text-[10px] text-on-surface font-semibold mt-0.5">{{ $recipe->calories ?? '-' }} kkal</span>
-                            </div>
-                            <div class="flex flex-col items-center">
-                                <span class="material-symbols-outlined text-[16px] text-secondary">visibility</span>
-                                <span class="text-[10px] text-on-surface font-semibold mt-0.5">{{ $recipe->views }}</span>
-                            </div>
-                        </div>
 
-                        {{-- Chef & Button --}}
-                        <div class="mt-auto pt-2 flex items-center justify-between border-t border-surface-container pt-4">
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container">
-                                    <img class="w-full h-full object-cover"
-                                         src="https://ui-avatars.com/api/?name={{ urlencode($recipe->user->name ?? 'Chef') }}&background=5a3a22&color=fff&bold=true"/>
+                            {{-- Title --}}
+                            <a href="{{ route('recipes.show', $recipe->slug) }}">
+                                <h3 class="font-display text-[14px] md:text-lg font-bold text-primary group-hover:text-primary-container transition line-clamp-2 leading-snug">
+                                    {{ $recipe->title }}
+                                </h3>
+                            </a>
+
+                            {{-- Author (Mobile Only) --}}
+                            <div class="flex items-center gap-1.5 mt-1 md:hidden">
+                                <div class="w-4 h-4 rounded-full overflow-hidden bg-surface-container shrink-0">
+                                    <img class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($recipe->user->name ?? 'Chef') }}&background=5a3a22&color=fff&bold=true"/>
                                 </div>
-                                <span class="text-[11px] text-on-surface-variant font-medium">
-                                    {{ Str::limit($recipe->user->name ?? 'Tim Dapur', 12) }}
+                                <span class="text-[11px] text-on-surface-variant truncate">
+                                    {{ $recipe->user->name ?? 'Tim Dapur' }}
                                 </span>
                             </div>
-                            <a href="{{ route('recipes.show', $recipe->slug) }}"
-                               class="inline-flex items-center gap-1 px-4 py-2 bg-primary-container text-white rounded-full text-[11px] font-bold hover:bg-primary transition shadow-sm">
-                                <span>Lihat</span>
-                                <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                            </a>
+
+                            {{-- Description (Desktop Only) --}}
+                            <p class="hidden md:block text-sm text-on-surface-variant mb-4 line-clamp-2 mt-1">
+                                {{ $recipe->description }}
+                            </p>
                         </div>
+
+                        {{-- FOOTER SECTION --}}
+                        <div>
+                            {{-- Metrics Ringkas (Mobile Only) --}}
+                            <div class="flex items-center gap-3 mt-2 pt-2 border-t border-surface-container/50 md:hidden">
+                                <span class="flex items-center gap-1 text-[11px] font-bold text-primary">
+                                    <span class="material-symbols-outlined text-[14px] text-tertiary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    {{ $recipe->average_rating }}
+                                </span>
+                                <span class="flex items-center gap-1 text-[11px] text-on-surface-variant">
+                                    <span class="material-symbols-outlined text-[14px] text-error" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                                    {{ $recipe->bookmarks_count ?? 0 }}
+                                </span>
+                                <span class="flex items-center gap-1 text-[11px] text-on-surface-variant">
+                                    <span class="material-symbols-outlined text-[14px] text-tertiary">timer</span>
+                                    {{ $recipe->duration_minutes ?? '-' }}m
+                                </span>
+                            </div>
+
+                            {{-- Original Metrics Grid (Desktop Only) --}}
+                            <div class="hidden md:grid grid-cols-4 gap-1 p-2 rounded-2xl bg-surface-container-low mb-4 text-center">
+                                <div class="flex flex-col items-center">
+                                    <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                                    <span class="text-[10px] text-on-surface font-semibold mt-0.5">{{ $recipe->duration_minutes ?? '-' }} mnt</span>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <span class="material-symbols-outlined text-[16px] text-secondary">group</span>
+                                    <span class="text-[10px] text-on-surface font-semibold mt-0.5">{{ $recipe->servings }} Porsi</span>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <span class="material-symbols-outlined text-[16px] text-secondary">local_fire_department</span>
+                                    <span class="text-[10px] text-on-surface font-semibold mt-0.5">{{ $recipe->calories ?? '-' }} kkal</span>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <span class="material-symbols-outlined text-[16px] text-secondary">visibility</span>
+                                    <span class="text-[10px] text-on-surface font-semibold mt-0.5">{{ $recipe->views }}</span>
+                                </div>
+                            </div>
+
+                            {{-- Chef & Button (Desktop Only) --}}
+                            <div class="hidden md:flex mt-auto pt-2 items-center justify-between border-t border-surface-container pt-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container">
+                                        <img class="w-full h-full object-cover"
+                                             src="https://ui-avatars.com/api/?name={{ urlencode($recipe->user->name ?? 'Chef') }}&background=5a3a22&color=fff&bold=true"/>
+                                    </div>
+                                    <span class="text-[11px] text-on-surface-variant font-medium">
+                                        {{ Str::limit($recipe->user->name ?? 'Tim Dapur', 12) }}
+                                    </span>
+                                </div>
+                                <a href="{{ route('recipes.show', $recipe->slug) }}"
+                                   class="inline-flex items-center gap-1 px-4 py-2 bg-primary-container text-white rounded-full text-[11px] font-bold hover:bg-primary transition shadow-sm">
+                                    <span>Lihat</span>
+                                    <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                </a>
+                            </div>
+                        </div>
+                        
                     </div>
                 </article>
             @endforeach

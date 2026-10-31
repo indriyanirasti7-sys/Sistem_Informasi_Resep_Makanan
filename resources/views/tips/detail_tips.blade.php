@@ -203,7 +203,7 @@
                         Panduan & Tips Pilihan Lainnya
                     </h2>
                 </div>
-                <a href="{{ route('tips.index') }}"
+                <a href="{{ route('tips.panduan') }}"
                    class="text-sm text-primary font-semibold hover:text-tertiary flex items-center gap-1 transition">
                     <span>Lihat Semua Tips</span>
                     <span class="material-symbols-outlined text-[18px]">east</span>
@@ -212,7 +212,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 @foreach ($related as $item)
-                    <a href="{{ route('tips.show', $item->slug) }}"
+                    <a href="{{ route('tips.panduan', $item->slug) }}"
                        class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col group">
 
                         <div class="aspect-square w-full overflow-hidden bg-surface-container relative">

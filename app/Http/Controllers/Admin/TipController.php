@@ -46,10 +46,11 @@ class TipController extends Controller
             'title'   => 'required|string|max:150',
             'content' => 'required|string',
             'image'   => 'nullable|image|max:5120',
+            'status'  => 'nullable|in:draft,published', // Toleransi jika form mengirim status
         ]);
 
-        // ✅ FIX: Tambahkan user_id agar tidak error
-        $validated['user_id'] = auth()->id();
+     
+        $validated['user_id'] = auth()->id(); 
         
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('tips', 'public');
@@ -61,7 +62,8 @@ class TipController extends Controller
             ->route('admin.tips.index')
             ->with('success', 'Tips berhasil ditambahkan.');
     }
-
+ 
+  
     public function detail(Tip $tip)
     {
         return view('admin.tips.detail', compact('tip'));
@@ -78,8 +80,8 @@ class TipController extends Controller
             'title'   => 'required|string|max:150',
             'content' => 'required|string',
             'image'   => 'nullable|image|max:5120',
+            'status'  => 'nullable|in:draft,published', 
         ]);
-
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('tips', 'public');

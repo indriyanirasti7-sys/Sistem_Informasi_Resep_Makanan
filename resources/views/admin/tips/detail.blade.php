@@ -28,10 +28,11 @@
                 <span>Edit Tips</span>
             </a>
 
-            <form method="POST" action="{{ route('admin.tips.destroy', $tip->slug) }}" onsubmit="return confirm('Hapus tips ini?')">
-                @csrf @method('DELETE')
-                <button type="submit" class="p-2.5 rounded-full bg-error-container text-error hover:bg-error hover:text-white transition-all shadow-sm" title="Hapus">
-                    <span class="material-symbols-outlined text-[20px]">delete</span>
+            <form method="POST" action="{{ route('admin.tips.destroy', $tip->slug) }}" onsubmit="return confirm('Hapus tips ini?')" class="inline">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="p-2 text-error hover:bg-error-container/60 rounded-full transition" title="Hapus">
+                    <span class="material-symbols-outlined text-[18px]">delete</span>
                 </button>
             </form>
         </div>

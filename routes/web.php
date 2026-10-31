@@ -10,7 +10,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 
-// Public
+// ========== PUBLIC ROUTES ==========
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/resep', [RecipeController::class, 'daftar_resep'])->name('recipes.daftar_resep');
 Route::get('/resep/{recipe:slug}', [RecipeController::class, 'show'])->name('recipes.show');
@@ -20,33 +20,37 @@ Route::get('/bookmark', [BookmarkController::class, 'favorit'])->name('bookmarks
 
 require __DIR__.'/auth.php';
 
-// Auth required
-Route::get('/bookmark', [BookmarkController::class, 'favorit'])->name('bookmarks.favorit');
-
+// ========== AUTHENTICATED ROUTES ==========
 Route::middleware('auth')->group(function () {
     Route::post('/bookmark/{recipe:slug}', [BookmarkController::class, 'toggle'])->name('bookmarks.toggle');
     Route::delete('/bookmark/{bookmark}', [BookmarkController::class, 'destroy'])->name('bookmarks.destroy');
 
     Route::post('/resep/{recipe:slug}/rating', [RatingController::class, 'store'])->name('ratings.store');
     Route::delete('/rating/{rating}', [RatingController::class, 'destroy'])->name('ratings.destroy');
+    
     // Profile
-    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
-    Route::put('/profile/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 });
-// Admin
+
+// ========== ADMIN ROUTES ==========
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', [Admin\DashboardController::class, 'index'])->name('dashboard');
 
-    Route::resource('recipes', Admin\RecipeController::class);
+    // ✅ Rute Kustom Detail (Diletakkan di ATAS resource agar tidak bentrok)
+    Route::get('/recipes/{recipe}/detail', [Admin\RecipeController::class, 'detail_tampilan'])->name('recipes.detail_tampilan');
+    Route::get('/tips/{tip}/detail', [Admin\TipController::class, 'detail'])->name('tips.detail');
+
+    // ✅ Resource (Kecualikan 'show' karena sudah diganti dengan rute kustom di atas)
+    Route::resource('recipes', Admin\RecipeController::class)->except(['show']);
     Route::resource('categories', Admin\CategoryController::class);
-    Route::resource('tips', Admin\TipController::class);  
+    Route::resource('tips', Admin\TipController::class)->except(['show']);  
     Route::resource('users', Admin\UserController::class)->except(['create', 'store', 'edit']);
     Route::resource('reviews', Admin\ReviewController::class)->only(['index', 'destroy']); 
+    
+    // Settings & Export
     Route::get('/settings', [Admin\SettingController::class, 'index'])->name('settings.index');
-    Route::get('/recipes/{recipe}/detail', [Admin\RecipeController::class, 'detail_tampilan'])->name('recipes.detail_tampilan');
-
-    Route::get('/tips/{tip:id}', [Admin\TipController::class, 'detail'])->name('tips.show');
     Route::get('/export/recipes', [Admin\ExportController::class, 'recipes'])->name('export.recipes');
     Route::get('/export/users', [Admin\ExportController::class, 'users'])->name('export.users');
 });

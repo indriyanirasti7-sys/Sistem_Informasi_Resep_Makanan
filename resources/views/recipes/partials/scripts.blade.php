@@ -57,30 +57,43 @@ function copyIngredientsList() {
 
 // ========== 2. BOOKMARK (AJAX) ==========
 function toggleBookmark() {
-    const btn = document.getElementById('bookmarkBtn');
-    const icon = document.getElementById('bookmarkIcon');
-    const count = document.getElementById('bookmarkCount');
-    const isBookmarked = btn.dataset.bookmarked === 'true';
+    // 1. JIKA BELUM LOGIN (GUEST)
+    @guest
+        const modal = document.getElementById('loginPromptModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        return; // Hentikan proses, jangan jalankan fetch
+    @endguest
 
-    fetch(`/bookmark/${recipeId}`, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-    })
-    .then(res => res.json())
-    .then(data => {
-        const nowBookmarked = data.status === 'added';
-        btn.dataset.bookmarked = nowBookmarked ? 'true' : 'false';
-        icon.textContent = nowBookmarked ? 'bookmark' : 'bookmark_border';
-        icon.style.fontVariationSettings = `'FILL' ${nowBookmarked ? 1 : 0}`;
-        let n = parseInt(count.textContent.replace(/[^\d]/g, '')) || 0;
-        count.textContent = nowBookmarked ? n + 1 : Math.max(0, n - 1);
-        showToast(data.message);
-    })
-    .catch(() => showToast('Gagal. Coba lagi.'));
+    // 2. JIKA SUDAH LOGIN (AUTH)
+    @auth
+        const btn = document.getElementById('bookmarkBtn');
+        const icon = document.getElementById('bookmarkIcon');
+        const count = document.getElementById('bookmarkCount');
+        const isBookmarked = btn.dataset.bookmarked === 'true';
+
+        fetch(`/bookmark/${recipeId}`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(res => res.json())
+        .then(data => {
+            const nowBookmarked = data.status === 'added';
+            btn.dataset.bookmarked = nowBookmarked ? 'true' : 'false';
+            icon.textContent = nowBookmarked ? 'bookmark' : 'bookmark_border';
+            icon.style.fontVariationSettings = `'FILL' ${nowBookmarked ? 1 : 0}`;
+            let n = parseInt(count.textContent.replace(/[^\d]/g, '')) || 0;
+            count.textContent = nowBookmarked ? n + 1 : Math.max(0, n - 1);
+            showToast(data.message);
+        })
+        .catch(() => showToast('Gagal. Coba lagi.'));
+    @endauth
 }
 
 function copyRecipeLink() {

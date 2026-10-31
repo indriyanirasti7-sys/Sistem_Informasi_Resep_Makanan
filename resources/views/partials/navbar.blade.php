@@ -1,60 +1,64 @@
 @php
     $currentRoute = request()->route()?->getName();
-        $navItems = [
+    $navItems = [
         ['label' => 'Beranda',      'route' => 'home',              'active' => ['home']],
-        ['label' => 'Resep', 'route' => 'recipes.daftar_resep',     'active' => ['recipes.daftar_resep', 'recipes.daftar_resep']],
-        ['label' => 'Favorit',      'route' => 'bookmarks.favorit', 'active' => ['bookmarks.favorit']],  // ✅ BENAR
-        ['label' => 'Tips Memasak', 'route' => 'tips.panduan',        'active' => ['tips.panduan', 'tips.panduan']],
+        ['label' => 'Resep',        'route' => 'recipes.daftar_resep', 'active' => ['recipes.daftar_resep']],
+        ['label' => 'Favorit',      'route' => 'bookmarks.favorit', 'active' => ['bookmarks.favorit']], 
+        ['label' => 'Tips Memasak', 'route' => 'tips.panduan',      'active' => ['tips.panduan']],
     ];
 @endphp
 
-<header class="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-xl shadow-[0_2px_12px_-2px_rgba(90,58,34,0.06)]">
-    <div class="h-20 max-w-[1280px] mx-auto px-6 lg:px-8 flex items-center justify-between gap-6">
-
-        {{-- ============ LOGO & BRAND ============ --}}
-        <a href="{{ route('home') }}" class="flex items-center gap-3 shrink-0">
+{{-- NAVBAR FLOATING COKELAT (FULL WIDTH) --}}
+{{-- Perubahan: left-1/2 -translate-x-1/2 w-[95%] max-w-[1280px] diganti menjadi left-0 right-0 w-full px-4 --}}
+<header class="fixed top-4 left-0 right-0 z-50 w-full px-4 sm:px-6 flex flex-col gap-2">
+    
+    {{-- Main Navbar Container (Full Width) --}}
+    {{-- Perubahan: menambahkan w-full mx-auto pada container --}}
+    <div class="bg-primary rounded-[2rem] px-6 py-3 flex items-center justify-between gap-6 shadow-xl shadow-primary/20 w-full mx-auto">
+        
+        {{-- Logo & Brand --}}
+        <a href="{{ route('home') }}" class="flex items-center gap-3 shrink-0 group">
             <img alt="L'Art de Cuisine"
-                 class="w-10 h-10 rounded-full object-cover ring-2 ring-surface-container"
+                 class="w-10 h-10 rounded-xl object-cover ring-2 ring-white/20 group-hover:ring-white/50 transition-all"
                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5GoTuEyWYTwoGI225Teo5lSMZZidm_qW5jpOCHm646LCZ6IigJoJ8PCQzpjzZXs1XGwyLjm50AN_e0RjVErbcxNrVmPcoeWGvGBXWGVYNUqTI6fxTEE5KLwNFMrDJnAwjYbV889BwRPQw3COYUhsD4mVHPKgF83SEBb-6095KMwryj3kb5-1o84Ay9tydqVY8K2cGqBKijQd2TBEXlGQETt0j5Pzxtc8YeVMK8emsi_fGZGP3Dy1Y" />
             <div class="flex flex-col leading-tight">
-                <span class="font-['Playfair_Display'] text-[19px] sm:text-[20px] font-semibold tracking-tight text-primary">
+                <span class="font-['Playfair_Display'] text-[19px] sm:text-[20px] font-semibold tracking-tight text-white">
                     L'Art de Cuisine
                 </span>
-                <span class="text-[10px] sm:text-[11px] text-on-surface-variant font-medium tracking-wide">
+                <span class="text-[10px] sm:text-[11px] text-primary-fixed-dim font-medium tracking-wide">
                     Inspirasi &amp; Resep Kuliner
                 </span>
             </div>
         </a>
 
-        {{-- ============ NAV MENU (Center) ============ --}}
-        <nav class="hidden xl:flex items-center gap-1">
+        {{-- Menu Navigasi Tengah --}}
+        <nav class="hidden xl:flex items-center gap-1.5">
             @foreach ($navItems as $item)
                 @php
                     $isActive = in_array($currentRoute, $item['active']);
                     $href = Route::has($item['route']) ? route($item['route']) : '#';
                 @endphp
                 <a href="{{ $href }}"
-                   class="px-4 py-2 rounded-full text-[13px] font-semibold transition-all whitespace-nowrap
+                   class="px-4 py-2 rounded-xl text-[13px] font-semibold transition-all whitespace-nowrap
                           {{ $isActive
-                              ? 'bg-primary text-white shadow-sm'
-                              : 'text-on-surface-variant hover:text-primary hover:bg-surface-container' }}">
+                              ? 'bg-white text-primary shadow-sm' 
+                              : 'text-white/80 hover:text-white hover:bg-white/10' }}">
                     {{ $item['label'] }}
                 </a>
             @endforeach
         </nav>
 
-        {{-- ============ SEARCH + PROFILE (Right) ============ --}}
+        {{-- Search & Profile --}}
         <div class="flex items-center gap-3 shrink-0">
-
             {{-- Search --}}
-            <form action="{{ Route::has('recipes.index') ? route('recipes.index') : '#' }}" method="GET"
+            <form action="{{ Route::has('recipes.daftar_resep') ? route('recipes.daftar_resep') : '#' }}" method="GET"
                   class="relative hidden md:block">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px] pointer-events-none">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white/70 text-[18px] pointer-events-none">
                     search
                 </span>
                 <input type="text" name="q" value="{{ request('q') }}"
-                       placeholder="Cari resep, bahan, atau koki..."
-                       class="w-44 lg:w-64 pl-9 pr-4 py-2 bg-surface-container-lowest text-on-surface text-[13px] rounded-full placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/20 focus:w-56 lg:focus:w-72 shadow-[0_1px_3px_0_rgba(90,58,34,0.04)] transition-all" />
+                       placeholder="Cari resep..."
+                       class="w-44 lg:w-56 pl-9 pr-4 py-2 bg-white/10 text-white text-[13px] rounded-xl placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-white/30 focus:bg-white/20 transition-all" />
             </form>
 
             {{-- Profile / Login --}}
@@ -62,22 +66,18 @@
                 <div class="relative group">
                     <button type="button" class="flex items-center gap-1.5 cursor-pointer focus:outline-none">
                         <img alt="{{ Auth::user()->name }}"
-                             class="w-9 h-9 rounded-full object-cover ring-2 ring-surface-container"
+                             class="w-9 h-9 rounded-xl object-cover ring-2 ring-white/30 group-hover:ring-white transition-all"
                              src="{{ Auth::user()->avatar ? Storage::url(Auth::user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=5a3a22&color=fff&bold=true' }}" />
-                        <span class="material-symbols-outlined text-on-surface-variant text-[18px] group-hover:text-primary transition-colors">
+                        <span class="material-symbols-outlined text-white/80 text-[18px] group-hover:text-white transition-colors">
                             expand_more
                         </span>
                     </button>
 
                     {{-- Dropdown --}}
-                    <div class="absolute right-0 top-full mt-2 w-56 bg-surface-container-lowest rounded-2xl shadow-[0_12px_32px_-8px_rgba(90,58,34,0.15)] py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-outline-variant/30">
-                        {{-- User info --}}
+                    <div class="absolute right-0 top-full mt-4 w-56 bg-surface-container-lowest rounded-2xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-outline-variant/30">
                         <div class="px-4 py-2.5 border-b border-surface-container">
                             <p class="text-sm font-semibold text-primary leading-tight">{{ Auth::user()->name }}</p>
                             <p class="text-[11px] text-outline truncate">{{ Auth::user()->email }}</p>
-                            <span class="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider {{ Auth::user()->isAdmin() ? 'bg-primary/10 text-primary' : 'bg-secondary/15 text-secondary' }}">
-                                {{ Auth::user()->isAdmin() ? 'Admin' : 'User' }}
-                            </span>
                         </div>
 
                         @if (Auth::user()->isAdmin())
@@ -108,7 +108,7 @@
                 </div>
             @else
                 <a href="{{ route('login') }}"
-                   class="px-5 py-2.5 rounded-full bg-primary text-white text-[13px] font-semibold hover:bg-primary-container transition-all shadow-sm whitespace-nowrap">
+                   class="px-5 py-2.5 rounded-xl bg-white text-primary text-[13px] font-bold hover:bg-surface-container transition-all shadow-sm whitespace-nowrap">
                     Masuk
                 </a>
             @endauth
@@ -116,7 +116,7 @@
     </div>
 
     {{-- Mobile Nav Menu --}}
-    <nav class="xl:hidden flex items-center gap-1 px-4 pb-3 overflow-x-auto no-scrollbar"
+    <nav class="xl:hidden flex items-center justify-center gap-1 p-1.5 bg-primary rounded-2xl shadow-lg overflow-x-auto no-scrollbar w-full mx-auto"
          style="scrollbar-width:none;">
         @foreach ($navItems as $item)
             @php
@@ -124,10 +124,10 @@
                 $href = Route::has($item['route']) ? route($item['route']) : '#';
             @endphp
             <a href="{{ $href }}"
-               class="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all
+               class="px-4 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all
                       {{ $isActive
-                          ? 'bg-primary text-white'
-                          : 'text-on-surface-variant hover:text-primary hover:bg-surface-container' }}">
+                          ? 'bg-white text-primary shadow-sm'
+                          : 'text-white/80 hover:text-white hover:bg-white/10' }}">
                 {{ $item['label'] }}
             </a>
         @endforeach

@@ -214,14 +214,14 @@
         <div class="overflow-x-auto mt-4">
             <table class="w-full text-left border-collapse" id="recipeTable">
                 <thead>
-                    <tr class="border-b border-surface-container text-on-surface-variant text-[11px] uppercase tracking-wider">
+                    <tr class="border-b border-surface-container text-on-surface-variant text-[11px] uppercase tracking-wider text-center">
                         <th class="py-4 px-3 w-16">Foto</th>
                         <th class="py-4 px-3">Judul Resep & Chef</th>
                         <th class="py-4 px-3">Kategori</th>
                         <th class="py-4 px-3">Porsi & Waktu</th>
                         <th class="py-4 px-3">Rating</th>
                         <th class="py-4 px-3">Status</th>
-                        <th class="py-4 px-3 text-right">Aksi</th>
+                        <th class="py-4 px-3">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-surface-container">

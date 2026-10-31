@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 class RecipeController extends Controller
 {
-    /* ============ READ ============ */
+    
 
     public function index(Request $request)
     {
@@ -51,14 +51,14 @@ class RecipeController extends Controller
         return view('admin.recipes.detail_tampilan', compact('recipe'));
     }
 
-    /* ============ CREATE ============ */
+ 
 
     public function create()
     {
         $categories  = Category::orderBy('name')->get();
         $ingredients = Ingredient::orderBy('name')->get();
 
-        // ✅ FIX: Path view disesuaikan dengan folder recipes
+    
         return view('admin.recipes.tambah_resep', compact('categories', 'ingredients'));
     }
 
@@ -85,9 +85,9 @@ class RecipeController extends Controller
             $this->syncSteps($recipe, $request->input('steps', []));
         });
 
-        // ✅ FIX: Redirect ke daftar resep
+
         return redirect()
-            ->route('admin.recipes.index')
+            ->route('admin.recipes.daftar_resep')
             ->with('success', 'Resep berhasil ditambahkan.');
     }
 
@@ -127,25 +127,22 @@ class RecipeController extends Controller
             $this->syncSteps($recipe, $request->input('steps', []));
         });
 
-        // ✅ FIX: Redirect ke daftar resep
+  
         return redirect()
             ->route('admin.recipes.index')
             ->with('success', 'Resep berhasil diperbarui.');
     }
 
-    /* ============ DELETE ============ */
+    
 
     public function destroy(Recipe $recipe)
     {
         $recipe->delete();
 
-        // ✅ FIX: Redirect ke daftar resep
         return redirect()
             ->route('admin.recipes.index')
             ->with('success', 'Resep berhasil dihapus.');
     }
-
-    /* ============ HELPERS ============ */
 
     private function validateRecipe(Request $request, ?int $ignoreId = null): array
     {
@@ -160,7 +157,7 @@ class RecipeController extends Controller
             'status'                   => 'required|in:draft,published',
             'image'                    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             
-            // ✅ FIX: Validasi disesuaikan dengan form UI baru (Name, Amount, Unit)
+     
             'ingredients'              => 'required|array',
             'ingredients.*.name'       => 'required|string|max:100',
             'ingredients.*.amount'     => 'required|numeric|min:0',
@@ -183,7 +180,7 @@ class RecipeController extends Controller
         foreach ($items as $item) {
             if (empty($item['name']) || !isset($item['amount'])) continue;
 
-            // ✅ FIX: Cari bahan berdasarkan nama, kalau tidak ada, buat baru otomatis
+         
             $ingredient = Ingredient::firstOrCreate(
                 ['name' => $item['name']],
                 ['unit' => $item['unit'] ?? 'gram'] // Satuan default jika bahan baru

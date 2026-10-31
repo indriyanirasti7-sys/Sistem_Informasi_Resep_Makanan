@@ -141,7 +141,7 @@
                         {{-- Body --}}
                         <div class="p-6 flex flex-col flex-1 justify-between gap-4">
                             <div class="flex flex-col gap-2">
-                                <a href="{{ route('tips.show', $tip->slug) }}">
+                                <a href="{{ route('tips.detail_tips', $tip->slug) }}">
                                     <h3 class="font-['Playfair_Display'] text-lg text-primary group-hover:text-primary-container transition leading-snug line-clamp-2">
                                         {{ $tip->title }}
                                     </h3>
