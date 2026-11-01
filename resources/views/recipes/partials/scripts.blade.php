@@ -2,7 +2,7 @@
 // ========== 1. INGREDIENTS SCALER ==========
 const basePortions = {{ $recipe->servings }};
 let currentPortion = {{ $recipe->servings }};
-const recipeId = {{ $recipe->id }};
+const recipeSlug = '{{ $recipe->slug }}';
 
 const ingredientsData = JSON.parse(document.getElementById('recipe-ingredients-data')?.textContent || '[]');
 const cookingStepsData = JSON.parse(document.getElementById('recipe-steps-data')?.textContent || '[]');
@@ -74,7 +74,7 @@ function toggleBookmark() {
         const count = document.getElementById('bookmarkCount');
         const isBookmarked = btn.dataset.bookmarked === 'true';
 
-        fetch(`/bookmark/${recipeId}`, {
+        fetch(`/bookmark/${recipeSlug}`, {
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,

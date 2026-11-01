@@ -32,6 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+
+    Route::post('/reviews/{rating}/vote', [\App\Http\Controllers\RatingController::class, 'toggleVote'])->name('reviews.vote');
+
 });
 
 // ========== ADMIN ROUTES ==========
