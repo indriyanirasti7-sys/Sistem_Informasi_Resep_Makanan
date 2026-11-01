@@ -13,8 +13,7 @@
 @endpush
 
 @section('content')
-<div class="max-w-[1280px] mx-auto w-full px-5 lg:px-12 py-8 flex flex-col gap-12">
-
+<div class="w-full px-5 lg:px-12 pt-32 pb-16">
     {{-- ========== 1. BREADCRUMB & HEADER ========== --}}
     <section class="flex flex-col gap-4">
 
@@ -120,7 +119,7 @@
 
         {{-- ========== 4. TIPS GRID ========== --}}
         <section>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tips-grid">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach ($tips as $tip)
                     <article class="tip-card flex flex-col bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group cursor-pointer"
                              data-title="{{ strtolower($tip->title . ' ' . strip_tags($tip->content)) }}">

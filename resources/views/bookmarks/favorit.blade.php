@@ -11,8 +11,7 @@
 @endpush
 
 @section('content')
-<div class="w-full max-w-[1280px] mx-auto px-5 lg:px-12 pt-32 pb-16">
-
+<div class="w-full px-5 lg:px-12 pt-32 pb-16">
     {{-- ========== HEADER ========== --}}
     <header class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8">
         <div class="flex flex-col gap-2 max-w-2xl">
@@ -78,9 +77,8 @@
             </form>
         </section>
 
-        {{-- Grid Favorit --}}
-        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            @foreach ($bookmarks as $bookmark)
+        {{-- Grid Favorit --}}      
+            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-12">            @foreach ($bookmarks as $bookmark)
                 @php $recipe = $bookmark->recipe; @endphp
                 @if (!$recipe) @continue @endif
                 @php
@@ -251,7 +249,7 @@
                     </a>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-5">
                     @foreach ($popularRecipes as $recipe)
                         <article class="group bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between">
                             <div>
@@ -271,7 +269,7 @@
                                     {{-- Save Button --}}
                                     <button type="button"
                                             class="save-btn absolute top-3 right-3 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-outline hover:text-error hover:bg-white shadow-sm transition-all"
-                                            data-recipe-id="{{ $recipe->slug }}"
+                                            data-recipe-slug="{{ $recipe->slug }}"
                                             data-title="{{ $recipe->title }}"
                                             aria-label="Simpan ke favorit">
                                         <span class="material-symbols-outlined text-[20px] heart-icon">favorite_border</span>

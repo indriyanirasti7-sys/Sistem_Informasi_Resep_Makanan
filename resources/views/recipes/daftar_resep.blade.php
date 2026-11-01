@@ -12,8 +12,7 @@
 @endpush
 
 @section('content')
-<div class="relative w-full max-w-[1280px] mx-auto px-5 lg:px-12 pt-32 pb-16">
-
+<div class="relative w-full px-5 lg:px-12 pt-32 pb-16">
     {{-- Ambient Glow --}}
     <div class="absolute top-12 left-1/3 w-96 h-96 bg-primary-fixed/30 rounded-full blur-3xl pointer-events-none -z-10"></div>
     <div class="absolute top-48 right-10 w-80 h-80 bg-secondary-fixed/35 rounded-full blur-3xl pointer-events-none -z-10"></div>
@@ -137,8 +136,7 @@
     {{-- RECIPE GRID --}}
         {{-- RECIPE GRID --}}
     @if ($recipes->count())
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-12">
-            @foreach ($recipes as $recipe)
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">            @foreach ($recipes as $recipe)
                 @php
                     $diffColor = match($recipe->difficulty) {
                         'Mudah'  => 'bg-secondary-container text-on-secondary-container',
