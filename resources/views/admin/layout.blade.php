@@ -61,72 +61,109 @@
 <body class="bg-background font-body-md text-on-surface antialiased">
 
 {{-- ============ SIDEBAR ============ --}}
-<aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low z-50 flex flex-col justify-between py-6 px-4 shadow-[0_1px_8px_rgba(90,58,34,0.04)] overflow-y-auto">
-
-    <div class="flex flex-col gap-6">
-        <a href="{{ route('home') }}" class="flex items-center gap-3 px-3 py-2">
-            <img alt="L'Art de Cuisine" class="h-8 w-auto object-contain"
-                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5GoTuEyWYTwoGI225Teo5lSMZZidm_qW5jpOCHm646LCZ6IigJoJ8PCQzpjzZXs1XGwyLjm50AN_e0RjVErbcxNrVmPcoeWGvGBXWGVYNUqTI6fxTEE5KLwNFMrDJnAwjYbV889BwRPQw3COYUhsD4mVHPKgF83SEBb-6095KMwryj3kb5-1o84Ay9tydqVY8K2cGqBKijQd2TBEXlGQETt0j5Pzxtc8YeVMK8emsi_fGZGP3Dy1Y"/>
+<aside class="fixed left-0 top-0 h-screen w-72 bg-surface-container z-50 flex flex-col justify-between p-4 shadow-sm">
+    
+    <!-- BAGIAN ATAS (Logo & Menu) -->
+    <div class="flex flex-col gap-6 overflow-y-auto no-scrollbar">
+        
+        <!-- Logo Brand -->
+        <div class="flex items-center gap-3 px-2 mt-2">
+            <img alt="L'Art de Cuisine" class="h-10 w-auto object-contain" src="{{ asset('path/to/your/logo.png') }}"/>
             <div class="flex flex-col">
-                <span class="font-display text-lg text-primary tracking-tight font-bold leading-tight">L'Art de Cuisine</span>
-                <span class="text-[11px] uppercase tracking-wider text-secondary font-bold">Portal Gastronomi</span>
+                <span class="font-display text-lg text-primary font-bold leading-none">L'Art de Cuisine</span>
+                <span class="text-[10px] uppercase tracking-wider text-secondary mt-1 font-semibold">Portal Gastronomi</span>
             </div>
-        </a>
+        </div>
 
-        <nav class="flex flex-col gap-1.5">
-            @php
-                $current = request()->route()?->getName();
-                $navItems = [
-                    ['label' => 'Dashboard',       'route' => 'admin.dashboard',        'icon' => 'dashboard', 'pattern' => 'admin.dashboard'],
-                    ['label' => 'Kelola Resep',    'route' => 'admin.recipes.index',    'icon' => 'menu_book', 'pattern' => 'admin.recipes.*'],
-                    ['label' => 'Kelola Kategori', 'route' => 'admin.categories.index', 'icon' => 'category',  'pattern' => 'admin.categories.*'],
-                    ['label' => 'Kelola Tips',     'route' => 'admin.tips.index',   'icon' => 'lightbulb', 'pattern' => 'admin.tips.*'],
-                    ['label' => 'Data User',       'route' => 'admin.users.index',      'icon' => 'group',     'pattern' => 'admin.users.*'],
-                    ['label' => 'Ulasan',          'route' => 'admin.reviews.index',    'icon' => 'rate_review',   'pattern' => 'admin.reviews.*'],
-                    ['label' => 'Pengaturan', 'route' => 'admin.settings.index', 'icon' => 'settings', 'pattern' => 'admin.settings.*'],
-                ];
-            @endphp
+        <!-- Navigasi Berkelompok -->
+        <nav class="flex flex-col gap-6">
+            
+            {{-- Grup 1: Utama --}}
+            <div>
+                <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-outline mb-2">Utama</p>
+                <div class="flex flex-col gap-1">
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-primary text-white shadow-md' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary' }}">
+                        <span class="material-symbols-outlined text-[20px]">dashboard</span>
+                        <span class="text-sm font-semibold">Dashboard</span>
+                    </a>
+                </div>
+            </div>
 
-            @foreach ($navItems as $item)
-                @php
-                    $isActive = $item['pattern'] && \Str::is($item['pattern'], $current);
-                    $href = $item['route'] && Route::has($item['route']) ? route($item['route']) : '#';
-                @endphp
-                <a href="{{ $href }}"
-                   class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all
-                          {{ $isActive
-                              ? 'bg-primary-container text-white font-bold shadow-sm'
-                              : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface' }}">
-                    <span class="material-symbols-outlined text-[20px]">{{ $item['icon'] }}</span>
-                    <span class="text-sm font-semibold">{{ $item['label'] }}</span>
-                </a>
-            @endforeach
+            {{-- Grup 2: Manajemen Konten --}}
+            <div>
+                <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-outline mb-2">Manajemen Konten</p>
+                <div class="flex flex-col gap-1">
+                    <a href="{{ route('admin.recipes.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.recipes.*') ? 'bg-primary text-white shadow-md' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary' }}">
+                        <span class="material-symbols-outlined text-[20px]">menu_book</span>
+                        <span class="text-sm font-semibold">Kelola Resep</span>
+                    </a>
+                    <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.categories.*') ? 'bg-primary text-white shadow-md' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary' }}">
+                        <span class="material-symbols-outlined text-[20px]">category</span>
+                        <span class="text-sm font-semibold">Kelola Kategori</span>
+                    </a>
+                    <a href="{{ route('admin.tips.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.tips.*') ? 'bg-primary text-white shadow-md' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary' }}">
+                        <span class="material-symbols-outlined text-[20px]">lightbulb</span>
+                        <span class="text-sm font-semibold">Kelola Tips</span>
+                    </a>
+                </div>
+            </div>
 
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit"
-                        class="w-full flex items-center gap-3 px-4 py-2.5 rounded-full text-error hover:bg-error-container/40 transition-all">
-                    <span class="material-symbols-outlined text-[20px]">logout</span>
-                    <span class="text-sm font-semibold">Keluar</span>
-                </button>
-            </form>
+            {{-- Grup 3: Interaksi --}}
+            <div>
+                <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-outline mb-2">Interaksi</p>
+                <div class="flex flex-col gap-1">
+                    <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.users.*') ? 'bg-primary text-white shadow-md' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary' }}">
+                        <span class="material-symbols-outlined text-[20px]">group</span>
+                        <span class="text-sm font-semibold">Data User</span>
+                    </a>
+                    <a href="{{ route('admin.reviews.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.reviews.*') ? 'bg-primary text-white shadow-md' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary' }}">
+                        <span class="material-symbols-outlined text-[20px]">reviews</span>
+                        <span class="text-sm font-semibold">Ulasan</span>
+                    </a>
+                </div>
+            </div>
+
+            {{-- Grup 4: Sistem --}}
+            <div>
+                <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-outline mb-2">Sistem</p>
+                <div class="flex flex-col gap-1">
+                    <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.settings.*') ? 'bg-primary text-white shadow-md' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary' }}">
+                        <span class="material-symbols-outlined text-[20px]">settings</span>
+                        <span class="text-sm font-semibold">Pengaturan</span>
+                    </a>
+                </div>
+            </div>
+
         </nav>
     </div>
 
-    <div class="p-3 bg-surface-container rounded-2xl flex items-center justify-between shadow-sm">
-        <div class="flex items-center gap-3 min-w-0">
-            <div class="relative shrink-0">
-                <img alt="{{ Auth::user()->name }}" class="w-8 h-8 rounded-full object-cover"
-                     src="{{ Auth::user()->avatar ? Storage::url(Auth::user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=5a3a22&color=fff&bold=true' }}"/>
-                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-secondary rounded-full ring-2 ring-surface-container"></span>
+        <!-- BAGIAN BAWAH (Profil di Atas, Keluar di Bawah) -->
+    <div class="flex flex-col gap-3 mt-4 pt-4 border-t border-surface-container-high">
+        
+        <!-- Kartu Profil Admin (Posisi Atas) -->
+        <div class="bg-surface-container-lowest rounded-2xl p-3 flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-3">
+                <img src="https://ui-avatars.com/api/?name=Chef+Antoine&background=5a3a22&color=fff&bold=true" class="w-10 h-10 rounded-full object-cover"/>
+                <div class="flex flex-col">
+                    <span class="text-xs font-bold text-primary">Chef Antoine</span>
+                    <span class="text-[10px] text-secondary">Super Admin</span>
+                </div>
             </div>
-            <div class="flex flex-col min-w-0">
-                <span class="text-xs font-bold text-on-surface leading-tight truncate">{{ Auth::user()->name }}</span>
-                <span class="text-[11px] text-on-surface-variant">Super Admin</span>
-            </div>
+            <span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
         </div>
-        <span class="material-symbols-outlined text-white bg-secondary rounded-full p-1 text-[16px] shrink-0">verified</span>
+
+        <!-- Tombol Keluar (Posisi Bawah) -->
+                <!-- Tombol Keluar (Dibungkus Kotak) -->
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-2xl bg-error-container/40 border border-error-container/60 text-error hover:bg-error-container hover:text-on-error-container transition-all shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">logout</span>
+                <span class="text-sm font-bold">Keluar</span>
+            </button>
+        </form>
+
     </div>
+
 </aside>
 
 {{-- ============ CONTENT WRAPPER ============ --}}
@@ -147,11 +184,12 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <div class="relative flex items-center">
-                <span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px]">search</span>
-                <input type="text" placeholder="Cari resep, chef, tag..."
-                       class="bg-surface-container-lowest text-on-surface text-sm rounded-full pl-10 pr-4 py-2 w-64 border border-outline-variant focus:outline-none focus:ring-2 focus:ring-secondary/40 shadow-sm placeholder:text-outline"/>
-            </div>
+            <form action="{{ route('admin.recipes.index') }}" method="GET" class="relative flex items-center">
+                <span class="material-symbols-outlined absolute left-4 text-outline text-[18px]">search</span>
+                <input type="text" name="q" value="{{ request('q') }}" 
+                    class="w-72 lg:w-96 pl-10 pr-4 py-2 rounded-full bg-surface-container-lowest text-on-surface placeholder:text-outline text-sm shadow-sm outline-none focus:ring-2 focus:ring-secondary/40 transition-all" 
+                    placeholder="Cari resep, chef, tag..." />
+            </form>
 
             <button type="button" class="relative p-2.5 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors text-on-surface-variant hover:text-on-surface shadow-sm">
                 <span class="material-symbols-outlined text-[20px]">notifications</span>
