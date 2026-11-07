@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="overflow-x-hidden">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -58,136 +58,152 @@
     </script>
 </head>
 
-<body class="bg-background font-body-md text-on-surface antialiased">
+<body class="bg-background font-body-md text-on-surface antialiased overflow-x-hidden">
 
-{{-- ============ SIDEBAR ============ --}}
-<aside class="fixed left-0 top-0 h-screen w-72 bg-surface-container z-50 flex flex-col justify-between p-4 shadow-sm">
+<!-- OVERLAY GELAP (Hanya muncul di Mobile saat sidebar dibuka) -->
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden transition-opacity duration-300"></div>
+
+{{-- ============ SIDEBAR (HIJAU) ============ --}}
+<aside id="sidebar" class="fixed left-0 top-0 h-screen w-72 bg-secondary z-50 flex flex-col justify-between p-4 shadow-xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
     
     <!-- BAGIAN ATAS (Logo & Menu) -->
-    <div class="flex flex-col gap-6 overflow-y-auto no-scrollbar">
+    <div class="flex flex-col gap-6 overflow-y-auto overflow-x-hidden no-scrollbar w-full">
         
-        <!-- Logo Brand -->
-        <div class="flex items-center gap-3 px-2 mt-2">
-            <img alt="L'Art de Cuisine" class="h-10 w-auto object-contain" src="{{ asset('path/to/your/logo.png') }}"/>
-            <div class="flex flex-col">
-                <span class="font-display text-lg text-primary font-bold leading-none">L'Art de Cuisine</span>
-                <span class="text-[10px] uppercase tracking-wider text-secondary mt-1 font-semibold">Portal Gastronomi</span>
+        <!-- Logo Brand & Tombol X -->
+        <div class="flex items-center gap-3 px-2 mt-2 w-full">
+            <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white shrink-0">
+                <span class="material-symbols-outlined text-[24px]">restaurant_menu</span>
             </div>
+            
+            <!-- Div pembungkus teks (min-w-0 agar bisa menyusut) -->
+            <div class="flex flex-col min-w-0 flex-1">
+                <span class="font-display text-lg text-white font-bold leading-none truncate">L'Art de Cuisine</span>
+                <span class="text-[10px] uppercase tracking-wider text-white/60 mt-1 font-semibold truncate">Portal Gastronomi</span>
+            </div>
+            
+            <!-- TOMBOL SILANG (Hanya muncul di HP) -->
+            <button id="close-sidebar-btn" type="button" class="lg:hidden shrink-0 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors ml-auto">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
         </div>
 
         <!-- Navigasi Berkelompok -->
-        <nav class="flex flex-col gap-6">
-            
-            {{-- Grup 1: Utama --}}
+        <nav class="flex flex-col gap-6 w-full">
             <div>
-                <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-outline mb-2">Utama</p>
+                <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-white/50 mb-2">Utama</p>
                 <div class="flex flex-col gap-1">
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-primary text-white shadow-md' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary' }}">
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
                         <span class="material-symbols-outlined text-[20px]">dashboard</span>
                         <span class="text-sm font-semibold">Dashboard</span>
                     </a>
                 </div>
             </div>
 
-            {{-- Grup 2: Manajemen Konten --}}
             <div>
-                <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-outline mb-2">Manajemen Konten</p>
+                <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-white/50 mb-2">Manajemen Konten</p>
                 <div class="flex flex-col gap-1">
-                    <a href="{{ route('admin.recipes.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.recipes.*') ? 'bg-primary text-white shadow-md' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary' }}">
+                    <a href="{{ route('admin.recipes.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.recipes.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
                         <span class="material-symbols-outlined text-[20px]">menu_book</span>
                         <span class="text-sm font-semibold">Kelola Resep</span>
                     </a>
-                    <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.categories.*') ? 'bg-primary text-white shadow-md' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary' }}">
+                    <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.categories.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
                         <span class="material-symbols-outlined text-[20px]">category</span>
                         <span class="text-sm font-semibold">Kelola Kategori</span>
                     </a>
-                    <a href="{{ route('admin.tips.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.tips.*') ? 'bg-primary text-white shadow-md' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary' }}">
+                    <a href="{{ route('admin.tips.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.tips.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
                         <span class="material-symbols-outlined text-[20px]">lightbulb</span>
                         <span class="text-sm font-semibold">Kelola Tips</span>
                     </a>
                 </div>
             </div>
 
-            {{-- Grup 3: Interaksi --}}
             <div>
-                <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-outline mb-2">Interaksi</p>
+                <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-white/50 mb-2">Interaksi</p>
                 <div class="flex flex-col gap-1">
-                    <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.users.*') ? 'bg-primary text-white shadow-md' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary' }}">
+                    <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.users.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
                         <span class="material-symbols-outlined text-[20px]">group</span>
                         <span class="text-sm font-semibold">Data User</span>
                     </a>
-                    <a href="{{ route('admin.reviews.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.reviews.*') ? 'bg-primary text-white shadow-md' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary' }}">
+                    <a href="{{ route('admin.reviews.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.reviews.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
                         <span class="material-symbols-outlined text-[20px]">reviews</span>
                         <span class="text-sm font-semibold">Ulasan</span>
                     </a>
                 </div>
             </div>
 
-            {{-- Grup 4: Sistem --}}
             <div>
-                <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-outline mb-2">Sistem</p>
+                <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-white/50 mb-2">Sistem</p>
                 <div class="flex flex-col gap-1">
-                    <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.settings.*') ? 'bg-primary text-white shadow-md' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-primary' }}">
+                    <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.settings.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
                         <span class="material-symbols-outlined text-[20px]">settings</span>
                         <span class="text-sm font-semibold">Pengaturan</span>
                     </a>
                 </div>
             </div>
-
         </nav>
     </div>
 
-        <!-- BAGIAN BAWAH (Profil di Atas, Keluar di Bawah) -->
-    <div class="flex flex-col gap-3 mt-4 pt-4 border-t border-surface-container-high">
-        
-        <!-- Kartu Profil Admin (Posisi Atas) -->
-        <div class="bg-surface-container-lowest rounded-2xl p-3 flex items-center justify-between shadow-sm">
+    <!-- BAGIAN BAWAH (Profil & Keluar) -->
+    <div class="flex flex-col gap-3 mt-4 pt-4 border-t border-white/10">
+        <!-- Kartu Profil -->
+                <!-- Kartu Profil Admin (Posisi Atas) -->
+        <div class="bg-black/10 rounded-2xl p-3 flex items-center justify-between shadow-sm">
             <div class="flex items-center gap-3">
-                <img src="https://ui-avatars.com/api/?name=Chef+Antoine&background=5a3a22&color=fff&bold=true" class="w-10 h-10 rounded-full object-cover"/>
+                <!-- Mengambil foto dari database, jika kosong pakai inisial nama asli -->
+                <img src="{{ Auth::user()->avatar ? Storage::url(Auth::user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=fff&color=55643b&bold=true' }}" 
+                     class="w-10 h-10 rounded-full object-cover shadow-sm"/>
+                
                 <div class="flex flex-col">
-                    <span class="text-xs font-bold text-primary">Chef Antoine</span>
-                    <span class="text-[10px] text-secondary">Super Admin</span>
+                    <!-- Mengambil nama asli dari database -->
+                    <span class="text-xs font-bold text-white">{{ Auth::user()->name }}</span>
+                    
+                    <!-- Menampilkan role -->
+                    <span class="text-[10px] text-white/60 capitalize">{{ Auth::user()->role === 'admin' ? 'Super Admin' : 'User' }}</span>
                 </div>
             </div>
-            <span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
+            <span class="material-symbols-outlined text-white/60 text-[18px]" title="Terverifikasi">verified</span>
         </div>
 
-        <!-- Tombol Keluar (Posisi Bawah) -->
-                <!-- Tombol Keluar (Dibungkus Kotak) -->
+        <!-- Tombol Keluar -->
         <form method="POST" action="{{ route('logout') }}">
             @csrf
-            <button type="submit" class="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-2xl bg-error-container/40 border border-error-container/60 text-error hover:bg-error-container hover:text-on-error-container transition-all shadow-sm">
+            <button type="submit" class="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-2xl bg-white/10 text-white hover:bg-error hover:text-white transition-all shadow-sm">
                 <span class="material-symbols-outlined text-[20px]">logout</span>
                 <span class="text-sm font-bold">Keluar</span>
             </button>
         </form>
-
     </div>
-
 </aside>
 
 {{-- ============ CONTENT WRAPPER ============ --}}
-<div class="pl-72">
+<div class="lg:pl-72">
 
     {{-- HEADER --}}
-    <header class="fixed top-0 left-72 right-0 h-20 bg-surface/85 backdrop-blur-xl z-40 flex items-center justify-between px-8 shadow-[0_1px_8px_rgba(90,58,34,0.04)]">
-        <div class="flex flex-col gap-0.5">
-            <div class="flex items-center gap-2 text-[11px] text-on-surface-variant">
-                <span>Admin</span>
-                <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-                <span class="text-secondary font-bold">@yield('breadcrumb', 'Dashboard')</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-                <span class="text-[11px] text-secondary font-bold tracking-wide uppercase">Sistem Aktif • Sinkronisasi Lancar</span>
+    <header class="fixed top-0 left-0 lg:left-72 right-0 h-20 bg-surface/85 backdrop-blur-xl z-40 flex items-center justify-between px-4 lg:px-8 shadow-[0_1px_8px_rgba(90,58,34,0.04)]">
+        
+        <div class="flex items-center gap-4">
+            <button id="mobile-menu-btn" type="button" class="lg:hidden p-2.5 rounded-full bg-surface-container hover:bg-surface-container-high text-primary transition-colors shadow-sm">
+                <span class="material-symbols-outlined text-[24px]">menu</span>
+            </button>
+
+            <div class="flex flex-col gap-0.5">
+                <div class="flex items-center gap-2 text-[11px] text-on-surface-variant">
+                    <span>Admin</span>
+                    <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                    <span class="text-secondary font-bold">@yield('breadcrumb', 'Dashboard')</span>
+                </div>
+                <div class="hidden sm:flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                    <span class="text-[11px] text-secondary font-bold tracking-wide uppercase">Sistem Aktif</span>
+                </div>
             </div>
         </div>
 
-        <div class="flex items-center gap-4">
-            <form action="{{ route('admin.recipes.index') }}" method="GET" class="relative flex items-center">
+        <div class="flex items-center gap-3 lg:gap-4">
+            <form action="{{ route('admin.recipes.index') }}" method="GET" class="relative hidden md:flex items-center">
                 <span class="material-symbols-outlined absolute left-4 text-outline text-[18px]">search</span>
                 <input type="text" name="q" value="{{ request('q') }}" 
-                    class="w-72 lg:w-96 pl-10 pr-4 py-2 rounded-full bg-surface-container-lowest text-on-surface placeholder:text-outline text-sm shadow-sm outline-none focus:ring-2 focus:ring-secondary/40 transition-all" 
+                    class="w-56 lg:w-96 pl-10 pr-4 py-2 rounded-full bg-surface-container-lowest text-on-surface placeholder:text-outline text-sm shadow-sm outline-none focus:ring-2 focus:ring-secondary/40 transition-all" 
                     placeholder="Cari resep, chef, tag..." />
             </form>
 
@@ -196,18 +212,44 @@
                 <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-tertiary-container rounded-full ring-2 ring-surface"></span>
             </button>
 
-            <a href="{{ route('home') }}" class="flex items-center gap-2 pl-2">
-                <img alt="{{ Auth::user()->name }}" class="w-8 h-8 rounded-full object-cover shadow-sm"
+            <a href="{{ route('home') }}" class="flex items-center gap-2 pl-1 lg:pl-2">
+                <img alt="{{ Auth::user()->name }}" class="w-8 h-8 lg:w-9 lg:h-9 rounded-full object-cover shadow-sm"
                      src="{{ Auth::user()->avatar ? Storage::url(Auth::user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=5a3a22&color=fff&bold=true' }}"/>
             </a>
         </div>
     </header>
 
-    {{-- MAIN CONTENT — @yield('content') = DIISI TIAP HALAMAN --}}
-    <main class="relative pt-20 bg-background min-h-screen px-8 pb-12">
+    {{-- MAIN CONTENT --}}
+    <main class="relative pt-20 bg-background min-h-screen px-4 lg:px-8 pb-12">
         @yield('content')
     </main>
 </div>
+
+{{-- SCRIPT UNTUK HAMBURGER MENU & TOMBOL SILANG --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const closeBtn = document.getElementById('close-sidebar-btn');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            
+            if (overlay.classList.contains('hidden')) {
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.add('opacity-100'), 10);
+            } else {
+                overlay.classList.remove('opacity-100');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        menuBtn.addEventListener('click', toggleSidebar);
+        closeBtn.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+    });
+</script>
 
 @stack('scripts')
 </body>
