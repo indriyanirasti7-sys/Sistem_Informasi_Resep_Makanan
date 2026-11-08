@@ -9,7 +9,16 @@
     
     {{-- Header --}}
     <header class="flex flex-col gap-1 mb-6">
-        <div class="flex items-center gap-2 text-secondary mb-1">
+        
+        {{-- TOMBOL KEMBALI BARU DI ATAS --}}
+        <a href="{{ route('admin.recipes.index') }}" 
+           class="inline-flex items-center gap-2 px-4 py-2 bg-surface-container-high hover:bg-surface-container-highest text-primary text-sm font-bold rounded-full transition-all w-fit mb-2 shadow-sm">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            Kembali ke Daftar Resep
+        </a>
+        {{-- SAMPAI SINI --}}
+
+        <div class="flex items-center gap-2 text-secondary mb-1 mt-2">
             <span class="material-symbols-outlined text-lg">menu_book</span>
             <span class="text-[10px] uppercase tracking-widest font-bold">Portal Kuliner Gastronomi</span>
         </div>
@@ -106,24 +115,22 @@
                     </div>
                 </div>
 
-                                    {{-- TAMBAHKAN KODE INI UNTUK STATUS --}}
-                    <div class="flex flex-col gap-1.5 pt-2">
-                        <label class="text-xs font-bold text-primary">Status Publikasi <span class="text-error">*</span></label>
-                        <div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-xl w-full md:w-1/3">
-                            @foreach(['draft' => 'Draft', 'published' => 'Published'] as $val => $label)
-                                <label class="flex-1 text-center cursor-pointer">
-                                    <input type="radio" name="status" value="{{ $val }}" class="peer sr-only" {{ old('status', $recipe->status) == $val ? 'checked' : '' }} required>
-                                    <div class="py-2 rounded-lg text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">
-                                        {{ $label }}
-                                    </div>
-                                </label>
-                            @endforeach
-                        </div>
+                {{-- STATUS PUBLIKASI --}}
+                <div class="flex flex-col gap-1.5 pt-2">
+                    <label class="text-xs font-bold text-primary">Status Publikasi <span class="text-error">*</span></label>
+                    <div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-xl w-full md:w-1/3">
+                        @foreach(['draft' => 'Draft', 'published' => 'Published'] as $val => $label)
+                            <label class="flex-1 text-center cursor-pointer">
+                                <input type="radio" name="status" value="{{ $val }}" class="peer sr-only" {{ old('status', $recipe->status) == $val ? 'checked' : '' }} required>
+                                <div class="py-2 rounded-lg text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">
+                                    {{ $label }}
+                                </div>
+                            </label>
+                        @endforeach
                     </div>
-                    {{-- SAMPAI SINI --}}
+                </div>
 
                 {{-- Upload Foto --}}
-                                {{-- Upload Foto --}}
                 <div class="flex flex-col gap-1.5 pt-2">
                     <label class="text-xs font-bold text-primary">Foto Hasil Masakan (Biarkan kosong jika tidak diubah)</label>
                     
@@ -232,11 +239,8 @@
 
         </div> {{-- Penutup CARD UTAMA --}}
 
-        {{-- FOOTER ACTIONS --}}
-        <div class="flex items-center justify-between pt-2">
-            <a href="{{ route('admin.recipes.index') }}" class="text-sm font-bold text-on-surface-variant hover:text-primary transition">
-                Kembali
-            </a>
+        {{-- FOOTER ACTIONS (Teks "Kembali" di sini sudah dihapus) --}}
+        <div class="flex items-center justify-end pt-2">
             <div class="flex items-center gap-3">
                 <button type="submit" class="px-8 py-2.5 rounded-full bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary-container transition flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">save</span>
@@ -311,7 +315,7 @@
         steps.forEach((el, index) => { el.innerText = 'Langkah ' + (index + 1); });
     }
 
-        function previewImage(event) {
+    function previewImage(event) {
         const input = event.target;
         const preview = document.getElementById('imagePreview');
         const placeholder = document.getElementById('imagePlaceholder');

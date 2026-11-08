@@ -179,41 +179,43 @@
 <div class="lg:pl-72 w-full overflow-x-hidden">
 
     {{-- HEADER --}}
-    <header class="fixed top-0 left-0 lg:left-72 right-0 h-20 bg-surface/85 backdrop-blur-xl z-40 flex items-center justify-between px-4 lg:px-8 shadow-[0_1px_8px_rgba(90,58,34,0.04)]">
+        {{-- HEADER (COKLAT) --}}
+    <header class="fixed top-0 left-0 lg:left-72 right-0 h-20 bg-primary z-40 flex items-center justify-between px-4 lg:px-8 shadow-md">
         
         <div class="flex items-center gap-4">
-            <button id="mobile-menu-btn" type="button" class="lg:hidden p-2.5 rounded-full bg-surface-container hover:bg-surface-container-high text-primary transition-colors shadow-sm">
+            {{-- Tombol Menu Mobile --}}
+            <button id="mobile-menu-btn" type="button" class="lg:hidden p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors">
                 <span class="material-symbols-outlined text-[24px]">menu</span>
             </button>
 
-            <div class="flex flex-col gap-0.5">
-                <div class="flex items-center gap-2 text-[11px] text-on-surface-variant">
+            {{-- Breadcrumb & Status --}}
+            <div class="flex flex-col gap-0.5 pl-2">
+                <div class="flex items-center gap-2 text-[11px] text-white/70">
                     <span>Admin</span>
                     <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-                    <span class="text-secondary font-bold">@yield('breadcrumb', 'Dashboard')</span>
+                    <span class="text-white font-bold">@yield('breadcrumb', 'Dashboard')</span>
                 </div>
                 <div class="hidden sm:flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-                    <span class="text-[11px] text-secondary font-bold tracking-wide uppercase">Sistem Aktif</span>
+                    <span class="w-2 h-2 rounded-full bg-secondary-fixed animate-pulse"></span>
+                    <span class="text-[11px] text-secondary-fixed font-bold tracking-wide uppercase">Sistem Aktif</span>
                 </div>
             </div>
         </div>
 
         <div class="flex items-center gap-3 lg:gap-4">
+            {{-- Search Bar --}}
             <form action="{{ route('admin.recipes.index') }}" method="GET" class="relative hidden md:flex items-center">
-                <span class="material-symbols-outlined absolute left-4 text-outline text-[18px]">search</span>
+                <span class="material-symbols-outlined absolute left-4 text-white/60 text-[18px]">search</span>
+                
+                {{-- Input Search menggunakan putih transparan agar menyatu dengan header coklat --}}
                 <input type="text" name="q" value="{{ request('q') }}" 
-                    class="w-56 lg:w-96 pl-10 pr-4 py-2 rounded-full bg-surface-container-lowest text-on-surface placeholder:text-outline text-sm shadow-sm outline-none focus:ring-2 focus:ring-secondary/40 transition-all" 
+                    class="w-56 lg:w-96 pl-10 pr-4 py-2 rounded-full bg-white/10 text-white placeholder:text-white/50 text-sm shadow-sm outline-none focus:ring-2 focus:ring-secondary-fixed transition-all" 
                     placeholder="Cari resep, chef, tag..." />
             </form>
 
-            <button type="button" class="relative p-2.5 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors text-on-surface-variant hover:text-on-surface shadow-sm">
-                <span class="material-symbols-outlined text-[20px]">notifications</span>
-                <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-tertiary-container rounded-full ring-2 ring-surface"></span>
-            </button>
-
+            {{-- Foto Profil --}}
             <a href="{{ route('home') }}" class="flex items-center gap-2 pl-1 lg:pl-2">
-                <img alt="{{ Auth::user()->name }}" class="w-8 h-8 lg:w-9 lg:h-9 rounded-full object-cover shadow-sm"
+                <img alt="{{ Auth::user()->name }}" class="w-8 h-8 lg:w-9 lg:h-9 rounded-full object-cover shadow-sm border-2 border-white/20"
                      src="{{ Auth::user()->avatar ? Storage::url(Auth::user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=5a3a22&color=fff&bold=true' }}"/>
             </a>
         </div>
