@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="overflow-x-hidden">
+<html lang="id">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -58,7 +58,7 @@
     </script>
 </head>
 
-<body class="bg-background font-body-md text-on-surface antialiased overflow-x-hidden">
+<body class="bg-background font-body-md text-on-surface antialiased">
 
 <!-- OVERLAY GELAP (Hanya muncul di Mobile saat sidebar dibuka) -->
 <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden transition-opacity duration-300"></div>
@@ -176,7 +176,7 @@
 </aside>
 
 {{-- ============ CONTENT WRAPPER ============ --}}
-<div class="lg:pl-72">
+<div class="lg:pl-72 w-full overflow-x-hidden">
 
     {{-- HEADER --}}
     <header class="fixed top-0 left-0 lg:left-72 right-0 h-20 bg-surface/85 backdrop-blur-xl z-40 flex items-center justify-between px-4 lg:px-8 shadow-[0_1px_8px_rgba(90,58,34,0.04)]">

@@ -146,39 +146,32 @@
                     };
                 @endphp
 
-                {{-- Card: Flex Row di HP, Flex Col di Desktop --}}
+                                {{-- Card: Horizontal di HP, Vertikal di Desktop --}}
                 <article class="group flex flex-row md:flex-col bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
                     
-                    {{-- IMAGE (Kiri di HP, Atas di Desktop) --}}
-                    <div class="relative w-[120px] sm:w-44 md:w-full aspect-square md:aspect-[4/3] shrink-0 overflow-hidden bg-surface-container">
+                    {{-- PEMBUNGKUS GAMBAR: Dibatasi lebarnya di HP --}}
+                    <div class="relative w-[130px] sm:w-[180px] md:w-full aspect-square md:aspect-[4/3] shrink-0 overflow-hidden bg-surface-container">
                         <a href="{{ route('recipes.show', $recipe->slug) }}" class="block w-full h-full">
                             <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                 src="{{ $recipe->image ? Storage::url($recipe->image) : 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800' }}"
-                                 alt="{{ $recipe->title }}"/>
+                                src="{{ $recipe->image ? Storage::url($recipe->image) : 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800' }}"
+                                alt="{{ $recipe->title }}" />
                         </a>
 
-                        {{-- Badge Kategori (Desktop Only) --}}
-                        <div class="absolute top-3 left-3 hidden md:flex flex-wrap gap-1">
-                            @if ($recipe->category)
-                                <span class="px-3 py-0.5 rounded-full bg-white/90 backdrop-blur-md text-primary text-[11px] font-bold shadow-sm">
-                                    {{ $recipe->category->name }}
-                                </span>
-                            @endif
-                            <span class="px-3 py-0.5 rounded-full {{ $diffColor }} text-[11px] font-bold">
-                                {{ $recipe->difficulty }}
-                            </span>
-                        </div>
-
-                        {{-- Bookmark Button (Desktop Only) --}}
+                        {{-- Tombol Love di Kanan Atas --}}
                         @auth
-                            <button type="button" data-recipe-id="{{ $recipe->id }}"
-                                    class="bookmark-btn hidden md:flex absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 backdrop-blur-md text-on-surface items-center justify-center hover:bg-white transition shadow-sm">
-                                <span class="material-symbols-outlined text-[20px]">favorite</span>
+                            <button type="button" data-recipe-slug="{{ $recipe->slug }}"
+                                    class="bookmark-btn absolute top-2 right-2 md:top-3 md:right-3 w-8 h-8 md:w-9 md:h-9 rounded-full bg-white/90 backdrop-blur-md text-outline hover:text-error flex items-center justify-center shadow-sm transition-all z-10">
+                                <span class="material-symbols-outlined text-[18px] md:text-[20px]">favorite</span>
                             </button>
+                        @else
+                            <a href="{{ route('login') }}?require_login=1" title="Masuk untuk menyimpan favorit"
+                            class="absolute top-2 right-2 md:top-3 md:right-3 w-8 h-8 md:w-9 md:h-9 rounded-full bg-white/90 backdrop-blur-md text-outline hover:text-error flex items-center justify-center shadow-sm transition-all z-10">
+                                <span class="material-symbols-outlined text-[18px] md:text-[20px]">favorite_border</span>
+                            </a>
                         @endauth
                     </div>
 
-                    {{-- BODY (Kanan di HP, Bawah di Desktop) --}}
+                    {{-- BODY: Mengambil sisa ruang (flex-1) --}}
                     <div class="p-3 md:p-5 flex flex-col flex-1 justify-between min-w-0">
                         
                         <div class="flex flex-col gap-1 md:gap-2">
@@ -374,7 +367,9 @@
 @endsection
 
 @push('scripts')
+@push('scripts')
 <script>
+// Fungsi Notifikasi Toast
 function showToast(message, icon = 'check_circle') {
     const toast = document.getElementById('toastNotification');
     const msg = document.getElementById('toastMessage');
@@ -390,29 +385,47 @@ function showToast(message, icon = 'check_circle') {
     }, 2800);
 }
 
-// Bookmark toggle (AJAX)
-document.querySelectorAll('.bookmark-btn').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const id = btn.dataset.recipeId;
-        const icon = btn.querySelector('.material-symbols-outlined');
-        try {
-            const res = await fetch(`/bookmark/${id}`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json',
-                },
-            });
-            const data = await res.json();
-            icon.style.fontVariationSettings = data.status === 'added' ? "'FILL' 1" : "'FILL' 0";
-            icon.classList.toggle('text-error', data.status === 'added');
-            showToast(data.message, data.status === 'added' ? 'favorite' : 'favorite_border');
-        } catch (err) {
-            console.error(err);
-        }
+// Logika Simpan Favorit (AJAX)
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.bookmark-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // ✅ Ambil data-recipe-slug dari tombol
+            const slug = btn.dataset.recipeSlug; 
+            const icon = btn.querySelector('.material-symbols-outlined');
+
+            try {
+                const res = await fetch(`/bookmark/${slug}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                });
+                const data = await res.json();
+                
+                // Ubah ikon jadi penuh (merah) jika berhasil disimpan
+                if (data.status === 'added') {
+                    icon.style.fontVariationSettings = "'FILL' 1";
+                    icon.classList.add('text-error');
+                    icon.classList.remove('text-outline');
+                    showToast('Resep disimpan ke favorit!', 'favorite');
+                } else {
+                    icon.style.fontVariationSettings = "'FILL' 0";
+                    icon.classList.remove('text-error');
+                    icon.classList.add('text-outline');
+                    showToast('Resep dihapus dari favorit', 'favorite_border');
+                }
+            } catch (err) {
+                console.error('Gagal menyimpan favorit:', err);
+                showToast('Gagal menyimpan. Coba lagi.', 'error');
+            }
+        });
     });
 });
+</script>
+@endpush
 </script>
 @endpush

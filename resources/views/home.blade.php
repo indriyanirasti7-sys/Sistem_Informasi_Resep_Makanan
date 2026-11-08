@@ -238,15 +238,25 @@
                     <div class="group flex flex-col bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-xl transition-all overflow-hidden" data-category-tag="{{ $tags }}">
                         
                         <div class="relative w-full aspect-[4/3] overflow-hidden bg-surface-container">
+                            {{-- Gambar Resep --}}
                             <a href="{{ route('recipes.show', $recipe->slug) }}">
                                 <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                     src="{{ $recipe->image ? Storage::url($recipe->image) : 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800' }}"
-                                     alt="{{ $recipe->title }}" />
+                                    src="{{ $recipe->image ? Storage::url($recipe->image) : 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800' }}"
+                                    alt="{{ $recipe->title }}" />
                             </a>
-                            {{-- Hapus badge tingkat kesulitan di HP agar lebih bersih --}}
-                            <span class="hidden md:block absolute top-3 left-3 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-primary text-[11px] font-bold shadow-sm">
-                                {{ $recipe->difficulty }}
-                            </span>
+
+                            {{-- ✨ TAMBAHKAN TOMBOL LOVE INI ✨ --}}
+                            @auth
+                                <button type="button" data-recipe-slug="{{ $recipe->slug }}"
+                                        class="bookmark-btn absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-md text-outline hover:text-error flex items-center justify-center shadow-sm transition-all z-10">
+                                    <span class="material-symbols-outlined text-[20px]">favorite</span>
+                                </button>
+                            @else
+                                <a href="{{ route('login') }}?require_login=1" title="Masuk untuk menyimpan favorit"
+                                class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-md text-outline hover:text-error flex items-center justify-center shadow-sm transition-all z-10">
+                                    <span class="material-symbols-outlined text-[20px]">favorite_border</span>
+                                </a>
+                            @endauth
                         </div>
 
                         <div class="p-3 md:p-5 flex flex-col flex-1 justify-between gap-2">
@@ -548,7 +558,7 @@
             e.preventDefault();
             e.stopPropagation();
 
-            const recipeId = btn.getAttribute('data-recipe-id');
+            const recipeId = btn.getAttribute('data-recipe-slug');
             const icon = btn.querySelector('.material-symbols-outlined');
             const isFilled = icon.style.fontVariationSettings?.includes("'FILL' 1");
 
