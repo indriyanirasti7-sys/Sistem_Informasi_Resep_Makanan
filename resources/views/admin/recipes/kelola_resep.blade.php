@@ -226,15 +226,13 @@
                                    class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-full transition" title="Edit">
                                     <span class="material-symbols-outlined text-[18px]">edit</span>
                                 </a>
-                                <form method="POST" action="{{ route('admin.recipes.destroy', $recipe->id) }}"
-                                      onsubmit="return confirm('Hapus resep {{ $recipe->title }}?')" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                            class="p-2 text-error hover:bg-error-container/60 rounded-full transition" title="Hapus">
-                                        <span class="material-symbols-outlined text-[18px]">delete</span>
-                                    </button>
-                                </form>
+                                {{-- TOMBOL HAPUS BARU (Memanggil Modal) --}}
+                                <button type="button"
+                                        class="delete-recipe-btn p-2 rounded-full hover:bg-error-container text-error transition-all" title="Hapus"
+                                        data-title="{{ $recipe->title }}"
+                                        data-url="{{ route('admin.recipes.destroy', $recipe->slug) }}">
+                                    <span class="material-symbols-outlined text-[19px]">delete</span>
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -302,4 +300,84 @@
     @endif
 </section>
 
+{{-- ============================================================
+     MODAL: Konfirmasi Hapus Resep
+     ============================================================ --}}
+<div id="deleteRecipeModal"
+     class="fixed inset-0 z-50 bg-inverse-surface/40 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-surface-container-lowest rounded-3xl max-w-md w-full p-8 shadow-[0_16px_40px_-6px_rgba(90,58,34,0.18)] flex flex-col items-center text-center">
+
+        <div class="w-16 h-16 rounded-full bg-error-container text-error flex items-center justify-center mb-5">
+            <span class="material-symbols-outlined text-[32px]">warning</span>
+        </div>
+
+        <h3 class="font-['Playfair_Display'] text-2xl text-primary font-bold">Hapus Resep Ini?</h3>
+        <p class="text-sm text-on-surface-variant mt-2 leading-relaxed">
+            Resep <strong class="text-primary font-bold" id="deleteRecipeTitle">—</strong>
+            akan dihapus permanen dari portal. Tindakan ini tidak dapat dibatalkan.
+        </p>
+
+        <div class="flex items-center gap-3 mt-8 w-full">
+            {{-- Tombol Batal --}}
+            <button type="button" id="cancelDeleteRecipeBtn" class="flex-1 py-2.5 rounded-full bg-surface-container-high text-on-surface font-bold text-sm hover:bg-surface-container-highest transition">
+                Batal
+            </button>
+            
+            {{-- Form Hapus (Action diisi oleh JS) --}}
+            <form id="deleteRecipeForm" method="POST" action="" class="flex-1">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="w-full py-2.5 rounded-full bg-error text-white font-bold text-sm hover:bg-error/90 transition">
+                    Ya, Hapus
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    const deleteModal  = document.getElementById('deleteRecipeModal');
+    const deleteForm   = document.getElementById('deleteRecipeForm');
+    const deleteTarget = document.getElementById('deleteRecipeTitle');
+    const cancelDelete = document.getElementById('cancelDeleteRecipeBtn');
+
+    function openDeleteModal(btn) {
+        // Ambil data dari tombol yang diklik
+        deleteTarget.textContent = btn.dataset.title;
+        deleteForm.action = btn.dataset.url;
+        
+        // Tampilkan Modal
+        deleteModal.classList.remove('hidden');
+        deleteModal.classList.add('flex');
+    }
+
+    function closeDeleteModal() {
+        deleteModal.classList.add('hidden');
+        deleteModal.classList.remove('flex');
+    }
+
+    // Delegasi Event Listener untuk Tombol Hapus
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.delete-recipe-btn');
+        if (btn) {
+            openDeleteModal(btn);
+        }
+    });
+
+    // Tombol Batal & Tombol ESC
+    cancelDelete.addEventListener('click', closeDeleteModal);
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeDeleteModal();
+    });
+
+    // Klik di luar area modal untuk menutup
+    deleteModal.addEventListener('click', (e) => {
+        if (e.target === deleteModal) closeDeleteModal();
+    });
+})();
+</script>
+@endpush

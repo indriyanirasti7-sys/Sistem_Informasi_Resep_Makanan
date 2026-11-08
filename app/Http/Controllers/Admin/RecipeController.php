@@ -9,12 +9,11 @@ use App\Models\Recipe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;   // FIX: untuk hapus file gambar
 use Illuminate\Support\Str;
 
 class RecipeController extends Controller
 {
-    
-
     public function index(Request $request)
     {
         $query = Recipe::with(['category', 'user', 'ratings']);
@@ -34,7 +33,6 @@ class RecipeController extends Controller
 
         $recipes = $query->latest()->paginate(10)->withQueryString();
 
-        // Stats untuk mini cards
         $stats = [
             'total'     => Recipe::count(),
             'published' => Recipe::where('status', 'published')->count(),
@@ -51,14 +49,11 @@ class RecipeController extends Controller
         return view('admin.recipes.detail_tampilan', compact('recipe'));
     }
 
- 
-
     public function create()
     {
         $categories  = Category::orderBy('name')->get();
         $ingredients = Ingredient::orderBy('name')->get();
 
-    
         return view('admin.recipes.tambah_resep', compact('categories', 'ingredients'));
     }
 
@@ -85,13 +80,10 @@ class RecipeController extends Controller
             $this->syncSteps($recipe, $request->input('steps', []));
         });
 
-
         return redirect()
-            ->route('admin.recipes.daftar_resep')
+            ->route('admin.recipes.index')
             ->with('success', 'Resep berhasil ditambahkan.');
     }
-
-    /* ============ UPDATE ============ */
 
     public function edit(Recipe $recipe)
     {
@@ -107,6 +99,13 @@ class RecipeController extends Controller
         $validated = $this->validateRecipe($request, $recipe->id);
 
         DB::transaction(function () use ($validated, $request, $recipe) {
+            $newImage = $this->handleImageUpload($request);
+
+            // FIX: hapus file gambar lama kalau user upload gambar baru
+            if ($newImage && $recipe->image) {
+                Storage::disk('public')->delete($recipe->image);
+            }
+
             $recipe->update([
                 'title'            => $validated['title'],
                 'category_id'      => $validated['category_id'],
@@ -116,7 +115,7 @@ class RecipeController extends Controller
                 'difficulty'       => $validated['difficulty'],
                 'calories'         => $validated['calories'] ?? null,
                 'status'           => $validated['status'],
-                'image'            => $this->handleImageUpload($request) ?? $recipe->image,
+                'image'            => $newImage ?? $recipe->image,
             ]);
 
             // Hapus bahan & langkah lama sebelum menyimpan yang baru
@@ -127,17 +126,38 @@ class RecipeController extends Controller
             $this->syncSteps($recipe, $request->input('steps', []));
         });
 
-  
         return redirect()
             ->route('admin.recipes.index')
             ->with('success', 'Resep berhasil diperbarui.');
     }
 
-    
-
+    /**
+     * FIX TOTAL:
+     * 1. Parameter diubah dari `$id` → `Recipe $recipe` (route model binding slug)
+     * 2. Semua child record dihapus dulu sebelum induk (hindari FK constraint)
+     * 3. File gambar ikut dihapus dari storage
+     * 4. Dibungkus transaksi agar konsisten (rollback kalau ada error)
+     */
     public function destroy(Recipe $recipe)
     {
-        $recipe->delete();
+        DB::transaction(function () use ($recipe) {
+            // 1. Hapus semua data anak (foreign key dependents)
+            $recipe->recipeIngredients()->delete();
+            $recipe->steps()->delete();
+            $recipe->ratings()->delete();
+            $recipe->bookmarks()->delete();
+
+            // Kalau nanti ada tabel komentar, aktifkan baris ini:
+            // $recipe->comments()->delete();
+
+            // 2. Hapus file gambar dari storage
+            if ($recipe->image) {
+                Storage::disk('public')->delete($recipe->image);
+            }
+
+            // 3. Baru hapus resep induk
+            $recipe->delete();
+        });
 
         return redirect()
             ->route('admin.recipes.index')
@@ -156,13 +176,12 @@ class RecipeController extends Controller
             'calories'                 => 'nullable|integer|min:1|max:65535',
             'status'                   => 'required|in:draft,published',
             'image'                    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
-            
-     
+
             'ingredients'              => 'required|array',
             'ingredients.*.name'       => 'required|string|max:100',
             'ingredients.*.amount'     => 'required|numeric|min:0',
             'ingredients.*.unit'       => 'required|string|max:20',
-            
+
             'steps'                    => 'required|array',
             'steps.*.instruction'      => 'required|string',
             'steps.*.duration_minutes' => 'nullable|integer|min:1|max:65535',
@@ -180,10 +199,9 @@ class RecipeController extends Controller
         foreach ($items as $item) {
             if (empty($item['name']) || !isset($item['amount'])) continue;
 
-         
             $ingredient = Ingredient::firstOrCreate(
                 ['name' => $item['name']],
-                ['unit' => $item['unit'] ?? 'gram'] // Satuan default jika bahan baru
+                ['unit' => $item['unit'] ?? 'gram']
             );
 
             $recipe->recipeIngredients()->create([

@@ -243,13 +243,22 @@
             akan dihapus permanen dari portal. Tindakan ini tidak dapat dibatalkan.
         </p>
 
-        <form method="POST" action="{{ route('admin.tips.destroy', $tip->slug) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tips ini?')">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="p-2 text-error hover:bg-error-container/60 rounded-full transition" title="Hapus Tips">
-                <span class="material-symbols-outlined text-[18px]">delete</span>
+        {{-- TOMBOL AKSI DI DALAM MODAL --}}
+        <div class="flex items-center gap-3 mt-8 w-full">
+            {{-- Tombol Batal (WAJIB ADA ID INI UNTUK JS) --}}
+            <button type="button" id="cancelDeleteBtn" class="flex-1 py-2.5 rounded-full bg-surface-container-high text-on-surface font-bold text-sm hover:bg-surface-container-highest transition">
+                Batal
             </button>
-        </form>
+            
+            {{-- Form Hapus (Kosongkan action, nanti diisi oleh JS) --}}
+            <form id="deleteForm" method="POST" action="" class="flex-1">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="w-full py-2.5 rounded-full bg-error text-white font-bold text-sm hover:bg-error/90 transition">
+                    Ya, Hapus
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 

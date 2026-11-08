@@ -281,12 +281,14 @@
                             
                             <td class="py-4 px-3 text-center">
                                 <div class="flex items-center justify-center gap-2">
-                                    <a href="{{ route('admin.recipes.edit', $r->id) }}"
-                                       class="p-2 rounded-full hover:bg-surface-container text-primary transition-all" title="Edit">
+                                    {{-- Tombol Edit --}}
+                                    <a href="{{ route('admin.recipes.edit', $r->slug) }}"
+                                    class="p-2 rounded-full hover:bg-surface-container text-primary transition-all" title="Edit">
                                         <span class="material-symbols-outlined text-[19px]">edit</span>
                                     </a>
-                                    <form method="POST" action="{{ route('admin.recipes.destroy', $r->id) }}"
-                                          onsubmit="return confirm('Hapus resep ini?')" class="inline">
+
+                                    {{-- Tombol Hapus (WAJIB FORM) --}}
+                                    <form method="POST" action="{{ route('admin.recipes.destroy', $r->slug) }}" onsubmit="return confirm('Hapus resep ini?')" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="p-2 rounded-full hover:bg-error-container text-error transition-all" title="Hapus">

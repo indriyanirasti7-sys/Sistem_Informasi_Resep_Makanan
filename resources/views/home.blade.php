@@ -38,129 +38,147 @@
         @endphp
 
         <section class="w-full px-5 lg:px-12 pt-6 lg:pt-12 pb-12">
-            {{-- Menggunakan items-center agar teks & gambar sejajar vertikal --}}
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-
-                {{-- KOLOM KIRI: TEKS --}}
-                <div class="flex flex-col items-start gap-4 z-10">
-                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container-high shadow-sm">
-                        <span class="material-symbols-outlined text-[18px] text-on-tertiary-container" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
-                        <span class="text-[11px] uppercase tracking-wider text-on-surface-variant font-bold">Resep Unggulan Hari Ini</span>
-                        <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                        <span class="text-[11px] text-secondary font-bold" id="hero-carousel-index">1 / {{ max($heroDishes->count(), 1) }}</span>
-                    </div>
-
-                    <div class="min-h-[110px] lg:min-h-[140px] flex items-center">
-                        <h1 class="font-display text-4xl lg:text-5xl xl:text-6xl text-primary transition-opacity duration-300 font-bold leading-tight" id="hero-title">
-                            {{ $heroDishes[0]['title'] ?? 'Belum ada resep' }}
-                        </h1>
-                    </div>
-
-                    <p class="text-base lg:text-lg text-on-surface-variant max-w-xl transition-opacity duration-300 leading-relaxed" id="hero-desc">
-                        {{ $heroDishes[0]['desc'] ?? '' }}
-                    </p>
-
-                    {{-- Meta Chips --}}
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-xl pt-2">
-                        <div class="flex items-center gap-2 p-3 rounded-xl bg-surface-container-lowest shadow-sm">
-                            <span class="material-symbols-outlined text-secondary text-[22px]">timer</span>
-                            <div class="flex flex-col min-w-0">
-                                <span class="text-[10px] uppercase text-outline font-bold">Waktu</span>
-                                <span class="text-xs text-on-surface font-bold truncate" id="hero-time">{{ $heroDishes[0]['time'] ?? '-' }}</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2 p-3 rounded-xl bg-surface-container-lowest shadow-sm">
-                            <span class="material-symbols-outlined text-secondary text-[22px]">group</span>
-                            <div class="flex flex-col min-w-0">
-                                <span class="text-[10px] uppercase text-outline font-bold">Porsi</span>
-                                <span class="text-xs text-on-surface font-bold truncate" id="hero-servings">{{ $heroDishes[0]['servings'] ?? '-' }}</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2 p-3 rounded-xl bg-surface-container-lowest shadow-sm">
-                            <span class="material-symbols-outlined text-on-tertiary-container text-[22px]" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
-                            <div class="flex flex-col min-w-0">
-                                <span class="text-[10px] uppercase text-outline font-bold">Tingkat</span>
-                                <span class="text-xs text-on-surface font-bold truncate" id="hero-difficulty">{{ $heroDishes[0]['difficulty'] ?? '-' }}</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2 p-3 rounded-xl bg-surface-container-lowest shadow-sm">
-                            <span class="material-symbols-outlined text-error text-[22px]">local_fire_department</span>
-                            <div class="flex flex-col min-w-0">
-                                <span class="text-[10px] uppercase text-outline font-bold">Kalori</span>
-                                <span class="text-xs text-on-surface font-bold truncate" id="hero-calories">{{ $heroDishes[0]['calories'] ?? '-' }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Ingredients --}}
-                    <div class="flex flex-col gap-2 w-full pt-2">
-                        <span class="text-[11px] uppercase tracking-wider text-outline font-bold">Bahan Kunci Pilihan</span>
-                        <div class="flex flex-wrap items-center gap-2" id="hero-ingredients">
-                            @foreach (($heroDishes[0]['ingredients'] ?? collect()) as $ing)
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-on-surface text-xs font-medium shadow-sm">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>{{ $ing }}
-                                </span>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    {{-- Action Buttons --}}
-                    <div class="flex flex-wrap items-center gap-3 pt-4">
-                        <a href="{{ $heroDishes[0]['url'] ?? '#' }}"
-                           class="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-primary-container text-white text-sm font-bold shadow-md hover:bg-primary hover:shadow-lg transition-all transform hover:-translate-y-0.5">
-                            <span>Lihat Resep Lengkap</span>
-                            <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
-                        </a>
-                        <button type="button"
-                                class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-surface-container-lowest text-primary text-sm font-bold shadow-sm hover:bg-secondary-fixed/40 transition-all">
-                            <span class="material-symbols-outlined text-secondary text-[22px]" style="font-variation-settings: 'FILL' 1;">skillet</span>
-                            <span>Mulai Memasak</span>
-                        </button>
-                    </div>
+            
+            {{-- ✨ CARD HIJAU GELAP (DENGAN ORNAMEN) ✨ --}}
+            <div class="relative bg-secondary rounded-[2.5rem] p-6 lg:p-12 shadow-2xl overflow-hidden text-white">
+                
+                {{-- Ornamen Background: Blob Coklat Kanan Atas --}}
+                <div class="absolute -top-20 -right-20 w-96 h-96 bg-primary/20 rounded-full blur-3xl pointer-events-none -z-0"></div>
+                
+                {{-- Ornamen Background: Blob Krem Kiri Bawah --}}
+                <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-primary-fixed/10 rounded-full blur-3xl pointer-events-none -z-0"></div>
+                
+                {{-- Ornamen Background: Ikon Sendok Garpu Transparan --}}
+                <div class="absolute top-10 left-1/2 opacity-[0.03] pointer-events-none -z-0 hidden lg:block">
+                    <span class="material-symbols-outlined text-[300px]">restaurant</span>
                 </div>
 
-                {{-- KOLOM KANAN: GAMBAR --}}
-                <div class="relative flex flex-col items-center justify-center mt-10 lg:mt-0">
-                    {{-- Wadah Gambar (Dibuat lebih besar di layar besar) --}}
-                    <div class="relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] flex items-center justify-center">
+                {{-- Grid Konten: Jarak dirapatkan (lg:gap-8) --}}
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-8 items-center relative z-10">
+
+                    {{-- KOLOM KIRI: TEKS --}}
+                    <div class="flex flex-col items-start gap-4 z-10">
                         
-                        {{-- Efek Blob di belakang --}}
-                        <svg class="absolute inset-0 w-full h-full text-secondary-fixed/50 fill-current transition-transform duration-700 ease-out" id="hero-blob" viewBox="0 0 500 500">
-                            <path d="M428.5,310Q407,370,351,408.5Q295,447,233.5,436.5Q172,426,121.5,386.5Q71,347,56.5,285Q42,223,80.5,166Q119,109,178,77.5Q237,46,303.5,67.5Q370,89,410,144.5Q450,200,428.5,310Z"></path>
-                        </svg>
+                        {{-- Badge --}}
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 shadow-sm border border-white/10">
+                            <span class="material-symbols-outlined text-[18px] text-primary-fixed" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                            <span class="text-[11px] uppercase tracking-wider text-white font-bold">Resep Unggulan Hari Ini</span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span>
+                            <span class="text-[11px] text-primary-fixed font-bold" id="hero-carousel-index">1 / {{ max($heroDishes->count(), 1) }}</span>
+                        </div>
 
-                        <div class="relative w-[260px] h-[260px] sm:w-[340px] sm:h-[340px] lg:w-[420px] lg:h-[420px] rounded-full p-2 bg-surface-container-lowest shadow-[0_20px_50px_-12px_rgba(90,58,34,0.22)] z-10 transition-transform duration-700 ease-out" id="dish-rotate-wrapper">
-                            <img id="hero-plate-image"
-                                 class="w-full h-full object-cover rounded-full shadow-inner select-none transition-opacity duration-300"
-                                 src="{{ $heroDishes[0]['image'] ?? 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800' }}"
-                                 alt="{{ $heroDishes[0]['title'] ?? '' }}" />
+                        {{-- Judul (Font lebih tegas & shadow halus) --}}
+                        <div class="min-h-[110px] lg:min-h-[140px] flex items-center">
+                            <h1 class="font-display text-4xl lg:text-5xl xl:text-[64px] text-white transition-opacity duration-300 font-bold leading-[1.1] tracking-tight drop-shadow-md" id="hero-title">
+                                {{ $heroDishes[0]['title'] ?? 'Belum ada resep' }}
+                            </h1>
+                        </div>
 
-                            <div class="absolute bottom-6 right-6 bg-surface-container-lowest/95 backdrop-blur-md px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
-                                <span class="material-symbols-outlined text-secondary text-[20px]" style="font-variation-settings: 'FILL' 1;">restaurant_menu</span>
-                                <span class="text-[11px] font-bold text-primary">Rekomendasi Chef</span>
+                        {{-- Deskripsi --}}
+                        <p class="text-base lg:text-lg text-white/80 max-w-lg transition-opacity duration-300 leading-relaxed" id="hero-desc">
+                            {{ $heroDishes[0]['desc'] ?? '' }}
+                        </p>
+
+                        {{-- Meta Chips (Kotak Transparan) --}}
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-xl pt-2">
+                            <div class="flex items-center gap-2 p-3 rounded-xl bg-white/10 border border-white/10 backdrop-blur-sm">
+                                <span class="material-symbols-outlined text-primary-fixed text-[22px]">timer</span>
+                                <div class="flex flex-col min-w-0">
+                                    <span class="text-[10px] uppercase text-white/60 font-bold">Waktu</span>
+                                    <span class="text-xs text-white font-bold truncate" id="hero-time">{{ $heroDishes[0]['time'] ?? '-' }}</span>
+                                </div>
                             </div>
+                            <div class="flex items-center gap-2 p-3 rounded-xl bg-white/10 border border-white/10 backdrop-blur-sm">
+                                <span class="material-symbols-outlined text-primary-fixed text-[22px]">group</span>
+                                <div class="flex flex-col min-w-0">
+                                    <span class="text-[10px] uppercase text-white/60 font-bold">Porsi</span>
+                                    <span class="text-xs text-white font-bold truncate" id="hero-servings">{{ $heroDishes[0]['servings'] ?? '-' }}</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 p-3 rounded-xl bg-white/10 border border-white/10 backdrop-blur-sm">
+                                <span class="material-symbols-outlined text-tertiary-fixed text-[22px]" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                                <div class="flex flex-col min-w-0">
+                                    <span class="text-[10px] uppercase text-white/60 font-bold">Tingkat</span>
+                                    <span class="text-xs text-white font-bold truncate" id="hero-difficulty">{{ $heroDishes[0]['difficulty'] ?? '-' }}</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 p-3 rounded-xl bg-white/10 border border-white/10 backdrop-blur-sm">
+                                <span class="material-symbols-outlined text-error text-[22px]">local_fire_department</span>
+                                <div class="flex flex-col min-w-0">
+                                    <span class="text-[10px] uppercase text-white/60 font-bold">Kalori</span>
+                                    <span class="text-xs text-white font-bold truncate" id="hero-calories">{{ $heroDishes[0]['calories'] ?? '-' }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Bahan Kunci --}}
+                        <div class="flex flex-col gap-2 w-full pt-2">
+                            <span class="text-[11px] uppercase tracking-wider text-white/60 font-bold">Bahan Kunci Pilihan</span>
+                            <div class="flex flex-wrap items-center gap-2" id="hero-ingredients">
+                                @foreach (($heroDishes[0]['ingredients'] ?? collect()) as $ing)
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-white text-xs font-medium backdrop-blur-sm">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span>{{ $ing }}
+                                    </span>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        {{-- Tombol Aksi --}}
+                        <div class="flex flex-wrap items-center gap-3 pt-4">
+                            <a href="{{ $heroDishes[0]['url'] ?? '#' }}"
+                               class="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-primary-fixed text-primary text-sm font-bold shadow-lg hover:bg-white transition-all transform hover:-translate-y-0.5">
+                                <span>Lihat Resep Lengkap</span>
+                                <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                            </a>
+                            <button type="button"
+                                    class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold shadow-sm hover:bg-white/20 backdrop-blur-md transition-all">
+                                <span class="material-symbols-outlined text-primary-fixed text-[22px]" style="font-variation-settings: 'FILL' 1;">skillet</span>
+                                <span>Mulai Memasak</span>
+                            </button>
                         </div>
                     </div>
 
-                    {{-- Carousel Controls --}}
-                    <div class="flex items-center gap-4 mt-6 z-20">
-                        <button id="carousel-prev" type="button" aria-label="Sebelumnya"
-                                class="w-11 h-11 rounded-full bg-surface-container-lowest shadow-sm hover:bg-secondary-fixed/50 text-primary flex items-center justify-center transition-all">
-                            <span class="material-symbols-outlined text-[20px]">chevron_left</span>
-                        </button>
+                    {{-- KOLOM KANAN: GAMBAR --}}
+                    <div class="relative flex flex-col items-center justify-center mt-10 lg:mt-0 lg:translate-x-6">
+                        <div class="relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[450px] lg:h-[450px] flex items-center justify-center">
+                            
+                            <svg class="absolute inset-0 w-full h-full text-white/5 fill-current transition-transform duration-700 ease-out" id="hero-blob" viewBox="0 0 500 500">
+                                <path d="M428.5,310Q407,370,351,408.5Q295,447,233.5,436.5Q172,426,121.5,386.5Q71,347,56.5,285Q42,223,80.5,166Q119,109,178,77.5Q237,46,303.5,67.5Q370,89,410,144.5Q450,200,428.5,310Z"></path>
+                            </svg>
 
-                        <div class="flex items-center gap-2 p-1.5 rounded-full bg-surface-container-high">
-                            @foreach ($heroDishes as $i => $dish)
-                                <button type="button" aria-label="Pilih {{ $dish['title'] }}"
-                                        class="carousel-dot transition-all {{ $i === 0 ? 'w-8 h-2.5 rounded-full bg-primary-container' : 'w-2.5 h-2.5 rounded-full bg-outline-variant hover:bg-primary' }}"
-                                        data-dish="{{ $i }}"></button>
-                            @endforeach
+                            <div class="relative w-[260px] h-[260px] sm:w-[340px] sm:h-[340px] lg:w-[380px] lg:h-[380px] rounded-full p-2 bg-white/10 border border-white/20 backdrop-blur-md shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] z-10 transition-transform duration-700 ease-out" id="dish-rotate-wrapper">
+                                <img id="hero-plate-image"
+                                     class="w-full h-full object-cover rounded-full shadow-inner select-none transition-opacity duration-300"
+                                     src="{{ $heroDishes[0]['image'] ?? 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800' }}"
+                                     alt="{{ $heroDishes[0]['title'] ?? '' }}" />
+
+                                <div class="absolute bottom-6 right-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">restaurant_menu</span>
+                                    <span class="text-[11px] font-bold text-primary">Rekomendasi Chef</span>
+                                </div>
+                            </div>
                         </div>
 
-                        <button id="carousel-next" type="button" aria-label="Berikutnya"
-                                class="w-11 h-11 rounded-full bg-surface-container-lowest shadow-sm hover:bg-secondary-fixed/50 text-primary flex items-center justify-center transition-all">
-                            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
-                        </button>
+                        {{-- Carousel Controls --}}
+                        <div class="flex items-center gap-4 mt-6 z-20">
+                            <button id="carousel-prev" type="button" aria-label="Sebelumnya"
+                                    class="w-11 h-11 rounded-full bg-white/10 border border-white/20 shadow-sm hover:bg-white/20 text-white flex items-center justify-center transition-all">
+                                <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                            </button>
+
+                            <div class="flex items-center gap-2 p-1.5 rounded-full bg-white/10 border border-white/10">
+                                @foreach ($heroDishes as $i => $dish)
+                                    <button type="button" aria-label="Pilih {{ $dish['title'] }}"
+                                            class="carousel-dot transition-all {{ $i === 0 ? 'w-8 h-2.5 rounded-full bg-white' : 'w-2.5 h-2.5 rounded-full bg-white/30 hover:bg-white' }}"
+                                            data-dish="{{ $i }}"></button>
+                                @endforeach
+                            </div>
+
+                            <button id="carousel-next" type="button" aria-label="Berikutnya"
+                                    class="w-11 h-11 rounded-full bg-white/10 border border-white/20 shadow-sm hover:bg-white/20 text-white flex items-center justify-center transition-all">
+                                <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

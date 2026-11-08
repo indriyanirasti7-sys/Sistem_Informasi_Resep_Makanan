@@ -106,33 +106,46 @@
                     </div>
                 </div>
 
+                                    {{-- TAMBAHKAN KODE INI UNTUK STATUS --}}
+                    <div class="flex flex-col gap-1.5 pt-2">
+                        <label class="text-xs font-bold text-primary">Status Publikasi <span class="text-error">*</span></label>
+                        <div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-xl w-full md:w-1/3">
+                            @foreach(['draft' => 'Draft', 'published' => 'Published'] as $val => $label)
+                                <label class="flex-1 text-center cursor-pointer">
+                                    <input type="radio" name="status" value="{{ $val }}" class="peer sr-only" {{ old('status', $recipe->status) == $val ? 'checked' : '' }} required>
+                                    <div class="py-2 rounded-lg text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">
+                                        {{ $label }}
+                                    </div>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                    {{-- SAMPAI SINI --}}
+
                 {{-- Upload Foto --}}
+                                {{-- Upload Foto --}}
                 <div class="flex flex-col gap-1.5 pt-2">
                     <label class="text-xs font-bold text-primary">Foto Hasil Masakan (Biarkan kosong jika tidak diubah)</label>
-                                    {{-- Upload Foto --}}
-                    <div class="flex flex-col gap-1.5 pt-2">
-                        <label class="text-xs font-bold text-primary">Foto Hasil Masakan (Biarkan kosong jika tidak diubah)</label>
+                    
+                    <div class="relative w-full h-48 rounded-xl bg-surface-container-lowest border border-dashed border-outline-variant flex items-center justify-between px-6 cursor-pointer overflow-hidden group">
+                        {{-- Input File (Z-index paling atas agar bisa diklik) --}}
+                        <input type="file" name="image" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-30" onchange="previewImage(event)">
                         
-                        <div class="relative w-full h-48 rounded-xl bg-surface-container-lowest border border-dashed border-outline-variant flex items-center justify-between px-6 cursor-pointer overflow-hidden group">
-                            {{-- Input File (Z-index paling atas agar bisa diklik) --}}
-                            <input type="file" name="image" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-30" onchange="previewImage(event)">
-                            
-                            {{-- Gambar Lama --}}
-                            @if($recipe->image)
-                                <img id="imagePreview" src="{{ asset('storage/'.$recipe->image) }}" class="absolute inset-0 w-full h-full object-cover z-10"/>
-                                <div id="imagePlaceholder" class="hidden flex items-center gap-4 z-0">
-                            @else
-                                <img id="imagePreview" src="" class="hidden absolute inset-0 w-full h-full object-cover z-10"/>
-                                <div id="imagePlaceholder" class="flex items-center gap-4 z-0">
-                            @endif
-                            
-                                <div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
-                                    <span class="material-symbols-outlined text-[24px]">add_photo_alternate</span>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-sm font-bold text-primary">Klik untuk ganti foto</span>
-                                    <span class="text-[11px] text-on-surface-variant">Format: JPG, PNG, WebP (Maks. 5MB)</span>
-                                </div>
+                        {{-- Gambar Lama --}}
+                        @if($recipe->image)
+                            <img id="imagePreview" src="{{ asset('storage/'.$recipe->image) }}" class="absolute inset-0 w-full h-full object-cover z-10"/>
+                            <div id="imagePlaceholder" class="hidden items-center gap-4 z-0">
+                        @else
+                            <img id="imagePreview" src="" class="hidden absolute inset-0 w-full h-full object-cover z-10"/>
+                            <div id="imagePlaceholder" class="flex items-center gap-4 z-0">
+                        @endif
+                        
+                            <div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined text-[24px]">add_photo_alternate</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold text-primary">Klik untuk ganti foto</span>
+                                <span class="text-[11px] text-on-surface-variant">Format: JPG, PNG, WebP (Maks. 5MB)</span>
                             </div>
                         </div>
                     </div>
