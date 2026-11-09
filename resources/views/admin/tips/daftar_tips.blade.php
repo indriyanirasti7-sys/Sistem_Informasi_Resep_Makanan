@@ -1,11 +1,9 @@
 @extends('admin.layout')
 
-@section('title', 'Kelola Tips — L\'Art de Cuisine')
+@section('title', 'Kelola Tips — Jelajah Rasa')
 @section('breadcrumb', 'Kelola Tips')
 
 @section('content')
-
-
 
 {{-- ========== HEADER ========== --}}
 <header class="flex flex-col gap-6 mb-8 pt-8">
@@ -73,158 +71,153 @@
     </div>
 </header>
 
-{{-- ========== GRID TIPS ========== --}}
-<section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+{{-- ========== TABEL TIPS ========== --}}
+<section class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm overflow-hidden mb-8">
+    <div class="w-full overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-surface-container-low/60 text-on-surface-variant text-[11px] uppercase tracking-wider font-bold">
+                    <th class="py-3.5 px-4 rounded-l-2xl text-center w-20">Foto</th>
+                    <th class="py-3.5 px-4 min-w-[250px]">Judul Tips</th>
+                    <th class="py-3.5 px-4 text-center">Penulis</th>
+                    <th class="py-3.5 px-4 text-center">Tanggal Dibuat</th>
+                    <th class="py-3.5 px-4 text-right rounded-r-2xl">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-container-high/40 text-on-surface">
+                @forelse ($tips as $tip)
+                    <tr class="hover:bg-surface-container-low/40 transition group">
+                        
+                        {{-- Foto --}}
+                        <td class="py-4 px-4">
+                            <div class="flex justify-center">
+                                <div class="w-14 h-14 rounded-xl overflow-hidden shadow-sm bg-surface-container shrink-0">
+                                    @if ($tip->image)
+                                        <img src="{{ asset('storage/' . $tip->image) }}"
+                                             alt="{{ $tip->title }}"
+                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-secondary-container/60 to-primary-fixed/40 text-secondary">
+                                            <span class="material-symbols-outlined text-[24px]">menu_book</span>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </td>
 
-    @forelse ($tips as $tip)
-        <article
-            class="group bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col"
-            data-tip-id="{{ $tip->id }}"
-            data-tip-title="{{ $tip->title }}"
-            data-tip-slug="{{ $tip->slug }}"
-            data-tip-content="{{ $tip->content }}"
-            data-tip-image="{{ $tip->image }}"
-            data-update-url="{{ route('admin.tips.update', $tip->id) }}"
-            data-delete-url="{{ route('admin.tips.destroy', $tip->id) }}">
+                        {{-- Judul --}}
+                        <td class="py-4 px-4">
+                            <div class="flex flex-col">
+                                <span class="text-base text-primary font-bold group-hover:text-tertiary-container transition line-clamp-1">
+                                    {{ $tip->title }}
+                                </span>
+                                <span class="text-[11px] text-on-surface-variant bg-surface-container-low px-2 py-0.5 rounded-full w-fit mt-1">
+                                    /tips/{{ $tip->slug }}
+                                </span>
+                            </div>
+                        </td>
 
-            {{-- Thumbnail --}}
-            <div class="relative aspect-[16/9] bg-surface-container overflow-hidden">
-                @if ($tip->image)
-                    <img src="{{ asset('storage/' . $tip->image) }}"
-                         alt="{{ $tip->title }}"
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
-                @else
-                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-secondary-container/60 to-primary-fixed/40 text-secondary">
-                        <span class="material-symbols-outlined text-[56px]">menu_book</span>
-                    </div>
+                        {{-- Penulis --}}
+                        <td class="py-4 px-4 text-center whitespace-nowrap">
+                            <div class="flex items-center justify-center gap-2">
+                                <div class="w-7 h-7 rounded-full bg-secondary/15 flex items-center justify-center text-secondary shrink-0">
+                                    <span class="material-symbols-outlined text-[16px]">person</span>
+                                </div>
+                                <span class="text-sm font-semibold text-on-surface">{{ optional($tip->user)->name ?? 'Anonim' }}</span>
+                            </div>
+                        </td>
+
+                        {{-- Tanggal --}}
+                        <td class="py-4 px-4 text-center whitespace-nowrap">
+                            <span class="text-xs text-on-surface-variant font-semibold">
+                                {{ optional($tip->created_at)->translatedFormat('d M Y') }}
+                            </span>
+                        </td>
+
+                        {{-- Aksi --}}
+                        <td class="py-4 px-4 text-right whitespace-nowrap">
+                            <div class="flex items-center justify-end gap-1">
+                                {{-- Tombol Lihat (Baca) --}}
+                                <a href="{{ route('admin.tips.detail', $tip->slug) }}"
+                                   class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-full transition" title="Baca">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </a>
+                                
+                                {{-- Tombol Edit --}}
+                                <a href="{{ route('admin.tips.edit', $tip->slug) }}"
+                                   class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-full transition" title="Edit">
+                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                </a>
+                                
+                                {{-- Tombol Hapus (Memanggil Modal) --}}
+                                <button type="button"
+                                        class="delete-btn p-2 text-error hover:bg-error-container/60 rounded-full transition" title="Hapus"
+                                        data-title="{{ $tip->title }}"
+                                        data-url="{{ route('admin.tips.destroy', $tip->id) }}">
+                                    <span class="material-symbols-outlined text-[19px]">delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="py-16 text-center">
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center text-secondary">
+                                    <span class="material-symbols-outlined text-[32px]">menu_book</span>
+                                </div>
+                                <h3 class="font-display text-xl text-primary font-bold">Belum Ada Tips</h3>
+                                <p class="text-sm text-on-surface-variant max-w-md">
+                                    Mulai bagikan pengetahuan kuliner dengan menulis artikel tips pertama Anda.
+                                </p>
+                                <a href="{{ route('admin.tips.create') }}"
+                                   class="mt-2 inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-full hover:bg-primary-container transition">
+                                    <span class="material-symbols-outlined text-[18px]">add</span>
+                                    Tambah Tips
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    {{-- Pagination --}}
+    @if (method_exists($tips, 'hasPages') && $tips->hasPages())
+        <div class="mt-6 pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-surface-container">
+            <span class="text-xs text-on-surface-variant">
+                Menampilkan <strong class="text-primary font-bold">{{ $tips->firstItem() }}-{{ $tips->lastItem() }}</strong>
+                dari <strong class="text-primary font-bold">{{ $tips->total() }}</strong> tips
+            </span>
+
+            <div class="flex items-center gap-1.5">
+                @if (!$tips->onFirstPage())
+                    <a href="{{ $tips->previousPageUrl() }}"
+                       class="px-3.5 py-1.5 rounded-full text-on-surface-variant hover:bg-surface-container text-xs font-bold transition">
+                        ← Sebelumnya
+                    </a>
                 @endif
 
-                {{-- Tanggal badge --}}
-                <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface-variant text-[11px] font-bold shadow-sm">
-                    <span class="material-symbols-outlined text-[14px]">calendar_today</span>
-                    {{ optional($tip->created_at)->translatedFormat('d M Y') }}
-                </span>
+                @foreach ($tips->getUrlRange(max(1, $tips->currentPage() - 2), min($tips->lastPage(), $tips->currentPage() + 2)) as $page => $url)
+                    @if ($page == $tips->currentPage())
+                        <span class="w-8 h-8 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shadow-sm">{{ $page }}</span>
+                    @else
+                        <a href="{{ $url }}"
+                           class="w-8 h-8 rounded-full text-on-surface-variant hover:bg-surface-container text-xs font-bold flex items-center justify-center transition">{{ $page }}</a>
+                    @endif
+                @endforeach
+
+                @if ($tips->hasMorePages())
+                    <a href="{{ $tips->nextPageUrl() }}"
+                       class="px-3.5 py-1.5 rounded-full text-on-surface-variant hover:bg-surface-container text-xs font-bold transition">
+                        Berikutnya →
+                    </a>
+                @endif
             </div>
-
-            {{-- Body --}}
-            <div class="flex flex-col gap-3 p-6 flex-1">
-                <div class="flex items-start justify-between gap-3">
-                    <h2 class="font-display text-xl text-primary font-bold leading-snug line-clamp-2 group-hover:text-tertiary-container transition">
-                        {{ $tip->title }}
-                    </h2>
-
-                    <div class="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <a href="{{ route('admin.tips.edit', $tip->slug) }}"
-                           class="p-2 rounded-full text-on-surface-variant hover:text-primary hover:bg-surface-container transition"
-                           title="Edit">
-                            <span class="material-symbols-outlined text-[18px]">edit</span>
-                        </a>
-                        <button type="button"
-                                class="delete-btn p-2 rounded-full text-error hover:bg-error-container/60 transition"
-                                title="Hapus">
-                            <span class="material-symbols-outlined text-[18px]">delete</span>
-                        </button>
-                    </div>
-                </div>
-
-                <code class="text-[11px] text-on-surface-variant bg-surface-container-low px-2.5 py-1 rounded-full w-fit">
-                    /tips/{{ $tip->slug }}
-                </code>
-
-                <p class="text-sm text-on-surface-variant leading-relaxed line-clamp-3">
-                    {{ \Illuminate\Support\Str::limit(strip_tags($tip->content), 140) }}
-                </p>
-            </div>
-
-            {{-- Footer --}}
-            <div class="px-6 pb-5 pt-3 border-t border-surface-container-high/60 flex items-center justify-between">
-                <div class="flex items-center gap-2 min-w-0">
-                    <div class="w-7 h-7 rounded-full bg-secondary/15 flex items-center justify-center text-secondary shrink-0">
-                        <span class="material-symbols-outlined text-[16px]">person</span>
-                    </div>
-                    <span class="text-xs text-on-surface-variant truncate">
-                        {{ optional($tip->user)->name ?? 'Anonim' }}
-                    </span>
-                </div>
-
-                <a href="{{ route('admin.tips.detail', $tip->slug) }}"
-                   class="inline-flex items-center gap-1 text-primary hover:text-tertiary-container text-xs font-bold transition">
-                    <span>Baca</span>
-                    <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-                </a>
-            </div>
-        </article>
-    @empty
-        {{-- Empty state --}}
-        <div class="md:col-span-2 xl:col-span-3 bg-surface-container-lowest rounded-3xl p-16 shadow-sm flex flex-col items-center text-center">
-            <div class="w-20 h-20 rounded-full bg-surface-container-high flex items-center justify-center text-outline">
-                <span class="material-symbols-outlined text-[36px]">menu_book</span>
-            </div>
-            <h3 class="font-display text-2xl text-primary font-bold mt-5">Belum Ada Tips</h3>
-            <p class="text-sm text-on-surface-variant max-w-md mt-2">
-                Mulai bagikan pengetahuan kuliner dengan menulis artikel tips pertama Anda.
-            </p>
-            <a href="{{ route('admin.tips.create') }}"
-               class="mt-5 inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-full hover:bg-primary-container transition shadow-sm">
-                <span class="material-symbols-outlined text-[18px]">add</span>
-                <span>Tulis Tips Pertama</span>
-            </a>
         </div>
-    @endforelse
-
-    {{-- Kartu placeholder tambah tips --}}
-    @if ($tips->count() > 0)
-        <a href="{{ route('admin.tips.create') }}"
-           class="group bg-surface-container-high/40 hover:bg-surface-container-high/70 rounded-3xl p-6 flex flex-col items-center justify-center text-center transition-all duration-300 min-h-[320px] border-2 border-dashed border-outline-variant/40 hover:border-secondary/50">
-            <div class="w-16 h-16 rounded-full bg-surface-container-lowest text-primary flex items-center justify-center shadow-sm group-hover:scale-110 group-hover:bg-primary-container group-hover:text-white transition-all duration-300">
-                <span class="material-symbols-outlined text-[32px]">add</span>
-            </div>
-            <h3 class="font-display text-xl text-primary font-bold mt-4">Tambah Tips Baru</h3>
-            <p class="text-sm text-on-surface-variant max-w-xs mt-2">
-                Bagikan wawasan gastronomi, teknik memasak, atau catatan dapur Anda.
-            </p>
-            <span class="mt-4 inline-flex items-center gap-1 text-primary text-xs font-bold group-hover:underline">
-                <span>Buka Formulir</span>
-                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-            </span>
-        </a>
     @endif
 </section>
-
-{{-- Pagination --}}
-@if (method_exists($tips, 'hasPages') && $tips->hasPages())
-    <div class="mt-8 pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <span class="text-xs text-on-surface-variant">
-            Menampilkan <strong class="text-primary font-bold">{{ $tips->firstItem() }}-{{ $tips->lastItem() }}</strong>
-            dari <strong class="text-primary font-bold">{{ $tips->total() }}</strong> tips
-        </span>
-
-        <div class="flex items-center gap-1.5">
-            @if (!$tips->onFirstPage())
-                <a href="{{ $tips->previousPageUrl() }}"
-                   class="px-3.5 py-1.5 rounded-full text-on-surface-variant hover:bg-surface-container text-xs font-bold transition">
-                    ← Sebelumnya
-                </a>
-            @endif
-
-            @foreach ($tips->getUrlRange(max(1, $tips->currentPage() - 2), min($tips->lastPage(), $tips->currentPage() + 2)) as $page => $url)
-                @if ($page == $tips->currentPage())
-                    <span class="w-8 h-8 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shadow-sm">{{ $page }}</span>
-                @else
-                    <a href="{{ $url }}"
-                       class="w-8 h-8 rounded-full text-on-surface-variant hover:bg-surface-container text-xs font-bold flex items-center justify-center transition">{{ $page }}</a>
-                @endif
-            @endforeach
-
-            @if ($tips->hasMorePages())
-                <a href="{{ $tips->nextPageUrl() }}"
-                   class="px-3.5 py-1.5 rounded-full text-on-surface-variant hover:bg-surface-container text-xs font-bold transition">
-                    Berikutnya →
-                </a>
-            @endif
-        </div>
-    </div>
-@endif
 
 {{-- ============================================================
      MODAL: Konfirmasi Hapus Tips
@@ -243,14 +236,13 @@
             akan dihapus permanen dari portal. Tindakan ini tidak dapat dibatalkan.
         </p>
 
-        {{-- TOMBOL AKSI DI DALAM MODAL --}}
         <div class="flex items-center gap-3 mt-8 w-full">
-            {{-- Tombol Batal (WAJIB ADA ID INI UNTUK JS) --}}
+            {{-- Tombol Batal --}}
             <button type="button" id="cancelDeleteBtn" class="flex-1 py-2.5 rounded-full bg-surface-container-high text-on-surface font-bold text-sm hover:bg-surface-container-highest transition">
                 Batal
             </button>
             
-            {{-- Form Hapus (Kosongkan action, nanti diisi oleh JS) --}}
+            {{-- Form Hapus (Action diisi oleh JS) --}}
             <form id="deleteForm" method="POST" action="" class="flex-1">
                 @csrf
                 @method('DELETE')
@@ -279,24 +271,22 @@
     const deleteTarget  = document.getElementById('deleteTargetTitle');
     const cancelDelete  = document.getElementById('cancelDeleteBtn');
 
-    function openDeleteModal(card) {
-        deleteTarget.textContent = card.dataset.tipTitle;
-        deleteForm.action = card.dataset.deleteUrl;
-        deleteModal.classList.remove('hidden');
-        deleteModal.classList.add('flex');
-    }
-
     function closeDeleteModal() {
         deleteModal.classList.add('hidden');
         deleteModal.classList.remove('flex');
     }
 
-    /* Delegasi tombol hapus — aman untuk elemen dinamis */
+    /* Event Listener untuk Tombol Hapus di Tabel */
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.delete-btn');
         if (btn) {
-            const card = btn.closest('article');
-            if (card) openDeleteModal(card);
+            // Ambil data langsung dari tombol yang diklik
+            deleteTarget.textContent = btn.dataset.title;
+            deleteForm.action = btn.dataset.url;
+            
+            // Tampilkan Modal
+            deleteModal.classList.remove('hidden');
+            deleteModal.classList.add('flex');
         }
     });
 
