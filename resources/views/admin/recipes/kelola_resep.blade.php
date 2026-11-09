@@ -125,16 +125,16 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-surface-container-low/60 text-on-surface-variant text-[11px] uppercase tracking-wider font-bold">
-                    <th class="py-3.5 px-4 rounded-l-2xl">Foto</th>
-                    <th class="py-3.5 px-4">Judul Resep</th>
-                    <th class="py-3.5 px-3">Kategori</th>
-                    <th class="py-3.5 px-3">Kesulitan</th>
-                    <th class="py-3.5 px-3">Durasi</th>
-                    <th class="py-3.5 px-3">Kalori</th>
-                    <th class="py-3.5 px-3">Rating</th>
-                    <th class="py-3.5 px-3">Dilihat</th>
-                    <th class="py-3.5 px-3">Status</th>
-                    <th class="py-3.5 px-4 text-right rounded-r-2xl">Aksi</th>
+                    <th class="py-3.5 px-4 text-center rounded-l-2xl">Foto</th>
+                    {{-- Judul Resep sengaja dibiarkan rata kiri agar mudah dibaca --}}
+                    <th class="py-3.5 px-4 text-left">Judul Resep</th>
+                    <th class="py-3.5 px-3 text-center">Kategori</th>
+                    <th class="py-3.5 px-3 text-center">Kesulitan</th>
+                    <th class="py-3.5 px-3 text-center">Durasi</th>
+                    <th class="py-3.5 px-3 text-center">Rating</th>
+                    <th class="py-3.5 px-3 text-center">Dilihat</th>
+                    <th class="py-3.5 px-3 text-center">Status</th>
+                    <th class="py-3.5 px-4 text-center rounded-r-2xl">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-surface-container-high/40 text-on-surface">
@@ -184,9 +184,6 @@
 
                         {{-- Durasi --}}
                         <td class="py-4 px-3 text-xs whitespace-nowrap text-on-surface-variant">{{ $recipe->duration_minutes ?? '-' }} mnt</td>
-
-                        {{-- Kalori --}}
-                        <td class="py-4 px-3 text-xs whitespace-nowrap text-on-surface-variant">{{ $recipe->calories ?? '-' }} kkal</td>
 
                         {{-- Rating --}}
                         <td class="py-4 px-3 whitespace-nowrap">
@@ -238,7 +235,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="10" class="py-16 text-center">
+                        <td colspan="9" class="py-16 text-center">
                             <div class="flex flex-col items-center gap-3">
                                 <div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center text-secondary">
                                     <span class="material-symbols-outlined text-[32px]">menu_book</span>

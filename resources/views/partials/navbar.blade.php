@@ -6,6 +6,9 @@
         ['label' => 'Favorit',      'route' => 'bookmarks.favorit', 'active' => ['bookmarks.favorit']], 
         ['label' => 'Tips Memasak', 'route' => 'tips.panduan',      'active' => ['tips.panduan']],
     ];
+    
+    // Fallback jika variabel dari layouts.app belum terkirim
+    $brandName = 'Griya Rasa'; 
 @endphp
 
 {{-- NAVBAR FLOATING COKELAT --}}
@@ -16,15 +19,17 @@
         
         {{-- Logo & Brand --}}
         <a href="{{ route('home') }}" class="flex items-center gap-2 sm:gap-3 shrink-0 group">
-            <img alt="L'Art de Cuisine"
+            <img alt="{{ $brandName }}"
                  class="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/50 transition-all"
                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5GoTuEyWYTwoGI225Teo5lSMZZidm_qW5jpOCHm646LCZ6IigJoJ8PCQzpjzZXs1XGwyLjm50AN_e0RjVErbcxNrVmPcoeWGvGBXWGVYNUqTI6fxTEE5KLwNFMrDJnAwjYbV889BwRPQw3COYUhsD4mVHPKgF83SEBb-6095KMwryj3kb5-1o84Ay9tydqVY8K2cGqBKijQd2TBEXlGQETt0j5Pzxtc8YeVMK8emsi_fGZGP3Dy1Y" />
             <div class="flex flex-col leading-tight">
+                {{-- NAMA BRAND (Dikunci) --}}
                 <span class="font-['Playfair_Display'] text-[17px] sm:text-[20px] font-semibold tracking-tight text-white">
-                    L'Art de Cuisine
+                    {{ $brandName }}
                 </span>
+                {{-- TAGLINE (Dinamis dari Admin) --}}
                 <span class="text-[9px] sm:text-[11px] text-primary-fixed-dim font-medium tracking-wide">
-                    Inspirasi &amp; Resep Kuliner
+                    {{ $siteTagline ?? 'Inspirasi & Resep Kuliner' }}
                 </span>
             </div>
         </a>

@@ -1,3 +1,17 @@
+@php
+    use Illuminate\Support\Facades\Storage;
+    
+    // Ambil data settings dari JSON
+    $globalSettings = Storage::exists('settings.json') 
+        ? json_decode(Storage::get('settings.json'), true) 
+        : [];
+        
+    // Set variabel dengan nilai default jika belum ada data
+    $siteName = 'Jelajah Rasa'; // Nama dikunci
+    $siteTagline = $globalSettings['tagline'] ?? 'Inspirasi & Resep Kuliner';
+    $siteDescription = $globalSettings['description'] ?? 'Eksplorasi cita rasa haute cuisine berpadu dengan kekayaan rempah gastronomi Nusantara.';
+@endphp
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -5,7 +19,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-    <title>@yield('title', "L'Art de Cuisine — Inspirasi & Resep Kuliner")</title>
+    {{-- Judul tab browser sekarang dinamis --}}
+    <title>@yield('title', $siteName . " — " . $siteTagline)</title>
 
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
@@ -97,12 +112,14 @@
 </head>
 <body class="bg-surface-container-low font-body-md text-on-surface antialiased">
 
+    {{-- Navbar memanggil partials/navbar --}}
     @include('partials.navbar')
 
     <main class="w-full pt-28 sm:pt-32 bg-surface-container-low min-h-screen">
         @yield('content')
     </main>
 
+    {{-- Footer memanggil partials/footer --}}
     @include('partials.footer')
 
     @stack('scripts')

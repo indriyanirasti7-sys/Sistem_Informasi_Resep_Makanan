@@ -140,10 +140,6 @@
                     <span class="text-on-surface-variant text-[11px] sm:text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">speed</span> Kesulitan</span>
                     <span class="font-bold text-primary mt-1">{{ $recipe->difficulty }}</span>
                 </div>
-                <div class="flex flex-col bg-surface-container-low p-3 rounded-xl">
-                    <span class="text-on-surface-variant text-[11px] sm:text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">local_fire_department</span> Kalori</span>
-                    <span class="font-bold text-primary mt-1">{{ $recipe->calories ? $recipe->calories . ' kkal' : '-' }}</span>
-                </div>
             </div>
         </div>
 

@@ -71,7 +71,6 @@ class RecipeController extends Controller
                 'servings'         => $validated['servings'],
                 'duration_minutes' => $validated['duration_minutes'] ?? null,
                 'difficulty'       => $validated['difficulty'],
-                'calories'         => $validated['calories'] ?? null,
                 'status'           => $validated['status'],
                 'image'            => $this->handleImageUpload($request),
             ]);
@@ -113,7 +112,6 @@ class RecipeController extends Controller
                 'servings'         => $validated['servings'],
                 'duration_minutes' => $validated['duration_minutes'] ?? null,
                 'difficulty'       => $validated['difficulty'],
-                'calories'         => $validated['calories'] ?? null,
                 'status'           => $validated['status'],
                 'image'            => $newImage ?? $recipe->image,
             ]);
@@ -173,7 +171,6 @@ class RecipeController extends Controller
             'servings'                 => 'required|integer|min:1|max:255',
             'duration_minutes'         => 'nullable|integer|min:1|max:65535',
             'difficulty'               => 'required|in:Mudah,Sedang,Sulit',
-            'calories'                 => 'nullable|integer|min:1|max:65535',
             'status'                   => 'required|in:draft,published',
             'image'                    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
 

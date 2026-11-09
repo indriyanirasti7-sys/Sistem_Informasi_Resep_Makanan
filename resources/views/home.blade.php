@@ -37,7 +37,7 @@
             })->values();
         @endphp
 
-        <section class="w-full px-5 lg:px-12 pt-6 lg:pt-12 pb-12">
+                <section class="w-full px-5 lg:px-12 pt-6 lg:pt-12 pb-12">
             
             {{-- ✨ CARD HIJAU GELAP (DENGAN ORNAMEN) ✨ --}}
             <div class="relative bg-secondary rounded-[2.5rem] p-6 lg:p-12 shadow-2xl overflow-hidden text-white">

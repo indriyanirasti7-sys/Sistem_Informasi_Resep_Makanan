@@ -64,4 +64,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/settings', [Admin\SettingController::class, 'index'])->name('settings.index');
     Route::get('/export/recipes', [Admin\ExportController::class, 'recipes'])->name('export.recipes');
     Route::get('/export/users', [Admin\ExportController::class, 'users'])->name('export.users');
+    Route::put('/settings', [Admin\SettingController::class, 'update'])->name('settings.update');
+    Route::put('/settings/password', [Admin\SettingController::class, 'updatePassword'])->name('settings.password');
 });
