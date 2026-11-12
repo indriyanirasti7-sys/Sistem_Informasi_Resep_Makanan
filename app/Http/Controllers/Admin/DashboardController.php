@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+date_default_timezone_set('Asia/Jakarta');
 
 class DashboardController extends Controller
 {
@@ -20,6 +21,17 @@ public function index()
         'ratings_total'     => \App\Models\Rating::count(),
         'tips_total'        => \App\Models\Tip::count(),
     ];
+
+     $hour = date('H');
+    if ($hour >= 5 && $hour < 11) {
+        $greeting = 'Selamat pagi';
+    } elseif ($hour >= 11 && $hour < 15) {
+        $greeting = 'Selamat siang';
+    } elseif ($hour >= 15 && $hour < 18) {
+        $greeting = 'Selamat sore';
+    } else {
+        $greeting = 'Selamat malam';
+    }
 
     $topRecipes = \App\Models\Recipe::with(['category', 'user', 'ratings'])
         ->orderByDesc('views')
@@ -83,6 +95,6 @@ public function index()
             return $data;
         }, $chartData);
 
-       return view('admin.dashboard', compact('stats', 'topRecipes', 'latestRatings', 'chartData'));
+       return view('admin.dashboard', compact('stats', 'topRecipes', 'latestRatings', 'chartData', 'greeting'));
     }
 }

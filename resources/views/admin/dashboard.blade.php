@@ -12,16 +12,18 @@
             <div class="flex items-center gap-2 mb-1">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/15 text-secondary text-[11px] font-bold uppercase tracking-wider">
                     <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                    Gastronomie Haute Administration
+                    Manajemen Resep Dapur
                 </span>
                 <span class="text-on-surface-variant text-[11px] tracking-wide">• Versi 3.4.1</span>
             </div>
             <h1 class="font-display text-3xl lg:text-4xl text-primary tracking-tight font-bold">
+                {{ $greeting }}, {{ auth()->user()->name }}!
+            </h1>
+            <h1 class="font-display text-3xl lg:text-4xl text-primary tracking-tight font-bold">
                 Ikhtisar & Manajemen Dapur Resep
             </h1>
             <p class="text-sm text-on-surface-variant mt-1">
-                Pantau performa kuliner nusantara, kurasi arsip resep haute cuisine, dan rilis mahakarya terbaru.
-            </p>
+                Pantau koleksi resep, atur menu pilihan, dan publikasikan kreasi hidangan terbarumu </p>
         </div>
 
         <div class="flex items-center gap-3 self-start md:self-auto">
@@ -30,10 +32,10 @@
                 <span class="material-symbols-outlined text-[20px]">add_circle</span>
                 <span>Tambah Resep Baru</span>
             </a>
-            <a href="{{ route('admin.export.recipes') }}"
-               class="flex items-center gap-2 px-5 py-3 rounded-full bg-secondary text-white text-sm font-bold shadow-[0_4px_14px_rgba(85,100,59,0.2)] hover:opacity-95 transition-all">
-                <span class="material-symbols-outlined text-[20px]">table_view</span>
-                <span>Ekspor ke Excel</span>
+            <a href="{{ route('admin.export.laporan.pdf') }}"
+            class="group inline-flex items-center gap-2.5 px-6 py-3 bg-error text-white text-sm font-bold rounded-full hover:bg-error/90 transition shadow-sm hover:shadow-md">
+                <span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+                <span>Ekspor ke PDF</span>
             </a>
         </div>
     </div>

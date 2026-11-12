@@ -7,16 +7,12 @@
 
 {{-- ========== HEADER ========== --}}
 <header class="flex flex-col gap-6 mb-8 pt-8">
-    <div class="flex flex-col gap-1.5 max-w-2xl">
-        <div class="flex items-center gap-2 text-secondary">
-            <span class="material-symbols-outlined text-lg">rate_review</span>
-            <span class="text-[11px] uppercase tracking-widest text-secondary font-bold">Moderasi &amp; Feedback Komunitas</span>
+        <div class="flex flex-col gap-1.5">
+            <h1 class="font-['Playfair_Display'] text-4xl text-primary tracking-tight font-bold">Kelola Resep</h1>
+            <p class="text-sm text-on-surface-variant max-w-xl">
+                Tambah, kurasi, ubah, dan atur sajian kuliner nusantara yang tampil di etalase Jelajah Rasa.
+            </p>
         </div>
-        <h1 class="font-display text-4xl text-primary tracking-tight font-bold">Ulasan &amp; Rating</h1>
-        <p class="text-sm text-on-surface-variant">
-            Pantau komentar pengunjung pada setiap resep dan kelola reputasi kurasi masakan.
-        </p>
-    </div>
 
     {{-- ========== 4 STAT CARDS ========== --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mt-2">

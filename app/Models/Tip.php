@@ -16,6 +16,7 @@ class Tip extends Model
         'content',
         'image',
         'user_id',
+        'status',
     ];
 
     protected static function booted()

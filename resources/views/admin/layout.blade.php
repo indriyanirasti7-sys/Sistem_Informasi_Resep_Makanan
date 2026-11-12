@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
-    <title>@yield('title', 'Admin — L\'Art de Cuisine')</title>
+    <title>@yield('title', 'Admin — Jelajah Rasa')</title>
 
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -14,9 +14,55 @@
 
     <style>
         @layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } }
+        
         ::-webkit-scrollbar { display: none; }
+        
+        /* Scrollbar tipis khusus sidebar */
+        .sidebar-scroll::-webkit-scrollbar { display: block; width: 4px; }
+        .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+        .sidebar-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.4); }
+
         .line-clamp-1 { display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; }
         .line-clamp-2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+
+        /* =========================================
+           CSS SIDEBAR COLLAPSE (HANYA UNTUK DESKTOP)
+           ========================================= */
+        @media (min-width: 1024px) {
+            /* Saat class sidebar-collapsed aktif di body */
+            body.sidebar-collapsed #sidebar {
+                width: 84px;
+            }
+            body.sidebar-collapsed #sidebar .sidebar-text,
+            body.sidebar-collapsed #sidebar .sidebar-category-title {
+                display: none !important;
+            }
+            body.sidebar-collapsed #sidebar .sidebar-nav-item {
+                justify-content: center !important;
+                padding-left: 0;
+                padding-right: 0;
+            }
+            body.sidebar-collapsed #sidebar .sidebar-profile {
+                justify-content: center !important;
+            }
+            body.sidebar-collapsed #sidebar .sidebar-header {
+                justify-content: center !important;
+            }
+            
+            /* Geser konten utama dan header ke kiri */
+            body.sidebar-collapsed #main-content {
+                padding-left: 84px !important;
+            }
+            body.sidebar-collapsed #main-header {
+                left: 84px !important;
+            }
+
+            /* Putar ikon panah */
+            body.sidebar-collapsed #toggle-icon {
+                transform: rotate(180deg);
+            }
+        }
     </style>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -58,85 +104,104 @@
     </script>
 </head>
 
-<body class="bg-background font-body-md text-on-surface antialiased">
+<body class="bg-background font-body-md text-on-surface antialiased overflow-hidden">
 
-<!-- OVERLAY GELAP (Hanya muncul di Mobile saat sidebar dibuka) -->
+<!-- SCRIPT CEGAH FLICKER & KUNCI SIDEBAR -->
+<script>
+    // Cek memory sebelum halaman dirender
+    if (localStorage.getItem('sidebarCollapsed') === 'true') {
+        document.body.classList.add('sidebar-collapsed');
+    }
+</script>
+
+<!-- OVERLAY GELAP (Hanya muncul di Mobile) -->
 <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden transition-opacity duration-300"></div>
 
-{{-- ============ SIDEBAR (HIJAU) ============ --}}
-<aside id="sidebar" class="fixed left-0 top-0 h-screen w-72 bg-secondary z-50 flex flex-col justify-between p-4 shadow-xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+{{-- ============ SIDEBAR ============ --}}
+<!-- Hapus class 'relative' dan pastikan fixed bekerja dengan baik -->
+<aside id="sidebar" class="fixed left-0 top-0 h-[100dvh] bg-secondary z-50 flex flex-col p-4 shadow-xl transform -translate-x-full lg:translate-x-0 transition-all duration-300 w-72">
     
+    <!-- TOMBOL TOGGLE (MENGAMBANG DI LUAR SIDEBAR) -->
+    <button id="desktop-toggle-btn" type="button" class="hidden lg:flex absolute top-8 -right-3.5 z-50 w-7 h-7 bg-primary text-white rounded-full items-center justify-center shadow-md border-2 border-secondary hover:bg-primary-container transition-all">
+        <span class="material-symbols-outlined text-[16px] transition-transform duration-300" id="toggle-icon">chevron_left</span>
+    </button>
+
     <!-- BAGIAN ATAS (Logo & Menu) -->
-    <div class="flex flex-col gap-6 overflow-y-auto overflow-x-hidden no-scrollbar w-full">
+    <div class="flex flex-col gap-6 flex-1 min-h-0 overflow-y-auto overflow-x-hidden w-full sidebar-scroll">
         
-        <!-- Logo Brand & Tombol X -->
-        <div class="flex items-center gap-3 px-2 mt-2 w-full">
+        <!-- Logo Brand -->
+        <div class="sidebar-header flex items-center gap-3 px-1.5 mt-2 w-full shrink-0 transition-all duration-300">
             <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white shrink-0">
                 <span class="material-symbols-outlined text-[24px]">restaurant_menu</span>
             </div>
             
-            <!-- Div pembungkus teks (min-w-0 agar bisa menyusut) -->
-            <div class="flex flex-col min-w-0 flex-1">
-                <span class="font-display text-lg text-white font-bold leading-none truncate">L'Art de Cuisine</span>
-                <span class="text-[10px] uppercase tracking-wider text-white/60 mt-1 font-semibold truncate">Portal Gastronomi</span>
+            <!-- Teks Logo -->
+            <div class="flex flex-col flex-1 overflow-hidden whitespace-nowrap sidebar-text transition-all duration-300">
+                <span class="font-display text-[17px] text-white font-bold leading-tight">Jelajah Rasa</span>
+                <span class="text-[10px] uppercase tracking-wider text-white/60 mt-0.5 font-semibold">Portal Gastronomi</span>
             </div>
             
-            <!-- TOMBOL SILANG (Hanya muncul di HP) -->
+            <!-- Tombol Close (Mobile) -->
             <button id="close-sidebar-btn" type="button" class="lg:hidden shrink-0 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors ml-auto">
                 <span class="material-symbols-outlined text-[20px]">close</span>
             </button>
         </div>
 
         <!-- Navigasi Berkelompok -->
-        <nav class="flex flex-col gap-6 w-full">
+        <nav class="flex flex-col gap-6 w-full shrink-0 pb-4 mt-2">
+            
+            <!-- UTAMA -->
             <div>
-                <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-white/50 mb-2">Utama</p>
-                <div class="flex flex-col gap-1">
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
-                        <span class="material-symbols-outlined text-[20px]">dashboard</span>
-                        <span class="text-sm font-semibold">Dashboard</span>
+                <p class="sidebar-category-title px-3 text-[10px] font-bold uppercase tracking-wider text-white/40 mb-2 whitespace-nowrap transition-all">Utama</p>
+                <div class="flex flex-col gap-1.5">
+                    <a href="{{ route('admin.dashboard') }}" class="sidebar-nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+                        <span class="material-symbols-outlined text-[22px] shrink-0">dashboard</span>
+                        <span class="sidebar-text text-sm font-semibold whitespace-nowrap">Dashboard</span>
                     </a>
                 </div>
             </div>
 
+            <!-- MANAJEMEN KONTEN -->
             <div>
-                <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-white/50 mb-2">Manajemen Konten</p>
-                <div class="flex flex-col gap-1">
-                    <a href="{{ route('admin.recipes.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.recipes.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
-                        <span class="material-symbols-outlined text-[20px]">menu_book</span>
-                        <span class="text-sm font-semibold">Kelola Resep</span>
+                <p class="sidebar-category-title px-3 text-[10px] font-bold uppercase tracking-wider text-white/40 mb-2 whitespace-nowrap transition-all">Manajemen Konten</p>
+                <div class="flex flex-col gap-1.5">
+                    <a href="{{ route('admin.recipes.index') }}" class="sidebar-nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.recipes.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+                        <span class="material-symbols-outlined text-[22px] shrink-0">menu_book</span>
+                        <span class="sidebar-text text-sm font-semibold whitespace-nowrap">Kelola Resep</span>
                     </a>
-                    <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.categories.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
-                        <span class="material-symbols-outlined text-[20px]">category</span>
-                        <span class="text-sm font-semibold">Kelola Kategori</span>
+                    <a href="{{ route('admin.categories.index') }}" class="sidebar-nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.categories.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+                        <span class="material-symbols-outlined text-[22px] shrink-0">category</span>
+                        <span class="sidebar-text text-sm font-semibold whitespace-nowrap">Kelola Kategori</span>
                     </a>
-                    <a href="{{ route('admin.tips.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.tips.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
-                        <span class="material-symbols-outlined text-[20px]">lightbulb</span>
-                        <span class="text-sm font-semibold">Kelola Tips</span>
+                    <a href="{{ route('admin.tips.index') }}" class="sidebar-nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.tips.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+                        <span class="material-symbols-outlined text-[22px] shrink-0">lightbulb</span>
+                        <span class="sidebar-text text-sm font-semibold whitespace-nowrap">Kelola Tips</span>
                     </a>
                 </div>
             </div>
 
+            <!-- INTERAKSI -->
             <div>
-                <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-white/50 mb-2">Interaksi</p>
-                <div class="flex flex-col gap-1">
-                    <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.users.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
-                        <span class="material-symbols-outlined text-[20px]">group</span>
-                        <span class="text-sm font-semibold">Data User</span>
+                <p class="sidebar-category-title px-3 text-[10px] font-bold uppercase tracking-wider text-white/40 mb-2 whitespace-nowrap transition-all">Interaksi</p>
+                <div class="flex flex-col gap-1.5">
+                    <a href="{{ route('admin.users.index') }}" class="sidebar-nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.users.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+                        <span class="material-symbols-outlined text-[22px] shrink-0">group</span>
+                        <span class="sidebar-text text-sm font-semibold whitespace-nowrap">Data User</span>
                     </a>
-                    <a href="{{ route('admin.reviews.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.reviews.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
-                        <span class="material-symbols-outlined text-[20px]">reviews</span>
-                        <span class="text-sm font-semibold">Ulasan</span>
+                    <a href="{{ route('admin.reviews.index') }}" class="sidebar-nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.reviews.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+                        <span class="material-symbols-outlined text-[22px] shrink-0">reviews</span>
+                        <span class="sidebar-text text-sm font-semibold whitespace-nowrap">Ulasan</span>
                     </a>
                 </div>
             </div>
 
+            <!-- SISTEM -->
             <div>
-                <p class="px-4 text-[10px] font-bold uppercase tracking-wider text-white/50 mb-2">Sistem</p>
-                <div class="flex flex-col gap-1">
-                    <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all {{ request()->routeIs('admin.settings.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
-                        <span class="material-symbols-outlined text-[20px]">settings</span>
-                        <span class="text-sm font-semibold">Pengaturan</span>
+                <p class="sidebar-category-title px-3 text-[10px] font-bold uppercase tracking-wider text-white/40 mb-2 whitespace-nowrap transition-all">Sistem</p>
+                <div class="flex flex-col gap-1.5">
+                    <a href="{{ route('admin.settings.index') }}" class="sidebar-nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.settings.*') ? 'bg-white text-secondary shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+                        <span class="material-symbols-outlined text-[22px] shrink-0">settings</span>
+                        <span class="sidebar-text text-sm font-semibold whitespace-nowrap">Pengaturan</span>
                     </a>
                 </div>
             </div>
@@ -144,51 +209,43 @@
     </div>
 
     <!-- BAGIAN BAWAH (Profil & Keluar) -->
-    <div class="flex flex-col gap-3 mt-4 pt-4 border-t border-white/10">
+    <div class="flex flex-col gap-3 pt-4 border-t border-white/10 shrink-0 mt-auto">
         <!-- Kartu Profil -->
-                <!-- Kartu Profil Admin (Posisi Atas) -->
-        <div class="bg-black/10 rounded-2xl p-3 flex items-center justify-between shadow-sm">
+        <div class="sidebar-profile bg-black/10 rounded-xl p-2.5 flex items-center justify-between shadow-sm overflow-hidden transition-all duration-300">
             <div class="flex items-center gap-3">
-                <!-- Mengambil foto dari database, jika kosong pakai inisial nama asli -->
                 <img src="{{ Auth::user()->avatar ? Storage::url(Auth::user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=fff&color=55643b&bold=true' }}" 
-                     class="w-10 h-10 rounded-full object-cover shadow-sm"/>
+                     class="w-9 h-9 rounded-full object-cover shadow-sm shrink-0"/>
                 
-                <div class="flex flex-col">
-                    <!-- Mengambil nama asli dari database -->
+                <div class="sidebar-text flex flex-col whitespace-nowrap transition-all">
                     <span class="text-xs font-bold text-white">{{ Auth::user()->name }}</span>
-                    
-                    <!-- Menampilkan role -->
                     <span class="text-[10px] text-white/60 capitalize">{{ Auth::user()->role === 'admin' ? 'Super Admin' : 'User' }}</span>
                 </div>
             </div>
-            <span class="material-symbols-outlined text-white/60 text-[18px]" title="Terverifikasi">verified</span>
+            <span class="sidebar-text material-symbols-outlined text-white/60 text-[18px] transition-all">verified</span>
         </div>
 
         <!-- Tombol Keluar -->
-        <form method="POST" action="{{ route('logout') }}">
+        <form method="POST" action="{{ route('logout') }}" class="w-full">
             @csrf
-            <button type="submit" class="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-2xl bg-white/10 text-white hover:bg-error hover:text-white transition-all shadow-sm">
-                <span class="material-symbols-outlined text-[20px]">logout</span>
-                <span class="text-sm font-bold">Keluar</span>
+            <button type="submit" class="sidebar-nav-item flex items-center justify-center gap-2 w-full px-3 py-3 rounded-xl bg-white/10 text-white hover:bg-error hover:text-white transition-all shadow-sm">
+                <span class="material-symbols-outlined text-[22px] shrink-0">logout</span>
+                <span class="sidebar-text text-sm font-bold whitespace-nowrap">Keluar</span>
             </button>
         </form>
     </div>
 </aside>
 
 {{-- ============ CONTENT WRAPPER ============ --}}
-<div class="lg:pl-72 w-full overflow-x-hidden">
+<div id="main-content" class="pl-0 lg:pl-72 w-full h-screen overflow-y-auto transition-all duration-300">
 
-    {{-- HEADER --}}
-        {{-- HEADER (COKLAT) --}}
-    <header class="fixed top-0 left-0 lg:left-72 right-0 h-20 bg-primary z-40 flex items-center justify-between px-4 lg:px-8 shadow-md">
+    {{-- HEADER (COKLAT) --}}
+    <header id="main-header" class="fixed top-0 left-0 lg:left-72 right-0 h-20 bg-primary z-40 flex items-center justify-between px-4 lg:px-8 shadow-md transition-all duration-300">
         
         <div class="flex items-center gap-4">
-            {{-- Tombol Menu Mobile --}}
             <button id="mobile-menu-btn" type="button" class="lg:hidden p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors">
                 <span class="material-symbols-outlined text-[24px]">menu</span>
             </button>
 
-            {{-- Breadcrumb & Status --}}
             <div class="flex flex-col gap-0.5 pl-2">
                 <div class="flex items-center gap-2 text-[11px] text-white/70">
                     <span>Admin</span>
@@ -203,17 +260,13 @@
         </div>
 
         <div class="flex items-center gap-3 lg:gap-4">
-            {{-- Search Bar --}}
             <form action="{{ route('admin.recipes.index') }}" method="GET" class="relative hidden md:flex items-center">
                 <span class="material-symbols-outlined absolute left-4 text-white/60 text-[18px]">search</span>
-                
-                {{-- Input Search menggunakan putih transparan agar menyatu dengan header coklat --}}
                 <input type="text" name="q" value="{{ request('q') }}" 
                     class="w-56 lg:w-96 pl-10 pr-4 py-2 rounded-full bg-white/10 text-white placeholder:text-white/50 text-sm shadow-sm outline-none focus:ring-2 focus:ring-secondary-fixed transition-all" 
                     placeholder="Cari resep, chef, tag..." />
             </form>
 
-            {{-- Foto Profil --}}
             <a href="{{ route('home') }}" class="flex items-center gap-2 pl-1 lg:pl-2">
                 <img alt="{{ Auth::user()->name }}" class="w-8 h-8 lg:w-9 lg:h-9 rounded-full object-cover shadow-sm border-2 border-white/20"
                      src="{{ Auth::user()->avatar ? Storage::url(Auth::user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=5a3a22&color=fff&bold=true' }}"/>
@@ -227,15 +280,15 @@
     </main>
 </div>
 
-{{-- SCRIPT UNTUK HAMBURGER MENU & TOMBOL SILANG --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // ==== LOGIKA MOBILE (BURGER MENU) ====
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebar-overlay');
         const menuBtn = document.getElementById('mobile-menu-btn');
         const closeBtn = document.getElementById('close-sidebar-btn');
 
-        function toggleSidebar() {
+        function toggleSidebarMobile() {
             sidebar.classList.toggle('-translate-x-full');
             
             if (overlay.classList.contains('hidden')) {
@@ -247,9 +300,20 @@
             }
         }
 
-        menuBtn.addEventListener('click', toggleSidebar);
-        closeBtn.addEventListener('click', toggleSidebar);
-        overlay.addEventListener('click', toggleSidebar);
+        menuBtn.addEventListener('click', toggleSidebarMobile);
+        closeBtn.addEventListener('click', toggleSidebarMobile);
+        overlay.addEventListener('click', toggleSidebarMobile);
+
+        // ==== LOGIKA DESKTOP (LOCK/TOGGLE) ====
+        const desktopToggleBtn = document.getElementById('desktop-toggle-btn');
+
+        desktopToggleBtn.addEventListener('click', function() {
+            // Toggle class di body
+            const isCollapsed = document.body.classList.toggle('sidebar-collapsed');
+            
+            // Simpan status ke localStorage agar tidak reset saat pindah halaman
+            localStorage.setItem('sidebarCollapsed', isCollapsed ? 'true' : 'false');
+        });
     });
 </script>
 

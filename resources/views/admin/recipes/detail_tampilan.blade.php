@@ -1,49 +1,37 @@
 @extends('admin.layout')
 
-@section('title', 'Detail Resep — L\'Art de Cuisine')
+@section('title', 'Detail Resep — Jelajah Rasa')
 @section('breadcrumb', 'Detail Resep')
 
 @section('content')
 
-<div class="w-full pb-12 pt-4 sm:pt-6">
+<div class="w-full mx-auto pb-12">
 
-    <!-- Top Bar: Breadcrumb Navigation & Action Suite -->
-    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 mb-6">
-        <!-- Breadcrumb -->
-        <div class="flex items-center flex-wrap gap-2 text-on-surface-variant text-xs">
-            <span class="hover:text-primary cursor-pointer">Portal Admin</span>
-            <span class="text-outline-variant">/</span>
-            <a href="{{ route('admin.recipes.index') }}" class="hover:text-primary cursor-pointer">Kelola Resep</a>
-            <span class="text-outline-variant">/</span>
-            <span class="text-primary font-bold bg-surface-container-high px-3 py-1.5 rounded-full text-[11px] mt-1 sm:mt-0">
-                Detail Resep (#RCP-{{ str_pad($recipe->id, 4, '0', STR_PAD_LEFT) }})
-            </span>
-        </div>
+    {{-- ========== HEADER (BERSIH TANPA TOMBOL AKSI) ========== --}}
+    <header class="flex flex-col gap-2 mb-8 pt-8">
         
-        <!-- Action Buttons -->
-        <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
-            <a href="{{ route('admin.recipes.index') }}" class="flex-1 sm:flex-none justify-center flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full bg-surface-container-lowest text-primary text-xs font-bold shadow-sm hover:bg-surface-container transition-all">
-                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-                <span>Kembali</span>
-            </a>
-            
-            <form method="POST" action="{{ route('admin.recipes.destroy', $recipe->id) }}" onsubmit="return confirm('Hapus resep ini?')" class="flex-1 sm:flex-none m-0">
-                @csrf @method('DELETE')
-                <button type="submit" class="w-full justify-center flex items-center gap-2 px-4 py-2.5 rounded-full bg-error-container text-error text-xs font-bold hover:bg-error hover:text-white transition-all">
-                    <span class="material-symbols-outlined text-[18px]">delete</span>
-                    <span>Hapus</span>
-                </button>
-            </form>
+        {{-- TOMBOL KEMBALI DI ATAS KIRI --}}
+        <a href="{{ route('admin.recipes.index') }}" 
+           class="inline-flex items-center gap-2 px-4 py-2 bg-surface-container-high hover:bg-surface-container-highest text-primary text-sm font-bold rounded-full transition-all w-fit mb-3 shadow-sm">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            Kembali ke Daftar Resep
+        </a>
 
-            <a href="{{ route('admin.recipes.edit', $recipe->id) }}" class="w-full sm:w-auto justify-center flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-white text-xs font-bold shadow-sm hover:bg-primary-container transition-all mt-1 sm:mt-0">
-                <span class="material-symbols-outlined text-[18px]">edit_note</span>
-                <span>Edit Resep</span>
-            </a>
+        {{-- JUDUL --}}
+        <div class="flex items-center gap-2 mt-2">
+            <span class="material-symbols-outlined text-[28px] text-primary">receipt_long</span>
+            <h1 class="font-['Playfair_Display'] text-3xl text-primary tracking-tight font-bold">
+                Detail Resep: {{ $recipe->title }}
+            </h1>
         </div>
-    </div>
+
+        <p class="text-sm text-on-surface-variant mt-1">
+            Tinjau detail lengkap resep, bahan-bahan, dan instruksi memasak sebelum dipublikasikan.
+        </p>
+    </header>
 
     <!-- Recipe Metadata & Status Banner -->
-    <div class="bg-surface-container-lowest rounded-2xl p-5 sm:p-6 shadow-sm mb-6">
+    <div class="bg-surface-container-lowest rounded-3xl p-5 sm:p-6 shadow-sm mb-6">
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-5 items-center">
             <!-- Status Badge & ID -->
             <div class="xl:col-span-1 flex flex-col gap-2">
@@ -97,9 +85,9 @@
     <div class="w-full flex flex-col gap-6 mb-6">
         
         <!-- 1. Featured Visual & Title Narrative -->
-        <div class="bg-surface-container-lowest rounded-2xl p-5 sm:p-8 shadow-sm flex flex-col">
+        <div class="bg-surface-container-lowest rounded-3xl p-5 sm:p-8 shadow-sm flex flex-col">
             <!-- Hero Visual Frame -->
-            <div class="relative w-full h-64 sm:h-96 rounded-xl overflow-hidden bg-surface-container-high mb-6 group">
+            <div class="relative w-full h-64 sm:h-96 rounded-2xl overflow-hidden bg-surface-container-high mb-6 group">
                 @if($recipe->image)
                     <img class="w-full h-full object-cover object-center group-hover:scale-[1.02] transition-transform duration-700" src="{{ asset('storage/'.$recipe->image) }}" alt="{{ $recipe->title }}"/>
                 @else
@@ -110,41 +98,42 @@
                 <div class="absolute inset-0 bg-gradient-to-t from-primary/70 via-transparent to-transparent"></div>
             </div>
 
-            <!-- Recipe Title -->
-            <h1 class="font-['Playfair_Display'] text-2xl sm:text-4xl text-primary tracking-tight mb-4 font-bold leading-tight">
-                {{ $recipe->title }}
-            </h1>
-
             <!-- Culinary Philosophy & Long Description -->
-            <div class="bg-surface-container-low rounded-xl p-5 text-on-surface-variant text-sm leading-relaxed">
+            <div class="bg-surface-container-low rounded-2xl p-5 text-on-surface-variant text-sm leading-relaxed">
                 <p>{!! nl2br(e($recipe->description)) !!}</p>
             </div>
         </div>
 
         <!-- 2. Spesifikasi Dapur (Full Width Grid) -->
-        <div class="bg-surface-container-lowest rounded-2xl p-5 sm:p-6 shadow-sm">
+        <div class="bg-surface-container-lowest rounded-3xl p-5 sm:p-6 shadow-sm">
             <div class="flex items-center gap-2 pb-3 mb-4 border-b border-surface-container-high">
                 <span class="material-symbols-outlined text-secondary text-[22px]">restaurant</span>
                 <h2 class="font-['Playfair_Display'] text-lg text-primary font-bold">Spesifikasi Dapur</h2>
             </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-sm">
-                <div class="flex flex-col bg-surface-container-low p-3 rounded-xl">
+            {{-- Diubah menjadi 4 kolom agar Kalori muat --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-sm">
+                <div class="flex flex-col bg-surface-container-low p-4 rounded-2xl">
                     <span class="text-on-surface-variant text-[11px] sm:text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">timer</span> Total Waktu</span>
                     <span class="font-bold text-primary mt-1">{{ $recipe->duration_minutes }} Menit</span>
                 </div>
-                <div class="flex flex-col bg-surface-container-low p-3 rounded-xl">
+                <div class="flex flex-col bg-surface-container-low p-4 rounded-2xl">
                     <span class="text-on-surface-variant text-[11px] sm:text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">group</span> Kapasitas</span>
                     <span class="font-bold text-primary mt-1">{{ $recipe->servings }} Orang</span>
                 </div>
-                <div class="flex flex-col bg-surface-container-low p-3 rounded-xl">
+                <div class="flex flex-col bg-surface-container-low p-4 rounded-2xl">
                     <span class="text-on-surface-variant text-[11px] sm:text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">speed</span> Kesulitan</span>
                     <span class="font-bold text-primary mt-1">{{ $recipe->difficulty }}</span>
+                </div>
+                {{-- KOTAK KALORI BARU --}}
+                <div class="flex flex-col bg-surface-container-low p-4 rounded-2xl">
+                    <span class="text-on-surface-variant text-[11px] sm:text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">local_fire_department</span> Kalori</span>
+                    <span class="font-bold text-primary mt-1">{{ $recipe->calories ? $recipe->calories . ' kkal' : '-' }}</span>
                 </div>
             </div>
         </div>
 
         <!-- 3. Bahan & Takaran -->
-        <div class="bg-surface-container-lowest rounded-2xl p-5 sm:p-8 shadow-sm flex flex-col">
+        <div class="bg-surface-container-lowest rounded-3xl p-5 sm:p-8 shadow-sm flex flex-col">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 gap-4 border-b border-surface-container-high mb-4">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
@@ -166,8 +155,7 @@
                     <div class="bg-surface-container-low rounded-xl p-4 flex items-start gap-3">
                         <span class="material-symbols-outlined text-secondary text-[18px] mt-0.5">check_circle</span>
                         <div class="text-sm">
-                            <span class="font-bold text-primary">{{ $ri->amount }} {{ $ri->unit ?? $ri->ingredient->unit }}</span>
-                            <span class="text-on-surface-variant block mt-1 text-xs sm:text-sm">{{ $ri->ingredient->name ?? 'Bahan' }}</span>
+                            <span class="text-primary font-medium">{{ $ri->ingredient->name ?? 'Bahan' }}</span>
                         </div>
                     </div>
                 @endforeach
@@ -175,7 +163,7 @@
         </div>
 
         <!-- 4. Step-by-Step Cooking Instructions -->
-        <div class="bg-surface-container-lowest rounded-2xl p-5 sm:p-8 shadow-sm flex flex-col">
+        <div class="bg-surface-container-lowest rounded-3xl p-5 sm:p-8 shadow-sm flex flex-col">
             <div class="flex items-center justify-between pb-4 border-b border-surface-container-high mb-5">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shrink-0">
@@ -195,16 +183,16 @@
                             <span class="w-10 h-10 rounded-full bg-primary text-white font-bold text-sm flex items-center justify-center">
                                 {{ str_pad($step->step_number, 2, '0', STR_PAD_LEFT) }}
                             </span>
-                            @if($step->duration_minutes)
-                                <span class="px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant text-[10px] font-bold">
-                                    {{ $step->duration_minutes }} Mnt
-                                </span>
-                            @endif
                         </div>
-                        <div class="flex flex-col min-w-0 mt-1 sm:mt-0">
+                        <div class="flex flex-col min-w-0 mt-1 sm:mt-0 gap-3">
                             <p class="text-[13px] sm:text-sm text-on-surface-variant leading-relaxed">
                                 {{ $step->instruction }}
                             </p>
+                            
+                            {{-- TAMPILKAN GAMBAR STEP --}}
+                            @if($step->image)
+                                <img src="{{ asset('storage/'.$step->image) }}" alt="Langkah {{ $step->step_number }}" class="w-full max-w-sm rounded-xl shadow-sm object-cover h-40">
+                            @endif
                         </div>
                     </div>
                 @endforeach
@@ -212,5 +200,111 @@
         </div>
 
     </div>
+
+    {{-- ========== BOTTOM ACTIONS (HAPUS & EDIT DI BAWAH) ========== --}}
+    <div class="flex items-center justify-between pt-6 border-t border-surface-container-high mt-2">
+        
+        {{-- Kiri Bawah: Kembali --}}
+        <a href="{{ route('admin.recipes.index') }}"
+           class="px-6 py-3 rounded-full bg-surface-container-high text-primary text-sm font-bold hover:bg-surface-container transition">
+            Batal
+        </a>
+
+        {{-- Kanan Bawah: Hapus & Edit --}}
+        <div class="flex items-center gap-3">
+            {{-- Tombol Hapus (Memanggil Modal) --}}
+            <button type="button" 
+                    class="delete-recipe-btn flex items-center gap-2 px-6 py-3 rounded-full bg-error-container text-error text-sm font-bold hover:bg-error hover:text-white transition-all" 
+                    data-title="{{ $recipe->title }}"
+                    data-url="{{ route('admin.recipes.destroy', $recipe->slug) }}">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
+                Hapus
+            </button>
+            
+            {{-- Tombol Edit --}}
+            <a href="{{ route('admin.recipes.edit', $recipe->slug) }}" 
+               class="flex items-center gap-2 px-8 py-3 rounded-full bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary-container transition-all">
+                <span class="material-symbols-outlined text-[18px]">edit_note</span>
+                Edit Resep
+            </a>
+        </div>
+    </div>
+
 </div>
+
+{{-- ============================================================
+     MODAL: Konfirmasi Hapus Resep
+     ============================================================ --}}
+<div id="deleteRecipeModal"
+     class="fixed inset-0 z-50 bg-inverse-surface/40 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-surface-container-lowest rounded-3xl max-w-md w-full p-8 shadow-[0_16px_40px_-6px_rgba(90,58,34,0.18)] flex flex-col items-center text-center">
+
+        <div class="w-16 h-16 rounded-full bg-error-container text-error flex items-center justify-center mb-5">
+            <span class="material-symbols-outlined text-[32px]">warning</span>
+        </div>
+
+        <h3 class="font-display text-2xl text-primary font-bold">Hapus Resep Ini?</h3>
+        <p class="text-sm text-on-surface-variant mt-2 leading-relaxed">
+            Resep <strong class="text-primary font-bold" id="deleteRecipeTitle">—</strong>
+            akan dihapus permanen dari portal. Tindakan ini tidak dapat dibatalkan.
+        </p>
+
+        <div class="flex items-center gap-3 mt-8 w-full">
+            {{-- Tombol Batal --}}
+            <button type="button" id="cancelDeleteRecipeBtn" class="flex-1 py-2.5 rounded-full bg-surface-container-high text-on-surface font-bold text-sm hover:bg-surface-container-highest transition">
+                Batal
+            </button>
+            
+            {{-- Form Hapus --}}
+            <form id="deleteRecipeForm" method="POST" action="" class="flex-1">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="w-full py-2.5 rounded-full bg-error text-white font-bold text-sm hover:bg-error/90 transition">
+                    Ya, Hapus
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    const deleteModal  = document.getElementById('deleteRecipeModal');
+    const deleteForm   = document.getElementById('deleteRecipeForm');
+    const deleteTarget = document.getElementById('deleteRecipeTitle');
+    const cancelDelete = document.getElementById('cancelDeleteRecipeBtn');
+
+    function openDeleteModal(btn) {
+        deleteTarget.textContent = btn.dataset.title;
+        deleteForm.action = btn.dataset.url;
+        
+        deleteModal.classList.remove('hidden');
+        deleteModal.classList.add('flex');
+    }
+
+    function closeDeleteModal() {
+        deleteModal.classList.add('hidden');
+        deleteModal.classList.remove('flex');
+    }
+
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.delete-recipe-btn');
+        if (btn) {
+            openDeleteModal(btn);
+        }
+    });
+
+    cancelDelete.addEventListener('click', closeDeleteModal);
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeDeleteModal();
+    });
+
+    deleteModal.addEventListener('click', (e) => {
+        if (e.target === deleteModal) closeDeleteModal();
+    });
+})();
+</script>
+@endpush

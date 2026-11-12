@@ -46,6 +46,10 @@
             <span class="material-symbols-outlined text-[20px]">tune</span>
             <span>Pengaturan Umum</span>
         </button>
+        <button class="tab-btn flex flex-1 items-center justify-center gap-2 px-5 py-3 rounded-2xl font-label-lg text-label-lg transition-all whitespace-nowrap text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface" id="tabBtn-profil" onclick="switchTab('profil')">
+            <span class="material-symbols-outlined text-[20px]">person</span>
+            <span>Profil Admin</span>
+        </button>
         <button class="tab-btn flex flex-1 items-center justify-center gap-2 px-5 py-3 rounded-2xl font-label-lg text-label-lg transition-all whitespace-nowrap text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface" id="tabBtn-keamanan" onclick="switchTab('keamanan')">
             <span class="material-symbols-outlined text-[20px]">security</span>
             <span>Keamanan</span>
@@ -104,7 +108,92 @@
         </div>
 
         {{-- ========================================== --}}
-        {{-- TAB 2: KEAMANAN (FORM GANTI PASSWORD)      --}}
+        {{-- TAB 2: PROFIL ADMIN                        --}}
+        {{-- ========================================== --}}
+        <div class="tab-panel hidden flex-col gap-8 w-full" id="tabContent-profil">
+            <form action="{{ route('admin.settings.profile') }}" method="POST" enctype="multipart/form-data" class="bg-surface-container-lowest p-6 lg:p-8 rounded-3xl shadow-sm flex flex-col gap-8 w-full">
+                @csrf
+                @method('PUT')
+
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+                        <span class="material-symbols-outlined text-[22px]">badge</span>
+                    </div>
+                    <div>
+                        <h2 class="font-display text-2xl text-primary font-bold">Profil Administrator</h2>
+                        <p class="text-sm text-on-surface-variant">Perbarui nama, email, dan foto profil akun Anda.</p>
+                    </div>
+                </div>
+
+                {{-- KARTU PROFIL (DESAIN BARU) --}}
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 p-6 md:p-8 rounded-3xl bg-gradient-to-r from-surface-container-low to-surface-container-lowest border border-surface-container-high shadow-sm relative overflow-hidden">
+                    
+                    {{-- Ornamen Background --}}
+                    <div class="absolute -right-10 -top-10 w-48 h-48 bg-primary-fixed/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                    {{-- Sisi Kiri: Avatar & Info Utama --}}
+                    <div class="flex flex-col sm:flex-row items-center gap-6 z-10 w-full lg:w-auto">
+                        {{-- Avatar & Tombol Edit --}}
+                        <div class="relative shrink-0 group">
+                            <div class="w-24 h-24 rounded-full overflow-hidden shadow-md ring-4 ring-surface-container-lowest flex items-center justify-center bg-primary">
+                                <img id="avatarPreview" src="{{ Auth::user()->avatar ? Storage::url(Auth::user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=5a3a22&color=fff&bold=true' }}" alt="Avatar" class="w-full h-full object-cover">
+                            </div>
+                            {{-- Tombol Upload Avatar --}}
+                            <label for="avatar" class="absolute bottom-1 right-1 w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center cursor-pointer shadow-md hover:bg-primary transition-colors border-2 border-surface-container-lowest">
+                                <span class="material-symbols-outlined text-[14px]">edit</span>
+                                <input type="file" id="avatar" name="avatar" accept="image/*" class="hidden" onchange="previewAvatar(event)">
+                            </label>
+                        </div>
+
+                        {{-- Teks Nama & Email --}}
+                        <div class="flex flex-col text-center sm:text-left">
+                            <span class="text-2xl font-bold text-primary font-display">{{ Auth::user()->name }}</span>
+                            <span class="text-sm text-on-surface-variant font-medium mt-0.5">{{ Auth::user()->email }}</span>
+                            <span class="inline-flex items-center justify-center sm:justify-start gap-1.5 mt-3 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold w-fit mx-auto sm:mx-0">
+                                <span class="material-symbols-outlined text-[14px]">verified</span>
+                                {{ Auth::user()->role === 'admin' ? 'Super Admin' : 'User' }}
+                            </span>
+                        </div>
+                    </div>
+
+                    {{-- Sisi Kanan: Info Tambahan (Mengisi Ruang Kosong) --}}
+                    <div class="flex items-center gap-6 z-10 border-t lg:border-t-0 lg:border-l border-surface-container-high pt-5 lg:pt-0 lg:pl-8 w-full lg:w-auto justify-center lg:justify-start">
+                        <div class="flex flex-col">
+                            <span class="text-[10px] uppercase tracking-wider text-outline font-bold mb-1">Bergabung Sejak</span>
+                            <span class="text-sm font-bold text-primary">{{ Auth::user()->created_at->translatedFormat('d M Y') }}</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] uppercase tracking-wider text-outline font-bold mb-1">Status Akun</span>
+                            <span class="text-sm font-bold text-secondary flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span> Aktif
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Input Form --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-bold text-primary" for="name">Nama Lengkap</label>
+                        <input type="text" id="name" name="name" value="{{ old('name', Auth::user()->name) }}" required class="w-full px-5 py-3 rounded-2xl bg-surface-container-low text-on-surface text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-bold text-primary" for="email">Alamat Email</label>
+                        <input type="email" id="email" name="email" value="{{ old('email', Auth::user()->email) }}" required class="w-full px-5 py-3 rounded-2xl bg-surface-container-low text-on-surface text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-surface-container-high">
+                    <button type="submit" class="px-8 py-3 rounded-full bg-primary-container text-surface-container-low text-sm font-bold hover:bg-primary shadow-sm transition-all flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">save</span>
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {{-- ========================================== --}}
+        {{-- TAB 3: KEAMANAN (FORM GANTI PASSWORD)      --}}
         {{-- ========================================== --}}
         <div class="tab-panel hidden flex-col gap-8 w-full" id="tabContent-keamanan">
             <form action="{{ route('admin.settings.password') }}" method="POST" class="bg-surface-container-lowest p-6 lg:p-8 rounded-3xl shadow-sm flex flex-col gap-8 w-full">
@@ -237,6 +326,20 @@
             selectedPanel.classList.add('flex');
             selectedBtn.classList.remove('text-on-surface-variant');
             selectedBtn.classList.add('bg-primary-container', 'text-surface-container-low', 'font-semibold', 'shadow-sm');
+        }
+    }
+
+    // Preview Foto Profil
+    function previewAvatar(event) {
+        const input = event.target;
+        const preview = document.getElementById('avatarPreview');
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
         }
     }
 

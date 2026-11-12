@@ -1,98 +1,102 @@
 @extends('admin.layout')
 
-@section('title', 'Detail User — L\'Art de Cuisine')
+@section('title', 'Detail User — Jelajah Rasa')
 @section('breadcrumb', 'Detail User')
 
 @section('content')
 
-<div class="flex flex-col w-full pb-12 pt-6">
+<div class="w-full mx-auto pb-12">
 
-    <!-- Top Admin Action & Breadcrumb Navigation Bar -->
-    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
-        <div class="flex flex-col gap-1">
-            <div class="flex items-center gap-2 text-on-surface-variant text-xs font-semibold">
-                <span class="hover:text-primary transition-colors cursor-pointer">Portal Admin</span>
-                <span class="text-outline-variant">/</span>
-                <a href="{{ route('admin.users.index') }}" class="hover:text-primary transition-colors cursor-pointer">Data User</a>
-                <span class="text-outline-variant">/</span>
-                <span class="text-primary">Detail Profil Pengguna</span>
-            </div>
-            <div class="flex items-center gap-2 mt-1">
-                <span class="text-[10px] uppercase tracking-widest text-secondary font-bold px-2 py-0.5 rounded-full bg-secondary-container/40">ID Klien</span>
-                <span class="text-sm font-semibold text-on-surface-variant font-mono">#USR-{{ str_pad($user->id, 4, '0', STR_PAD_LEFT) }}</span>
-            </div>
+    {{-- ========== HEADER ========== --}}
+    <header class="flex flex-col gap-2 mb-8 pt-8">
+        
+        {{-- TOMBOL KEMBALI DI ATAS KIRI --}}
+        <a href="{{ route('admin.users.index') }}" 
+           class="inline-flex items-center gap-2 px-4 py-2 bg-surface-container-high hover:bg-surface-container-highest text-primary text-sm font-bold rounded-full transition-all w-fit mb-3 shadow-sm">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            Kembali ke Data User
+        </a>
+
+        {{-- JUDUL --}}
+        <div class="flex items-center gap-2 mt-2">
+            <span class="material-symbols-outlined text-[28px] text-primary">badge</span>
+            <h1 class="font-['Playfair_Display'] text-3xl text-primary tracking-tight font-bold">
+                Detail Pengguna: {{ $user->name }}
+            </h1>
         </div>
 
-        <!-- Quick Action Pills -->
-        <div class="flex flex-wrap items-center gap-3">
-            <a href="{{ route('admin.users.index') }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-surface-container-lowest text-primary text-xs font-bold shadow-sm hover:bg-surface-container transition-all">
-                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-                <span>Kembali ke Data User</span>
-            </a>
-            <button type="button" id="btnRoleModal" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary-container text-white text-xs font-bold shadow-sm hover:bg-primary transition-all">
-                <span class="material-symbols-outlined text-[18px]">manage_accounts</span>
-                <span>Ubah Peran / Role</span>
-            </button>
-            <button type="button" id="btnSuspend" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-error-container/60 text-error text-xs font-bold hover:bg-error-container transition-all shadow-sm">
-                <span class="material-symbols-outlined text-[18px]">block</span>
-                <span>Tangguhkan Akun</span>
-            </button>
-        </div>
-    </div>
+        <p class="text-sm text-on-surface-variant mt-1">
+            Tinjau informasi profil, statistik interaksi, dan catatan internal pengguna.
+        </p>
+    </header>
 
     <!-- User Profile Header Master Card -->
     <div class="bg-surface-container-lowest rounded-3xl p-6 md:p-8 shadow-sm mb-6 relative overflow-hidden">
+        <!-- Ornamen Background -->
         <div class="absolute -right-20 -top-24 w-80 h-80 rounded-full bg-surface-container-low/40 pointer-events-none blur-3xl"></div>
-        <div class="absolute right-32 top-8 opacity-[0.03] pointer-events-none hidden md:block">
-            <span class="material-symbols-outlined text-[160px] text-primary">restaurant_menu</span>
-        </div>
         
         <div class="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-8">
-            <!-- Left Avatar & Persona -->
+            
+            <!-- Kiri: Avatar & Info -->
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
                 <div class="relative shrink-0">
-                    <div class="w-28 h-28 rounded-full p-1 bg-gradient-to-tr from-primary via-secondary to-primary-fixed-dim shadow-sm">
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1 bg-gradient-to-tr from-primary via-secondary to-primary-fixed-dim shadow-sm">
                         <div class="w-full h-full rounded-full bg-surface-container flex items-center justify-center text-4xl font-bold text-primary">
                             {{ substr($user->name, 0, 1) }}
                         </div>
                     </div>
-                    <div class="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-secondary text-white flex items-center justify-center shadow-md" title="Akun Terverifikasi">
+                    <div class="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-secondary text-white flex items-center justify-center shadow-md border-2 border-surface-container-lowest" title="Akun Terverifikasi">
                         <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">verified</span>
                     </div>
                 </div>
                 
-                <div class="flex flex-col gap-1.5">
-                    <div class="flex flex-wrap items-center gap-3">
-                        <h1 class="font-display text-3xl text-primary tracking-tight font-bold">{{ $user->name }}</h1>
-                        <span class="px-3 py-1 rounded-full bg-surface-container-low text-primary-container text-xs flex items-center gap-1.5 font-medium shadow-sm">
+                <div class="flex flex-col gap-2">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h2 class="font-display text-3xl text-primary tracking-tight font-bold">{{ $user->name }}</h2>
+                        <span class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant text-[10px] font-bold tracking-wider">#USR-{{ str_pad($user->id, 4, '0', STR_PAD_LEFT) }}</span>
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center gap-2 mt-1">
+                        <span class="px-3 py-1 rounded-full bg-surface-container-low text-primary-container text-xs flex items-center gap-1.5 font-bold shadow-sm">
                             <span class="material-symbols-outlined text-[16px] text-secondary">workspace_premium</span>
                             Peran: {{ ucfirst($user->role) }}
                         </span>
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-semibold">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold shadow-sm">
                             <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
                             Status: Aktif
                         </div>
                     </div>
                     
-                    <div class="flex flex-wrap items-center gap-x-5 gap-y-2 mt-1 text-on-surface-variant text-xs">
+                    <div class="flex flex-wrap items-center gap-x-5 gap-y-2 mt-2 text-on-surface-variant text-sm font-medium">
                         <div class="flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[16px] text-outline">mail</span>
+                            <span class="material-symbols-outlined text-[18px] text-outline">mail</span>
                             <span>{{ $user->email }}</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Fast Engagement Counters -->
-            <div class="flex items-center gap-4 bg-surface-container-low p-4 rounded-2xl shrink-0">
-                <div class="text-center px-3">
-                    <p class="text-2xl text-primary font-bold">{{ $user->bookmarks_count ?? 0 }}</p>
-                    <p class="text-[11px] text-on-surface-variant mt-0.5">Koleksi Resep</p>
+            <!-- Kanan: Statistik Cepat (Desain Diperbarui) -->
+            <div class="grid grid-cols-2 gap-3 sm:gap-4 shrink-0 mt-4 xl:mt-0">
+                <!-- Card Koleksi Resep -->
+                <div class="bg-surface-container-low p-4 rounded-2xl flex items-center gap-4 border border-surface-container-high shadow-sm min-w-[150px]">
+                    <div class="w-12 h-12 rounded-full bg-secondary/15 flex items-center justify-center text-secondary shrink-0">
+                        <span class="material-symbols-outlined text-[24px]">bookmark</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-3xl font-display font-bold text-primary leading-none">{{ $user->bookmarks_count ?? 0 }}</span>
+                        <span class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mt-1">Koleksi</span>
+                    </div>
                 </div>
-                <div class="h-10 w-px bg-outline-variant/30"></div>
-                <div class="text-center px-3">
-                    <p class="text-2xl text-primary font-bold">{{ $user->ratings_count ?? 0 }}</p>
-                    <p class="text-[11px] text-on-surface-variant mt-0.5">Ulasan Rasa</p>
+                <!-- Card Ulasan Rasa -->
+                <div class="bg-surface-container-low p-4 rounded-2xl flex items-center gap-4 border border-surface-container-high shadow-sm min-w-[150px]">
+                    <div class="w-12 h-12 rounded-full bg-tertiary-container/15 flex items-center justify-center text-tertiary-container shrink-0">
+                        <span class="material-symbols-outlined text-[24px]">rate_review</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-3xl font-display font-bold text-primary leading-none">{{ $user->ratings_count ?? 0 }}</span>
+                        <span class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mt-1">Ulasan</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -105,8 +109,8 @@
         <div class="lg:col-span-5 flex flex-col gap-6">
             
             <!-- Box 1: Informasi Akun & Metadata -->
-            <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col gap-4">
-                <div class="flex items-center justify-between pb-2 border-b border-surface-container-high">
+            <div class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm flex flex-col gap-4">
+                <div class="flex items-center justify-between pb-3 border-b border-surface-container-high">
                     <div class="flex items-center gap-2.5">
                         <span class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
                             <span class="material-symbols-outlined text-[18px]">badge</span>
@@ -116,28 +120,28 @@
                 </div>
                 
                 <div class="flex flex-col gap-3 text-sm">
-                    <div class="p-3 rounded-xl bg-surface-container-low/50 flex items-start justify-between gap-3">
+                    <div class="p-3.5 rounded-2xl bg-surface-container-low flex items-start justify-between gap-3">
                         <div class="flex items-center gap-2 text-on-surface-variant">
                             <span class="material-symbols-outlined text-[18px] text-outline">calendar_today</span>
                             <span>Tanggal Pendaftaran</span>
                         </div>
                         <span class="font-semibold text-on-surface text-right">{{ $user->created_at->translatedFormat('d M Y, H:i') }} WIB</span>
                     </div>
-                    <div class="p-3 rounded-xl bg-surface-container-low/50 flex items-start justify-between gap-3">
+                    <div class="p-3.5 rounded-2xl bg-surface-container-low flex items-start justify-between gap-3">
                         <div class="flex items-center gap-2 text-on-surface-variant">
                             <span class="material-symbols-outlined text-[18px] text-outline">verified</span>
                             <span>Status Email</span>
                         </div>
                         <div class="text-right">
-                            <span class="font-semibold text-secondary block">{{ $user->email_verified_at ? 'Terverifikasi' : 'Belum Verifikasi' }}</span>
+                            <span class="font-bold {{ $user->email_verified_at ? 'text-secondary' : 'text-error' }} block">{{ $user->email_verified_at ? 'Terverifikasi' : 'Belum Verifikasi' }}</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Box 2: Ringkasan Interaksi -->
-            <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col gap-4">
-                <div class="flex items-center gap-2.5 pb-2 border-b border-surface-container-high">
+            <div class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm flex flex-col gap-4">
+                <div class="flex items-center gap-2.5 pb-3 border-b border-surface-container-high">
                     <span class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
                         <span class="material-symbols-outlined text-[18px]">local_dining</span>
                     </span>
@@ -145,15 +149,15 @@
                 </div>
                 
                 <div class="grid grid-cols-2 gap-3 text-center">
-                    <div class="bg-surface-container-low p-3 rounded-xl flex flex-col items-center">
-                        <span class="material-symbols-outlined text-[20px] text-tertiary-container mb-1">bookmark</span>
-                        <span class="text-lg font-bold text-primary">{{ $user->bookmarks_count ?? 0 }}</span>
-                        <span class="text-[11px] text-on-surface-variant">Resep Disimpan</span>
+                    <div class="bg-surface-container-low p-4 rounded-2xl flex flex-col items-center">
+                        <span class="material-symbols-outlined text-[24px] text-tertiary-container mb-1">bookmark</span>
+                        <span class="text-xl font-bold text-primary">{{ $user->bookmarks_count ?? 0 }}</span>
+                        <span class="text-[11px] text-on-surface-variant font-semibold">Resep Disimpan</span>
                     </div>
-                    <div class="bg-surface-container-low p-3 rounded-xl flex flex-col items-center">
-                        <span class="material-symbols-outlined text-[20px] text-secondary mb-1">rate_review</span>
-                        <span class="text-lg font-bold text-primary">{{ $user->ratings_count ?? 0 }}</span>
-                        <span class="text-[11px] text-on-surface-variant">Ulasan Diberikan</span>
+                    <div class="bg-surface-container-low p-4 rounded-2xl flex flex-col items-center">
+                        <span class="material-symbols-outlined text-[24px] text-secondary mb-1">rate_review</span>
+                        <span class="text-xl font-bold text-primary">{{ $user->ratings_count ?? 0 }}</span>
+                        <span class="text-[11px] text-on-surface-variant font-semibold">Ulasan Diberikan</span>
                     </div>
                 </div>
             </div>
@@ -161,7 +165,7 @@
         
         <!-- RIGHT COLUMN: Linimasa Aktivitas Terkini (7 cols) -->
         <div class="lg:col-span-7 flex flex-col">
-            <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col h-full">
+            <div class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm flex flex-col h-full">
                 
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-surface-container-high">
                     <div class="flex items-center gap-2.5">
@@ -181,12 +185,12 @@
                         <div class="absolute -left-[22px] top-1 w-5 h-5 rounded-full bg-tertiary-fixed flex items-center justify-center ring-4 ring-surface-container-lowest">
                             <span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
                         </div>
-                        <div class="flex-1 bg-surface-container-low/70 p-4 rounded-xl">
+                        <div class="flex-1 bg-surface-container-low/70 p-4 rounded-2xl">
                             <div class="flex items-center justify-between gap-2 mb-1">
-                                <span class="text-xs font-bold text-tertiary-container uppercase tracking-wider flex items-center gap-1">
+                                <span class="text-[11px] font-bold text-tertiary-container uppercase tracking-wider flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[15px]">bookmark</span> Menyimpan Resep
                                 </span>
-                                <span class="text-[11px] text-outline">Hari ini</span>
+                                <span class="text-[11px] text-outline font-semibold">Hari ini</span>
                             </div>
                             <p class="text-sm text-on-surface">Menyimpan resep <strong class="text-primary">Rendang Daging Sapi Karamel</strong> ke koleksi pribadi.</p>
                         </div>
@@ -197,14 +201,14 @@
                         <div class="absolute -left-[22px] top-1 w-5 h-5 rounded-full bg-secondary-fixed flex items-center justify-center ring-4 ring-surface-container-lowest">
                             <span class="w-2 h-2 rounded-full bg-secondary"></span>
                         </div>
-                        <div class="flex-1 bg-surface-container-low/70 p-4 rounded-xl">
+                        <div class="flex-1 bg-surface-container-low/70 p-4 rounded-2xl">
                             <div class="flex items-center justify-between gap-2 mb-1">
-                                <span class="text-xs font-bold text-secondary uppercase tracking-wider flex items-center gap-1">
+                                <span class="text-[11px] font-bold text-secondary uppercase tracking-wider flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[15px]">rate_review</span> Memberikan Ulasan
                                 </span>
-                                <span class="text-[11px] text-outline">Kemarin</span>
+                                <span class="text-[11px] text-outline font-semibold">Kemarin</span>
                             </div>
-                            <div class="flex items-center gap-1 mb-1 text-tertiary-container">
+                            <div class="flex items-center gap-1 mb-2 text-tertiary-container">
                                 <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
                                 <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
                                 <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
@@ -220,14 +224,14 @@
                         <div class="absolute -left-[22px] top-1 w-5 h-5 rounded-full bg-primary-fixed flex items-center justify-center ring-4 ring-surface-container-lowest">
                             <span class="w-2 h-2 rounded-full bg-primary"></span>
                         </div>
-                        <div class="flex-1 bg-surface-container-low/70 p-4 rounded-xl">
+                        <div class="flex-1 bg-surface-container-low/70 p-4 rounded-2xl">
                             <div class="flex items-center justify-between gap-2 mb-1">
-                                <span class="text-xs font-bold text-primary uppercase tracking-wider flex items-center gap-1">
+                                <span class="text-[11px] font-bold text-primary uppercase tracking-wider flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[15px]">how_to_reg</span> Pendaftaran Akun
                                 </span>
-                                <span class="text-[11px] text-outline">{{ $user->created_at->translatedFormat('d M Y') }}</span>
+                                <span class="text-[11px] text-outline font-semibold">{{ $user->created_at->translatedFormat('d M Y') }}</span>
                             </div>
-                            <p class="text-sm text-on-surface">Berhasil membuat akun di portal L'Art de Cuisine.</p>
+                            <p class="text-sm text-on-surface">Berhasil membuat akun di portal Jelajah Rasa.</p>
                         </div>
                     </div>
                 </div>
@@ -235,8 +239,8 @@
         </div>
     </div>
 
-    <!-- Admin Internal Notes Section (Dipindah ke Paling Bawah / Full Width) -->
-    <div class="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col gap-6">
+    <!-- Admin Internal Notes Section -->
+    <div class="bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col gap-6 mb-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-surface-container-high pb-4">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -252,7 +256,7 @@
         <!-- History List -->
         <div class="flex flex-col gap-3" id="admin-notes-container">
             <!-- Note 1 -->
-            <div class="p-4 rounded-xl bg-surface-container-low flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="p-4 rounded-2xl bg-surface-container-low flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div class="flex items-start gap-3">
                     <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shrink-0 font-bold text-xs">A</div>
                     <div>
@@ -273,9 +277,9 @@
                 <span class="material-symbols-outlined text-[16px]">edit_note</span> Tambahkan Catatan Baru:
             </label>
             <textarea id="adminNoteInput" rows="3" placeholder="Tuliskan catatan administratif baru, verifikasi manual..."
-                      class="w-full p-4 rounded-xl bg-surface-container-low text-on-surface text-sm outline-none focus:ring-2 focus:ring-secondary/40 transition-all resize-none"></textarea>
+                      class="w-full p-4 rounded-2xl bg-surface-container-low text-on-surface text-sm outline-none focus:ring-2 focus:ring-secondary/40 transition-all resize-none"></textarea>
             <div class="flex items-center justify-between flex-wrap gap-3">
-                <span class="text-[11px] text-outline flex items-center gap-1">
+                <span class="text-[11px] text-outline flex items-center gap-1 font-semibold">
                     <span class="material-symbols-outlined text-[14px]">info</span> Catatan akan dicatat bersama identitas Anda.
                 </span>
                 <button type="button" id="btnSaveNote" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary-container transition-all">
@@ -285,83 +289,162 @@
         </div>
     </div>
 
-    <!-- Role Modification Dialog Modal -->
-    <div id="roleModal" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-surface-container-lowest max-w-lg w-full rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col gap-6">
-            <div class="flex items-center justify-between pb-2 border-b border-surface-container-high">
-                <div class="flex items-center gap-3">
-                    <span class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
-                        <span class="material-symbols-outlined text-[22px]">manage_accounts</span>
-                    </span>
-                    <div>
-                        <h3 class="text-xl text-primary font-bold">Ubah Peran Pengguna</h3>
-                        <p class="text-xs text-outline">Kelola izin untuk {{ $user->name }}</p>
-                    </div>
-                </div>
-                <button type="button" id="btnCloseModal" class="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-outline transition-colors">
-                    <span class="material-symbols-outlined text-[20px]">close</span>
-                </button>
-            </div>
-            
-            <form method="POST" action="{{ route('admin.users.update', $user->id) }}" class="flex flex-col gap-4">
-                @csrf @method('PUT')
-                <div class="flex flex-col gap-3 text-sm">
-                    <label class="flex items-center gap-3 p-4 rounded-xl bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors">
-                        <input type="radio" name="role" value="user" class="w-4 h-4 accent-primary" {{ $user->role === 'user' ? 'checked' : '' }}>
-                        <div class="flex-1">
-                            <p class="font-bold text-primary">User (Penjelajah Rasa)</p>
-                            <p class="text-xs text-on-surface-variant">Dapat menyimpan resep, memberi ulasan, mengunggah foto kreasi.</p>
-                        </div>
-                    </label>
-                    <label class="flex items-center gap-3 p-4 rounded-xl bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors">
-                        <input type="radio" name="role" value="admin" class="w-4 h-4 accent-primary" {{ $user->role === 'admin' ? 'checked' : '' }}>
-                        <div class="flex-1">
-                            <p class="font-bold text-primary">Admin Gastronomi</p>
-                            <p class="text-xs text-on-surface-variant">Akses penuh pengelolaan artikel, kategori resep, dan direktori pengguna.</p>
-                        </div>
-                    </label>
-                </div>
-                
-                <div class="flex items-center justify-end gap-3 pt-4 border-t border-surface-container-high mt-2">
-                    <button type="button" id="btnCancelModal" class="px-6 py-2.5 rounded-full text-on-surface-variant font-bold text-sm hover:bg-surface-container transition-colors">Batal</button>
-                    <button type="submit" class="px-6 py-2.5 rounded-full bg-primary text-white font-bold text-sm shadow-sm hover:bg-primary-container transition-colors">Terapkan Peran</button>
-                </div>
-            </form>
+    {{-- ========== BOTTOM ACTIONS (KANAN BAWAH) ========== --}}
+    <div class="flex items-center justify-between pt-6 border-t border-surface-container-high mt-2">
+        
+        {{-- Kiri Bawah: Kembali --}}
+        <a href="{{ route('admin.users.index') }}"
+           class="px-6 py-3 rounded-full bg-surface-container-high text-primary text-sm font-bold hover:bg-surface-container transition">
+            Batal & Kembali
+        </a>
+
+        {{-- Kanan Bawah: Aksi Modifikasi --}}
+        <div class="flex items-center gap-3">
+            {{-- Tombol Tangguhkan Akun --}}
+            <button type="button" id="btnSuspend" class="flex items-center gap-2 px-6 py-3 rounded-full bg-error-container text-error text-sm font-bold hover:bg-error hover:text-white transition-all">
+                <span class="material-symbols-outlined text-[18px]">block</span>
+                Tangguhkan Akun
+            </button>
+
+            {{-- Tombol Ubah Peran --}}
+            <button type="button" id="btnRoleModal" class="flex items-center gap-2 px-8 py-3 rounded-full bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary-container transition-all">
+                <span class="material-symbols-outlined text-[18px]">manage_accounts</span>
+                Ubah Peran
+            </button>
         </div>
     </div>
 
 </div>
+
+<!-- ============================================== -->
+<!-- MODAL: Ubah Peran (Role)                       -->
+<!-- ============================================== -->
+<div id="roleModal" class="fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm z-50 items-center justify-center p-4 hidden">
+    <div class="bg-surface-container-lowest max-w-lg w-full rounded-3xl p-6 sm:p-8 shadow-[0_16px_40px_-6px_rgba(90,58,34,0.18)] flex flex-col gap-6">
+        <div class="flex items-center justify-between pb-2 border-b border-surface-container-high">
+            <div class="flex items-center gap-3">
+                <span class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[22px]">manage_accounts</span>
+                </span>
+                <div>
+                    <h3 class="text-xl text-primary font-bold">Ubah Peran Pengguna</h3>
+                    <p class="text-xs text-outline">Kelola izin untuk {{ $user->name }}</p>
+                </div>
+            </div>
+            <button type="button" id="btnCloseModal" class="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-outline transition-colors">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+        </div>
+        
+        <form method="POST" action="{{ route('admin.users.update', $user->id) }}" class="flex flex-col gap-4">
+            @csrf @method('PUT')
+            <div class="flex flex-col gap-3 text-sm">
+                <label class="flex items-center gap-3 p-4 rounded-2xl bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors">
+                    <input type="radio" name="role" value="user" class="w-4 h-4 accent-primary" {{ $user->role === 'user' ? 'checked' : '' }}>
+                    <div class="flex-1">
+                        <p class="font-bold text-primary">User (Penjelajah Rasa)</p>
+                        <p class="text-xs text-on-surface-variant">Dapat menyimpan resep, memberi ulasan, mengunggah foto kreasi.</p>
+                    </div>
+                </label>
+                <label class="flex items-center gap-3 p-4 rounded-2xl bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors">
+                    <input type="radio" name="role" value="admin" class="w-4 h-4 accent-primary" {{ $user->role === 'admin' ? 'checked' : '' }}>
+                    <div class="flex-1">
+                        <p class="font-bold text-primary">Admin Gastronomi</p>
+                        <p class="text-xs text-on-surface-variant">Akses penuh pengelolaan artikel, kategori resep, dan direktori pengguna.</p>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-surface-container-high mt-2">
+                <button type="button" id="btnCancelModal" class="px-6 py-2.5 rounded-full text-on-surface-variant font-bold text-sm hover:bg-surface-container transition-colors">Batal</button>
+                <button type="submit" class="px-6 py-2.5 rounded-full bg-primary text-white font-bold text-sm shadow-sm hover:bg-primary-container transition-colors">Terapkan Peran</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================== -->
+<!-- MODAL: Konfirmasi Tangguhkan Akun              -->
+<!-- ============================================== -->
+<div id="suspendModal" class="fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm z-50 items-center justify-center p-4 hidden">
+    <div class="bg-surface-container-lowest max-w-md w-full rounded-3xl p-8 shadow-[0_16px_40px_-6px_rgba(90,58,34,0.18)] flex flex-col items-center text-center">
+        <div class="w-16 h-16 rounded-full bg-error-container text-error flex items-center justify-center mb-5">
+            <span class="material-symbols-outlined text-[32px]">warning</span>
+        </div>
+
+        <h3 class="font-display text-2xl text-primary font-bold">Tangguhkan Akun?</h3>
+        <p class="text-sm text-on-surface-variant mt-2 leading-relaxed">
+            Akun <strong class="text-primary font-bold">{{ $user->name }}</strong> tidak akan bisa mengakses portal sementara waktu.
+        </p>
+
+        <div class="flex items-center gap-3 mt-8 w-full">
+            <button type="button" id="btnCancelSuspend" class="flex-1 py-2.5 rounded-full bg-surface-container-high text-on-surface font-bold text-sm hover:bg-surface-container-highest transition">
+                Batal
+            </button>
+            <button type="button" id="btnConfirmSuspend" class="flex-1 py-2.5 rounded-full bg-error text-white font-bold text-sm hover:bg-error/90 transition">
+                Ya, Tangguhkan
+            </button>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Modal Logic
+        // --- Modal Ubah Peran ---
         const roleModal = document.getElementById('roleModal');
         const btnRole = document.getElementById('btnRoleModal');
         const btnClose = document.getElementById('btnCloseModal');
         const btnCancel = document.getElementById('btnCancelModal');
 
         if (btnRole && roleModal) {
-            btnRole.addEventListener('click', () => roleModal.classList.remove('hidden'));
+            btnRole.addEventListener('click', () => {
+                roleModal.classList.remove('hidden');
+                roleModal.classList.add('flex');
+            });
         }
-        function closeModal() { if (roleModal) roleModal.classList.add('hidden'); }
-        if (btnClose) btnClose.addEventListener('click', closeModal);
-        if (btnCancel) btnCancel.addEventListener('click', closeModal);
+        function closeRoleModal() { 
+            if (roleModal) {
+                roleModal.classList.add('hidden'); 
+                roleModal.classList.remove('flex'); 
+            }
+        }
+        if (btnClose) btnClose.addEventListener('click', closeRoleModal);
+        if (btnCancel) btnCancel.addEventListener('click', closeRoleModal);
 
-        // Suspend Action
+        // --- Modal Tangguhkan Akun ---
+        const suspendModal = document.getElementById('suspendModal');
         const btnSuspend = document.getElementById('btnSuspend');
-        if (btnSuspend) {
+        const btnCancelSuspend = document.getElementById('btnCancelSuspend');
+        const btnConfirmSuspend = document.getElementById('btnConfirmSuspend');
+
+        if (btnSuspend && suspendModal) {
             btnSuspend.addEventListener('click', () => {
-                if (confirm('Apakah Anda yakin ingin menangguhkan akun pengguna ini?')) {
-                    btnSuspend.classList.remove('bg-error-container/60', 'text-error');
-                    btnSuspend.classList.add('bg-surface-container-highest', 'text-outline');
-                    btnSuspend.innerHTML = '<span class="material-symbols-outlined text-[18px]">check_circle</span> Ditangguhkan';
-                }
+                suspendModal.classList.remove('hidden');
+                suspendModal.classList.add('flex');
+            });
+        }
+        function closeSuspendModal() {
+            if (suspendModal) {
+                suspendModal.classList.add('hidden');
+                suspendModal.classList.remove('flex');
+            }
+        }
+        if (btnCancelSuspend) btnCancelSuspend.addEventListener('click', closeSuspendModal);
+
+        if (btnConfirmSuspend) {
+            btnConfirmSuspend.addEventListener('click', () => {
+                // Simulasi aksi penangguhan (Karena ini belum terhubung ke backend)
+                btnSuspend.classList.remove('bg-error-container', 'text-error');
+                btnSuspend.classList.add('bg-surface-container-highest', 'text-outline');
+                btnSuspend.innerHTML = '<span class="material-symbols-outlined text-[18px]">check_circle</span> Ditangguhkan';
+                closeSuspendModal();
             });
         }
 
-        // Internal Note Interaction
+        // --- Simpan Catatan Internal ---
         const btnSaveNote = document.getElementById('btnSaveNote');
         const noteInput = document.getElementById('adminNoteInput');
         const notesContainer = document.getElementById('admin-notes-container');
@@ -377,7 +460,7 @@
                 const date = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
                 
                 const newNote = document.createElement('div');
-                newNote.className = 'p-4 rounded-xl bg-surface-container-low flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mt-3 animate-pulse';
+                newNote.className = 'p-4 rounded-2xl bg-surface-container-low flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mt-3 animate-pulse';
                 newNote.innerHTML = `
                     <div class="flex items-start gap-3">
                         <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shrink-0 font-bold text-xs">

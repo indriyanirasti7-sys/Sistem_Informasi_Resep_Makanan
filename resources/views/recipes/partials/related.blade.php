@@ -1,55 +1,101 @@
-@if ($related->count())
-<div class="flex flex-col gap-6">
-    <div class="flex items-end justify-between">
-        <div class="flex flex-col">
-            <span class="text-[11px] uppercase tracking-widest text-secondary font-bold">Inspirasi Jamuan</span>
-            <h2 class="text-2xl lg:text-3xl font-bold text-primary">Resep Terkait &amp; Pendamping</h2>
+@if ($related->count() > 0)
+<section class="w-full mt-12 pt-8 border-t border-surface-container-high/60 relative z-10">
+    
+    {{-- Header Jamuan Terkait --}}
+    <div class="flex items-end justify-between mb-6">
+        <div class="flex flex-col gap-1">
+            <div class="flex items-center gap-2 text-secondary">
+                <span class="material-symbols-outlined text-[20px]">restaurant_menu</span>
+                <span class="text-[11px] uppercase tracking-widest font-bold">Inspirasi Lainnya</span>
+            </div>
+            <h2 class="font-display text-2xl sm:text-3xl text-primary font-bold">Resep Pendamping</h2>
         </div>
-        <a href="{{ route('recipes.index') }}"
-           class="hidden sm:flex items-center gap-1 text-sm text-primary hover:text-tertiary font-bold">
-            <span>Lihat Semua</span>
-            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-        </a>
+        
+        {{-- Tombol Navigasi Geser (Desktop) --}}
+        <div class="hidden sm:flex items-center gap-2">
+            <button type="button" id="related-prev" class="w-10 h-10 rounded-full bg-surface-container-lowest border border-surface-container-high flex items-center justify-center text-primary hover:bg-surface-container transition shadow-sm active:scale-95">
+                <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+            </button>
+            <button type="button" id="related-next" class="w-10 h-10 rounded-full bg-surface-container-lowest border border-surface-container-high flex items-center justify-center text-primary hover:bg-surface-container transition shadow-sm active:scale-95">
+                <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+            </button>
+        </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    {{-- Container Utama: Flex + Overflow-X-Auto (Bisa digeser) --}}
+    <div id="related-scroll-container" class="flex items-stretch gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-6 scrollbar-none scroll-smooth">
+        
         @foreach ($related as $item)
-            <div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group">
-                <div class="relative h-48 overflow-hidden bg-surface-container">
-                    <a href="{{ route('recipes.show', $item->slug) }}">
-                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            {{-- Card: shrink-0 memastikan lebar card tidak mengecil sehingga memicu scroll --}}
+            <article class="snap-start shrink-0 w-[260px] sm:w-[280px] group flex flex-col bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 border border-surface-container-high/50">
+                
+                {{-- Gambar --}}
+                <div class="relative w-full aspect-[4/3] overflow-hidden bg-surface-container">
+                    <a href="{{ route('recipes.show', $item->slug) }}" class="block w-full h-full">
+                        <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                              src="{{ $item->image ? Storage::url($item->image) : 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800' }}"
-                             alt="{{ $item->title }}"/>
+                             alt="{{ $item->title }}" />
                     </a>
-                    <span class="absolute bottom-3 left-3 px-3 py-0.5 bg-primary/80 backdrop-blur-md text-white rounded-full text-[11px] font-bold">
-                        {{ $item->duration_minutes ?? '-' }} Mnt
-                    </span>
+                    @if($item->category)
+                        <span class="absolute top-3 left-3 px-3 py-1 rounded-full bg-surface-container-lowest/90 backdrop-blur-md text-[10px] font-bold text-primary shadow-sm">
+                            {{ $item->category->name }}
+                        </span>
+                    @endif
                 </div>
 
-                <div class="p-4 flex-1 flex flex-col justify-between gap-3">
-                    <div class="flex flex-col gap-1">
-                        <div class="flex items-center justify-between text-[11px] text-on-surface-variant">
-                            <span>{{ $item->category->name ?? 'Umum' }}</span>
-                            <div class="flex items-center text-on-tertiary-container gap-0.5">
-                                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="font-bold text-primary">{{ $item->average_rating }}</span>
-                            </div>
+                {{-- Konten --}}
+                <div class="p-4 sm:p-5 flex flex-col flex-1 justify-between gap-4">
+                    <div class="flex flex-col gap-1.5">
+                        <div class="flex items-center gap-1 text-tertiary">
+                            <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="text-xs font-bold text-primary">{{ $item->average_rating }}</span>
+                            <span class="text-[10px] text-outline">({{ $item->rating_count }})</span>
                         </div>
+                        
                         <a href="{{ route('recipes.show', $item->slug) }}">
-                            <h3 class="text-base font-bold text-primary group-hover:text-secondary transition-colors line-clamp-1">
+                            <h3 class="font-display text-base font-bold text-primary group-hover:text-secondary transition line-clamp-2 leading-snug">
                                 {{ $item->title }}
                             </h3>
                         </a>
-                        <p class="text-xs text-on-surface-variant line-clamp-2">{{ Str::limit($item->description, 80) }}</p>
                     </div>
-                    <a href="{{ route('recipes.show', $item->slug) }}"
-                       class="text-[11px] text-secondary font-bold flex items-center gap-1 hover:underline">
-                        <span>Buka Resep</span>
-                        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                    </a>
+
+                    <div class="pt-3 border-t border-surface-container-high/60 flex items-center justify-between">
+                        <div class="flex items-center gap-3 text-[11px] font-semibold text-on-surface-variant">
+                            <span class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px] text-secondary">timer</span>
+                                {{ $item->duration_minutes ?? '-' }}m
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px] text-secondary">group</span>
+                                {{ $item->servings }} org
+                            </span>
+                        </div>
+                        <a href="{{ route('recipes.show', $item->slug) }}" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
+            </article>
         @endforeach
+
     </div>
-</div>
+</section>
+
+<script>
+    // Script Tombol Geser Kiri/Kanan
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('related-scroll-container');
+        const btnPrev = document.getElementById('related-prev');
+        const btnNext = document.getElementById('related-next');
+
+        if (container && btnPrev && btnNext) {
+            btnPrev.addEventListener('click', () => {
+                container.scrollBy({ left: -300, behavior: 'smooth' });
+            });
+            btnNext.addEventListener('click', () => {
+                container.scrollBy({ left: 300, behavior: 'smooth' });
+            });
+        }
+    });
+</script>
 @endif

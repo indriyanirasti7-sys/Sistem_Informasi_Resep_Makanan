@@ -9,13 +9,9 @@
 <header class="flex flex-col gap-6 mb-8 pt-8">
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div class="flex flex-col gap-1.5">
-            <div class="flex items-center gap-2 text-secondary">
-                <span class="material-symbols-outlined text-lg">menu_book</span>
-                <span class="text-[11px] uppercase tracking-widest text-secondary font-bold">Pustaka Tips Kuliner</span>
-            </div>
-            <h1 class="font-display text-4xl text-primary tracking-tight font-bold">Kelola Tips</h1>
+            <h1 class="font-['Playfair_Display'] text-4xl text-primary tracking-tight font-bold">Kelola Tips</h1>
             <p class="text-sm text-on-surface-variant max-w-xl">
-                Kelola artikel tips, panduan memasak, dan catatan koki untuk memperkaya pengetahuan pengunjung portal gastronomi.
+                Tambahkan, edit, dan hapus artikel tips kuliner untuk membagikan pengetahuan dan pengalaman memasak kepada pengunjung.
             </p>
         </div>
 
@@ -74,14 +70,14 @@
 {{-- ========== TABEL TIPS ========== --}}
 <section class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm overflow-hidden mb-8">
     <div class="w-full overflow-x-auto">
-        <table class="w-full text-left border-collapse">
+        <table class="w-full text-center border-collapse">
             <thead>
                 <tr class="bg-surface-container-low/60 text-on-surface-variant text-[11px] uppercase tracking-wider font-bold">
                     <th class="py-3.5 px-4 rounded-l-2xl text-center w-20">Foto</th>
-                    <th class="py-3.5 px-4 min-w-[250px]">Judul Tips</th>
+                    <th class="py-3.5 px-4 text-center min-w-[250px]">Judul Tips</th>
                     <th class="py-3.5 px-4 text-center">Penulis</th>
                     <th class="py-3.5 px-4 text-center">Tanggal Dibuat</th>
-                    <th class="py-3.5 px-4 text-right rounded-r-2xl">Aksi</th>
+                    <th class="py-3.5 px-4 text-center rounded-r-2xl">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-surface-container-high/40 text-on-surface">
@@ -107,7 +103,7 @@
 
                         {{-- Judul --}}
                         <td class="py-4 px-4">
-                            <div class="flex flex-col">
+                            <div class="flex flex-col items-center text-center">
                                 <span class="text-base text-primary font-bold group-hover:text-tertiary-container transition line-clamp-1">
                                     {{ $tip->title }}
                                 </span>
@@ -118,7 +114,7 @@
                         </td>
 
                         {{-- Penulis --}}
-                        <td class="py-4 px-4 text-center whitespace-nowrap">
+                        <td class="py-4 px-4 whitespace-nowrap">
                             <div class="flex items-center justify-center gap-2">
                                 <div class="w-7 h-7 rounded-full bg-secondary/15 flex items-center justify-center text-secondary shrink-0">
                                     <span class="material-symbols-outlined text-[16px]">person</span>
@@ -128,15 +124,15 @@
                         </td>
 
                         {{-- Tanggal --}}
-                        <td class="py-4 px-4 text-center whitespace-nowrap">
+                        <td class="py-4 px-4 whitespace-nowrap">
                             <span class="text-xs text-on-surface-variant font-semibold">
                                 {{ optional($tip->created_at)->translatedFormat('d M Y') }}
                             </span>
                         </td>
 
                         {{-- Aksi --}}
-                        <td class="py-4 px-4 text-right whitespace-nowrap">
-                            <div class="flex items-center justify-end gap-1">
+                        <td class="py-4 px-4 whitespace-nowrap">
+                            <div class="flex items-center justify-center gap-1">
                                 {{-- Tombol Lihat (Baca) --}}
                                 <a href="{{ route('admin.tips.detail', $tip->slug) }}"
                                    class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-full transition" title="Baca">
@@ -183,38 +179,56 @@
         </table>
     </div>
 
-    {{-- Pagination --}}
+    {{-- ========================================== --}}
+    {{-- PAGINATION (DESAIN BARU)                  --}}
+    {{-- ========================================== --}}
     @if (method_exists($tips, 'hasPages') && $tips->hasPages())
-        <div class="mt-6 pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-surface-container">
-            <span class="text-xs text-on-surface-variant">
-                Menampilkan <strong class="text-primary font-bold">{{ $tips->firstItem() }}-{{ $tips->lastItem() }}</strong>
-                dari <strong class="text-primary font-bold">{{ $tips->total() }}</strong> tips
-            </span>
-
+        <div class="mt-8 pt-6 flex flex-col items-center justify-center gap-4 border-t border-surface-container">
+            
             <div class="flex items-center gap-1.5">
-                @if (!$tips->onFirstPage())
+                {{-- Prev --}}
+                @if ($tips->onFirstPage())
+                    <span class="w-9 h-9 flex items-center justify-center rounded-full text-outline/50 cursor-not-allowed">
+                        <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                    </span>
+                @else
                     <a href="{{ $tips->previousPageUrl() }}"
-                       class="px-3.5 py-1.5 rounded-full text-on-surface-variant hover:bg-surface-container text-xs font-bold transition">
-                        ← Sebelumnya
+                       class="w-9 h-9 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container transition">
+                        <span class="material-symbols-outlined text-[20px]">chevron_left</span>
                     </a>
                 @endif
 
+                {{-- Page Numbers --}}
                 @foreach ($tips->getUrlRange(max(1, $tips->currentPage() - 2), min($tips->lastPage(), $tips->currentPage() + 2)) as $page => $url)
                     @if ($page == $tips->currentPage())
-                        <span class="w-8 h-8 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shadow-sm">{{ $page }}</span>
+                        <span class="w-9 h-9 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shadow-md transform scale-110">
+                            {{ $page }}
+                        </span>
                     @else
                         <a href="{{ $url }}"
-                           class="w-8 h-8 rounded-full text-on-surface-variant hover:bg-surface-container text-xs font-bold flex items-center justify-center transition">{{ $page }}</a>
+                           class="w-9 h-9 rounded-full text-on-surface-variant text-xs font-bold flex items-center justify-center hover:bg-surface-container transition">
+                            {{ $page }}
+                        </a>
                     @endif
                 @endforeach
 
+                {{-- Next --}}
                 @if ($tips->hasMorePages())
                     <a href="{{ $tips->nextPageUrl() }}"
-                       class="px-3.5 py-1.5 rounded-full text-on-surface-variant hover:bg-surface-container text-xs font-bold transition">
-                        Berikutnya →
+                       class="w-9 h-9 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container transition">
+                        <span class="material-symbols-outlined text-[20px]">chevron_right</span>
                     </a>
+                @else
+                    <span class="w-9 h-9 flex items-center justify-center rounded-full text-outline/50 cursor-not-allowed">
+                        <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                    </span>
                 @endif
             </div>
+
+            <span class="text-[11px] text-on-surface-variant font-medium">
+                Menampilkan <strong class="text-primary">{{ $tips->firstItem() }}-{{ $tips->lastItem() }}</strong>
+                dari <strong class="text-primary">{{ $tips->total() }}</strong> tips
+            </span>
         </div>
     @endif
 </section>

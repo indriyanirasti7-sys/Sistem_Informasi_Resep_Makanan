@@ -47,13 +47,13 @@
 </div>
 
 @php
-    // Data bahan untuk JavaScript (dibuat sebagai array PHP, baru di-encode ke JSON)
+    // Data bahan untuk JavaScript
     $ingredientsArray = [];
     foreach ($recipe->recipeIngredients as $ri) {
         $ingredientsArray[] = [
-            'name'   => $ri->ingredient->name,
-            'amount' => (float) $ri->amount,
-            'unit'   => $ri->unit ?: $ri->ingredient->unit,
+            'name'   => $ri->ingredient->name, // Karena semua teks sudah digabung di sini
+            'amount' => 1, // Nilai dummy
+            'unit'   => '', 
         ];
     }
 @endphp

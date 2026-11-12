@@ -1,56 +1,49 @@
 @extends('admin.layout')
 
-@section('title', 'Tambah Tips Baru — L\'Art de Cuisine')
+@section('title', 'Tambah Tips — Jelajah Rasa')
 @section('breadcrumb', 'Tambah Tips')
 
 @section('content')
 
-<div class="flex flex-col w-full pb-12 pt-6">
+<div class="w-full mx-auto pb-12">
     
-    <!-- Top Header Section & Status -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-4">
-        <div class="flex flex-col max-w-2xl">
-            <div class="flex items-center gap-1.5 text-[11px] text-secondary mb-1 font-semibold">
-                <span class="flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span>
-                    Admin Portal
-                </span>
-                <span class="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
-                <a href="{{ route('admin.tips.index') }}" class="text-on-surface-variant hover:text-primary transition">Kelola Tips</a>
-                <span class="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
-                <span class="text-primary font-bold">Tambah Tips Baru</span>
-            </div>
-            <h1 class="font-display text-3xl text-primary tracking-tight font-bold">Tambah Tips Baru</h1>
-            <p class="text-sm text-on-surface-variant mt-1 leading-relaxed">
-                Tulis panduan teknik dapur, kiat gastronomi, atau artikel kuliner mendalam dengan format artikel editorial standar haute cuisine.
+    {{-- Header --}}
+    <header class="flex flex-col gap-2 mb-8 pt-8">
+        
+        {{-- TOMBOL KEMBALI DI ATAS KIRI --}}
+        <a href="{{ route('admin.tips.index') }}" 
+           class="inline-flex items-center gap-2 px-4 py-2 bg-surface-container-high hover:bg-surface-container-highest text-primary text-sm font-bold rounded-full transition-all w-fit mb-3 shadow-sm">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            Kembali ke Daftar Tips
+        </a>
+
+        <div class="flex flex-col gap-1.5">
+            <h1 class="font-['Playfair_Display'] text-4xl text-primary tracking-tight font-bold">Tambah Tips Baru</h1>
+            <p class="text-sm text-on-surface-variant max-w-xl">
+                Tulis panduan teknik dapur, kiat gastronomi, atau artikel kuliner mendalam dengan format artikel editorial standar.
             </p>
         </div>
-        
-        <!-- Live Sync & Auto-save Status Pill -->
-        <div class="flex flex-wrap items-center gap-3 bg-surface-container-low px-4 py-2.5 rounded-full shadow-sm self-start md:self-auto">
-            <div class="flex items-center gap-2">
-                <span class="relative flex h-2.5 w-2.5">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-secondary"></span>
-                </span>
-                <span class="text-xs font-semibold text-secondary">Sistem Aktif</span>
-            </div>
-        </div>
-    </div>
+    </header>
 
-    <form method="POST" action="{{ route('admin.tips.store') }}" enctype="multipart/form-data" class="flex flex-col gap-6">
+    {{-- FORM UTAMA --}}
+    <form id="tipsForm" method="POST" action="{{ route('admin.tips.store') }}" enctype="multipart/form-data" class="flex flex-col gap-6">
         @csrf
 
+        {{-- PESAN ERROR JIKA GAGAL SIMPAN --}}
         @if ($errors->any())
-            <div class="p-4 rounded-xl bg-error-container text-on-error-container text-sm">
-                <ul class="list-disc list-inside">
+            <div class="p-5 rounded-2xl bg-error-container text-on-error-container text-sm shadow-sm">
+                <div class="flex items-center gap-2 mb-2 font-bold">
+                    <span class="material-symbols-outlined">error</span>
+                    Gagal Menyimpan! Periksa kembali isian Anda:
+                </div>
+                <ul class="list-disc list-inside pl-2 space-y-1">
                     @foreach ($errors->all() as $e) <li>{{ $e }}</li> @endforeach
                 </ul>
             </div>
         @endif
 
-                <!-- Card A: Basic Information -->
-        <section class="bg-surface-container-lowest p-6 md:p-8 rounded-2xl shadow-sm flex flex-col gap-5">
+        <!-- Card A: Basic Information -->
+        <section class="bg-surface-container-lowest p-6 md:p-8 rounded-3xl shadow-sm flex flex-col gap-5">
             <div class="flex items-center justify-between pb-2 border-b border-surface-container-high">
                 <div class="flex items-center gap-3">
                     <span class="p-2 bg-surface-container rounded-full text-primary">
@@ -65,53 +58,67 @@
 
             <!-- Title Field -->
             <div class="flex flex-col gap-1.5">
-                <label class="text-sm font-bold text-primary flex items-center justify-between" for="title">
+                <label class="text-xs font-bold text-primary flex items-center justify-between" for="title">
                     <span>Judul Tips Gastronomi <span class="text-error">*</span></span>
                 </label>
                 <input type="text" id="title" name="title" required value="{{ old('title') }}" placeholder="Contoh: Teknik Dasar Memotong Bawang dengan Aman"
-                       class="w-full bg-surface-container-low text-on-surface px-4 py-3 rounded-xl outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/40 transition-all text-sm font-medium"/>
+                       class="w-full bg-surface-container-low text-on-surface px-4 py-3 rounded-2xl outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/40 transition-all text-sm font-medium"/>
             </div>
 
             <!-- Category & Skill Level Split -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
                 <div class="flex flex-col gap-1.5">
-                    <label class="text-sm font-bold text-primary" for="category">Kategori Rubrik <span class="text-error">*</span></label>
+                    <label class="text-xs font-bold text-primary" for="category">Kategori Rubrik <span class="text-error">*</span></label>
                     <div class="relative">
-                        <select id="category" name="category" class="w-full appearance-none bg-surface-container-low text-on-surface px-4 py-3 rounded-xl text-sm outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/40 transition-all cursor-pointer">
-                            <option value="knife-skills">Knife Skills (Teknik Pisau Dapur)</option>
-                            <option value="baking-hacks">Baking &amp; Patisserie Hacks</option>
-                            <option value="kitchen-safety">Kitchen Safety &amp; Ergonomics</option>
-                            <option value="prep-storage">Food Prep, Marinade &amp; Storage</option>
+                        <select id="category" name="category" required class="w-full appearance-none bg-surface-container-low text-on-surface px-4 py-3 rounded-2xl text-sm outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/40 transition-all cursor-pointer">
+                            <option value="" disabled selected>Pilih Kategori</option>
+                            <option value="knife-skills" {{ old('category') == 'knife-skills' ? 'selected' : '' }}>Knife Skills (Teknik Pisau Dapur)</option>
+                            <option value="baking-hacks" {{ old('category') == 'baking-hacks' ? 'selected' : '' }}>Baking &amp; Patisserie Hacks</option>
+                            <option value="kitchen-safety" {{ old('category') == 'kitchen-safety' ? 'selected' : '' }}>Kitchen Safety &amp; Ergonomics</option>
+                            <option value="prep-storage" {{ old('category') == 'prep-storage' ? 'selected' : '' }}>Food Prep, Marinade &amp; Storage</option>
                         </select>
                         <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[20px]">unfold_more</span>
                     </div>
                 </div>
 
+                {{-- PERBAIKAN RADIO BUTTON: Menggunakan metode Label Wrapper --}}
                 <div class="flex flex-col gap-1.5">
-                    <label class="text-sm font-bold text-primary">Tingkat Keahlian</label>
-                    <div class="flex items-center gap-2 pt-1">
-                        <input type="radio" name="difficulty" id="pemula" value="Pemula" class="peer sr-only" checked>
-                        <label for="pemula" class="flex-1 text-center py-2 rounded-full text-xs font-semibold bg-surface-container-low text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white cursor-pointer transition-all">Pemula</label>
+                    <label class="text-xs font-bold text-primary">Tingkat Keahlian <span class="text-error">*</span></label>
+                    <div class="flex items-center gap-2 bg-surface-container-low p-1.5 rounded-2xl shadow-sm h-[46px]">
+                        <label class="flex-1 text-center cursor-pointer">
+                            <input type="radio" name="difficulty" value="Pemula" class="peer sr-only" {{ old('difficulty') == 'Pemula' ? 'checked' : '' }} required>
+                            <div class="py-1.5 rounded-xl text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">
+                                Pemula
+                            </div>
+                        </label>
 
-                        <input type="radio" name="difficulty" id="menengah" value="Menengah" class="peer sr-only">
-                        <label for="menengah" class="flex-1 text-center py-2 rounded-full text-xs font-semibold bg-surface-container-low text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white cursor-pointer transition-all">Menengah</label>
+                        <label class="flex-1 text-center cursor-pointer">
+                            <input type="radio" name="difficulty" value="Menengah" class="peer sr-only" {{ old('difficulty') == 'Menengah' ? 'checked' : '' }}>
+                            <div class="py-1.5 rounded-xl text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">
+                                Menengah
+                            </div>
+                        </label>
 
-                        <input type="radio" name="difficulty" id="mahir" value="Mahir" class="peer sr-only">
-                        <label for="mahir" class="flex-1 text-center py-2 rounded-full text-xs font-semibold bg-surface-container-low text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white cursor-pointer transition-all">Mahir</label>
+                        <label class="flex-1 text-center cursor-pointer">
+                            <input type="radio" name="difficulty" value="Mahir" class="peer sr-only" {{ old('difficulty') == 'Mahir' ? 'checked' : '' }}>
+                            <div class="py-1.5 rounded-xl text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">
+                                Mahir
+                            </div>
+                        </label>
                     </div>
                 </div>
             </div>
 
             <!-- Short Summary -->
             <div class="flex flex-col gap-1.5 pt-2">
-                <label class="text-sm font-bold text-primary" for="summary">Ringkasan Singkat / Lead-in Artikel</label>
+                <label class="text-xs font-bold text-primary" for="summary">Ringkasan Singkat / Lead-in Artikel</label>
                 <textarea id="summary" name="summary" rows="3" placeholder="Tuliskan hook pembuka artikel kuliner yang menggugah selera..."
-                          class="w-full bg-surface-container-low text-on-surface p-4 rounded-xl text-sm outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/40 transition-all resize-none">{{ old('summary') }}</textarea>
+                          class="w-full bg-surface-container-low text-on-surface p-4 rounded-2xl text-sm outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/40 transition-all resize-none">{{ old('summary') }}</textarea>
             </div>
         </section>
 
         <!-- Card B: Featured Image Upload -->
-        <section class="bg-surface-container-lowest p-6 md:p-8 rounded-2xl shadow-sm flex flex-col gap-5">
+        <section class="bg-surface-container-lowest p-6 md:p-8 rounded-3xl shadow-sm flex flex-col gap-5">
             <div class="flex items-center gap-3 border-b border-surface-container-high pb-4">
                 <span class="p-2 bg-surface-container rounded-full text-primary">
                     <span class="material-symbols-outlined text-[20px]">image</span>
@@ -122,7 +129,7 @@
                 </div>
             </div>
 
-            <div class="relative w-full h-64 rounded-xl bg-surface-container-lowest border-2 border-dashed border-outline-variant hover:border-secondary flex flex-col items-center justify-center cursor-pointer transition-colors overflow-hidden group">
+            <div class="relative w-full h-64 rounded-2xl bg-surface-container-lowest border-2 border-dashed border-outline-variant hover:border-secondary flex flex-col items-center justify-center cursor-pointer transition-colors overflow-hidden group">
                 <input type="file" id="image" name="image" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="previewImage(event)">
                 <img id="imagePreview" class="hidden absolute inset-0 w-full h-full object-cover z-10"/>
                 <div id="imagePlaceholder" class="flex flex-col items-center justify-center gap-2 z-0">
@@ -133,108 +140,46 @@
             </div>
         </section>
         
-                <!-- Card C: Article Content -->
-        <section class="bg-surface-container-lowest rounded-2xl shadow-sm flex flex-col overflow-hidden">
+        <!-- Card C: Article Content (TinyMCE Editor) -->
+        <section class="bg-surface-container-lowest rounded-3xl shadow-sm flex flex-col overflow-hidden">
             <div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-surface-container-high">
                 <div class="flex items-center gap-3">
                     <span class="p-2 bg-surface-container rounded-full text-primary">
                         <span class="material-symbols-outlined text-[20px]">article</span>
                     </span>
                     <div>
-                        <h2 class="text-lg text-primary font-bold">Isi Artikel Tips</h2>
+                        <h2 class="text-lg text-primary font-bold">Isi Artikel Tips <span class="text-error">*</span></h2>
                         <p class="text-xs text-on-surface-variant mt-0.5">Gunakan format teks kaya untuk menyusun naskah panduan kuliner</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Dummy Toolbar -->
-            <div class="p-3 bg-surface-container-high/40 flex flex-wrap items-center gap-2 border-b border-surface-container-high">
-                <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center bg-surface-container-lowest text-primary font-bold shadow-sm hover:bg-surface-container"><span class="text-xs">B</span></button>
-                <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container"><span class="text-xs italic">I</span></button>
-                <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container"><span class="text-xs underline">U</span></button>
-                <div class="h-5 w-px bg-outline-variant mx-1"></div>
-                <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container"><span class="material-symbols-outlined text-[18px]">format_list_bulleted</span></button>
-                <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container"><span class="material-symbols-outlined text-[18px]">format_quote</span></button>
-                <button type="button" class="px-3 h-8 rounded-full flex items-center gap-1 bg-secondary-container text-on-secondary-container text-xs font-bold ml-auto"><span class="material-symbols-outlined text-[16px]">lightbulb</span> Kiat Koki</button>
+            <div class="p-6">
+                <textarea name="content" id="editor-content" rows="15" placeholder="Mulai tulis artikel panduan Anda di sini..." 
+                          class="w-full text-sm text-on-surface leading-relaxed outline-none resize-y bg-transparent focus:ring-0 border-0">{{ old('content') }}</textarea>
             </div>
-
-            <!-- Textarea for Content -->
-            <textarea name="content" rows="15" required placeholder="Mulai tulis artikel panduan Anda di sini..." 
-                      class="w-full p-6 text-sm text-on-surface leading-relaxed outline-none resize-y bg-transparent focus:ring-0 border-0">{{ old('content') }}</textarea>
             
             <div class="px-6 py-3 bg-surface-container-low/40 flex items-center justify-between text-on-surface-variant text-[11px]">
                 <span>Format: Rich Editorial Text</span>
                 <span class="flex items-center gap-1 text-secondary font-semibold"><span class="material-symbols-outlined text-[14px]">spellcheck</span> Koreksi Bahasa Aktif</span>
             </div>
         </section>
-                <!-- Grid for Status & Author (Dipindah ke Bawah) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+        <!-- ACTIONS (KIRI DRAFT, KANAN PUBLISH) -->
+        <div class="flex items-center justify-between pt-4 border-t border-surface-container-high mt-2">
             
-            <!-- Card D: Status Publikasi -->
-            <section class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col gap-4">
-                <div class="flex items-center justify-between border-b border-surface-container-high pb-3">
-                    <h3 class="text-base text-primary font-bold">Status Publikasi</h3>
-                    <span class="px-3 py-1 bg-surface-container text-on-surface-variant rounded-full text-[11px] font-bold flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[14px]">lock_clock</span> Draf
-                    </span>
-                </div>
-                <div class="flex flex-col gap-3">
-                    <div class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl">
-                        <div class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-secondary text-[20px]">visibility</span>
-                            <span class="text-sm text-primary font-bold">Visibilitas</span>
-                        </div>
-                        <span class="text-sm text-secondary font-semibold">Publik (Terbuka)</span>
-                    </div>
-                    <div class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl">
-                        <div class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-secondary text-[20px]">comment</span>
-                            <span class="text-sm text-primary font-bold">Ulasan &amp; Diskusi</span>
-                        </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" name="allow_comments" value="1" class="sr-only peer" checked>
-                            <div class="w-9 h-5 bg-surface-container peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-secondary"></div>
-                        </label>
-                    </div>
-                </div>
-            </section>
+            {{-- Kiri Bawah: Simpan Draft --}}
+            <button type="submit" name="status" value="draft" class="px-6 py-3 rounded-full bg-surface-container-high text-primary text-sm font-bold hover:bg-surface-container transition flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">save</span>
+                Simpan sebagai Draft
+            </button>
 
-            <!-- Card E: Penulis Kurator -->
-            <section class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col gap-4">
-                <div class="flex items-center justify-between border-b border-surface-container-high pb-3">
-                    <h3 class="text-base text-primary font-bold">Penulis / Kurator Ahli</h3>
-                </div>
-                <div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
-                    <div class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg shrink-0">
-                        {{ substr(auth()->user()->name ?? 'A', 0, 1) }}
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-sm font-bold text-primary">{{ auth()->user()->name ?? 'Chef Antoine' }}</span>
-                        <span class="text-xs text-secondary font-semibold">Super Admin • Grand Chef</span>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!-- Sticky Bottom Action Bar -->
-        <div class="sticky bottom-6 z-30 w-full mt-4">
-            <div class="bg-surface-container-lowest/95 backdrop-blur-md p-4 md:px-6 rounded-full shadow-[0_16px_40px_-6px_rgba(90,58,34,0.14)] flex flex-wrap items-center justify-between gap-3 border border-surface-container-high">
-                
-                <a href="{{ route('admin.tips.index') }}" class="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all text-xs font-semibold">
-                    <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-                    Kembali
-                </a>
-                
-                <div class="flex items-center gap-3">
-                    <button type="submit" name="status" value="draft" class="flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-surface-container text-primary hover:bg-surface-container-high transition-all text-xs font-bold">
-                        <span class="material-symbols-outlined text-[18px]">save</span>
-                        Simpan Draf
-                    </button>
-                    <button type="submit" name="status" value="published" class="flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-white hover:bg-primary-container transition-all text-sm font-bold shadow-md">
-                        <span class="material-symbols-outlined text-[20px]">publish</span>
-                        Publikasikan Tips
-                    </button>
-                </div>
+            {{-- Kanan Bawah: Publikasikan --}}
+            <div class="flex items-center gap-3">
+                <button type="submit" name="status" value="published" class="px-6 py-3 rounded-full bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary-container transition flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                    Publikasikan Tips
+                </button>
             </div>
         </div>
 
@@ -244,7 +189,26 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js" referrerpolicy="origin"></script>
+
 <script>
+    // 1. Inisialisasi TinyMCE
+    tinymce.init({
+        selector: '#editor-content',
+        height: 500,
+        menubar: false,
+        plugins: 'lists link image table code help wordcount',
+        toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | link image | code',
+        content_style: 'body { font-family:Plus Jakarta Sans,sans-serif; font-size:14px; color: #41240e; background-color: transparent; }',
+        skin: 'oxide'
+    });
+
+    // 2. Paksa TinyMCE menyimpan teks ke textarea sebelum form disubmit
+    document.getElementById('tipsForm').addEventListener('submit', function() {
+        tinymce.triggerSave(); 
+    });
+
+    // 3. Preview Image Upload
     function previewImage(event) {
         const input = event.target;
         const preview = document.getElementById('imagePreview');
