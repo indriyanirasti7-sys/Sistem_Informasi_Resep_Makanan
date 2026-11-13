@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Pengaturan — Jelajah Rasa')
+@section('title', 'Pengaturan — Griya Rasa')
 @section('breadcrumb', 'Pengaturan')
 
 @section('content')
@@ -9,13 +9,13 @@
     <div class="flex items-center gap-2 text-on-surface-variant text-[11px] tracking-wider uppercase mb-1">
         <span>Portal Admin</span>
         <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-        <span>Jelajah Rasa</span>
+        <span>Griya Rasa</span>
         <span class="material-symbols-outlined text-[14px]">chevron_right</span>
         <span class="text-primary font-bold">Pengaturan</span>
     </div>
     <h1 class="font-display text-4xl text-primary tracking-tight font-bold">Pengaturan</h1>
     <p class="text-sm text-on-surface-variant max-w-xl">
-        Atur identitas situs dan akun administrator Anda dengan sentuhan estetika gastronomi khas Jelajah Rasa.
+        Atur identitas situs dan akun administrator Anda dengan sentuhan estetika gastronomi khas Griya Rasa.
     </p>
 </header>
 

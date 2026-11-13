@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Detail Kategori — L\'Art de Cuisine')
+@section('title', 'Detail Kategori — L\'Griya Rasa')
 @section('breadcrumb', $category->name)
 
 @section('content')

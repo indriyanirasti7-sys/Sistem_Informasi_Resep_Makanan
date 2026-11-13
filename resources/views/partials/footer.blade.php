@@ -4,7 +4,7 @@
 
             {{-- Brand --}}
             <div class="lg:col-span-4 flex flex-col gap-space-md">
-                <span class="font-headline-md text-headline-md font-semibold text-primary-fixed">L'Art de Cuisine</span>
+                <span class="font-headline-md text-headline-md font-semibold text-primary-fixed">Griya Rasa</span>
                 <p class="font-body-md text-body-md text-on-primary-container max-w-sm">
                     Perpaduan kehangatan tradisi rempah Nusantara dengan keanggunan teknik gastronomi klasik.
                     Eksplorasi resep terkurasi untuk cita rasa otentik.
@@ -59,7 +59,7 @@
 
         {{-- Copyright --}}
         <div class="mt-space-2xl pt-space-lg border-t border-primary/40 flex flex-col md:flex-row items-center justify-between gap-space-md text-on-primary-container font-body-sm text-body-sm">
-            <p>© {{ date('Y') }} L'Art de Cuisine Indonesia. Hak Cipta Dilindungi Undang-Undang.</p>
+            <p>© {{ date('Y') }} Griya Rasa Indonesia. Hak Cipta Dilindungi Undang-Undang.</p>
             <div class="flex items-center gap-space-lg">
                 <a href="#" class="hover:text-surface-bright transition-colors">Kebijakan Privasi</a>
                 <a href="#" class="hover:text-surface-bright transition-colors">Syarat &amp; Ketentuan</a>

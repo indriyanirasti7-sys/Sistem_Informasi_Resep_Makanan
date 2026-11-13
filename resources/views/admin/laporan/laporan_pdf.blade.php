@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laporan Resep Jelajah Rasa</title>
+    <title>Laporan Resep Griya Rasa</title>
     <style>
         body { font-family: sans-serif; font-size: 11px; color: #333; }
         h2 { text-align: center; margin-bottom: 5px; color: #41240e; }
@@ -15,7 +15,7 @@
     </style>
 </head>
 <body>
-    <h2>Laporan Data Resep - Jelajah Rasa</h2>
+    <h2>Laporan Data Resep - Griya Rasa</h2>
     <div class="subtitle">Dicetak pada: {{ date('d F Y, H:i') }} WIB</div>
 
     <table>

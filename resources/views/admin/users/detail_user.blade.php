@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Detail User — Jelajah Rasa')
+@section('title', 'Detail User — Griya Rasa')
 @section('breadcrumb', 'Detail User')
 
 @section('content')
@@ -76,26 +76,36 @@
                 </div>
             </div>
 
-            <!-- Kanan: Statistik Cepat (Desain Diperbarui) -->
-            <div class="grid grid-cols-2 gap-3 sm:gap-4 shrink-0 mt-4 xl:mt-0">
+            <!-- Kanan: Statistik Cepat (3 Card) -->
+            <div class="grid grid-cols-3 gap-2 sm:gap-4 shrink-0 mt-4 xl:mt-0">
                 <!-- Card Koleksi Resep -->
-                <div class="bg-surface-container-low p-4 rounded-2xl flex items-center gap-4 border border-surface-container-high shadow-sm min-w-[150px]">
-                    <div class="w-12 h-12 rounded-full bg-secondary/15 flex items-center justify-center text-secondary shrink-0">
-                        <span class="material-symbols-outlined text-[24px]">bookmark</span>
+                <div class="bg-surface-container-low p-3 sm:p-4 rounded-2xl flex flex-col xl:flex-row items-center gap-2 xl:gap-4 border border-surface-container-high shadow-sm min-w-[100px] xl:min-w-[150px]">
+                    <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-secondary/15 flex items-center justify-center text-secondary shrink-0">
+                        <span class="material-symbols-outlined text-[18px] sm:text-[24px]">bookmark</span>
                     </div>
-                    <div class="flex flex-col">
-                        <span class="text-3xl font-display font-bold text-primary leading-none">{{ $user->bookmarks_count ?? 0 }}</span>
-                        <span class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mt-1">Koleksi</span>
+                    <div class="flex flex-col text-center xl:text-left">
+                        <span class="text-2xl xl:text-3xl font-display font-bold text-primary leading-none">{{ $user->bookmarks_count ?? 0 }}</span>
+                        <span class="text-[9px] sm:text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mt-1">Resep</span>
                     </div>
                 </div>
                 <!-- Card Ulasan Rasa -->
-                <div class="bg-surface-container-low p-4 rounded-2xl flex items-center gap-4 border border-surface-container-high shadow-sm min-w-[150px]">
-                    <div class="w-12 h-12 rounded-full bg-tertiary-container/15 flex items-center justify-center text-tertiary-container shrink-0">
-                        <span class="material-symbols-outlined text-[24px]">rate_review</span>
+                <div class="bg-surface-container-low p-3 sm:p-4 rounded-2xl flex flex-col xl:flex-row items-center gap-2 xl:gap-4 border border-surface-container-high shadow-sm min-w-[100px] xl:min-w-[150px]">
+                    <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-tertiary-container/15 flex items-center justify-center text-tertiary-container shrink-0">
+                        <span class="material-symbols-outlined text-[18px] sm:text-[24px]">rate_review</span>
                     </div>
-                    <div class="flex flex-col">
-                        <span class="text-3xl font-display font-bold text-primary leading-none">{{ $user->ratings_count ?? 0 }}</span>
-                        <span class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mt-1">Ulasan</span>
+                    <div class="flex flex-col text-center xl:text-left">
+                        <span class="text-2xl xl:text-3xl font-display font-bold text-primary leading-none">{{ $user->ratings_count ?? 0 }}</span>
+                        <span class="text-[9px] sm:text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mt-1">Ulasan</span>
+                    </div>
+                </div>
+                <!-- Card Tips Disimpan -->
+                <div class="bg-surface-container-low p-3 sm:p-4 rounded-2xl flex flex-col xl:flex-row items-center gap-2 xl:gap-4 border border-surface-container-high shadow-sm min-w-[100px] xl:min-w-[150px]">
+                    <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-primary/15 flex items-center justify-center text-primary shrink-0">
+                        <span class="material-symbols-outlined text-[18px] sm:text-[24px]">lightbulb</span>
+                    </div>
+                    <div class="flex flex-col text-center xl:text-left">
+                        <span class="text-2xl xl:text-3xl font-display font-bold text-primary leading-none">{{ $user->tip_bookmarks_count ?? 0 }}</span>
+                        <span class="text-[9px] sm:text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mt-1">Tips</span>
                     </div>
                 </div>
             </div>
@@ -148,16 +158,21 @@
                     <h2 class="text-lg text-primary font-bold">Interaksi & Preferensi</h2>
                 </div>
                 
-                <div class="grid grid-cols-2 gap-3 text-center">
-                    <div class="bg-surface-container-low p-4 rounded-2xl flex flex-col items-center">
-                        <span class="material-symbols-outlined text-[24px] text-tertiary-container mb-1">bookmark</span>
-                        <span class="text-xl font-bold text-primary">{{ $user->bookmarks_count ?? 0 }}</span>
-                        <span class="text-[11px] text-on-surface-variant font-semibold">Resep Disimpan</span>
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-surface-container-low p-3 rounded-2xl flex flex-col items-center">
+                        <span class="material-symbols-outlined text-[20px] text-tertiary-container mb-1">bookmark</span>
+                        <span class="text-lg font-bold text-primary">{{ $user->bookmarks_count ?? 0 }}</span>
+                        <span class="text-[10px] text-on-surface-variant font-semibold leading-tight mt-1">Resep<br>Disimpan</span>
                     </div>
-                    <div class="bg-surface-container-low p-4 rounded-2xl flex flex-col items-center">
-                        <span class="material-symbols-outlined text-[24px] text-secondary mb-1">rate_review</span>
-                        <span class="text-xl font-bold text-primary">{{ $user->ratings_count ?? 0 }}</span>
-                        <span class="text-[11px] text-on-surface-variant font-semibold">Ulasan Diberikan</span>
+                    <div class="bg-surface-container-low p-3 rounded-2xl flex flex-col items-center">
+                        <span class="material-symbols-outlined text-[20px] text-secondary mb-1">rate_review</span>
+                        <span class="text-lg font-bold text-primary">{{ $user->ratings_count ?? 0 }}</span>
+                        <span class="text-[10px] text-on-surface-variant font-semibold leading-tight mt-1">Ulasan<br>Diberikan</span>
+                    </div>
+                    <div class="bg-surface-container-low p-3 rounded-2xl flex flex-col items-center">
+                        <span class="material-symbols-outlined text-[20px] text-primary mb-1">lightbulb</span>
+                        <span class="text-lg font-bold text-primary">{{ $user->tip_bookmarks_count ?? 0 }}</span>
+                        <span class="text-[10px] text-on-surface-variant font-semibold leading-tight mt-1">Tips<br>Disimpan</span>
                     </div>
                 </div>
             </div>
@@ -231,7 +246,7 @@
                                 </span>
                                 <span class="text-[11px] text-outline font-semibold">{{ $user->created_at->translatedFormat('d M Y') }}</span>
                             </div>
-                            <p class="text-sm text-on-surface">Berhasil membuat akun di portal Jelajah Rasa.</p>
+                            <p class="text-sm text-on-surface">Berhasil membuat akun di portal Griya Rasa.</p>
                         </div>
                     </div>
                 </div>
@@ -342,7 +357,7 @@
                 <label class="flex items-center gap-3 p-4 rounded-2xl bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors">
                     <input type="radio" name="role" value="user" class="w-4 h-4 accent-primary" {{ $user->role === 'user' ? 'checked' : '' }}>
                     <div class="flex-1">
-                        <p class="font-bold text-primary">User (Penjelajah Rasa)</p>
+                        <p class="font-bold text-primary">User (Griya Rasa)</p>
                         <p class="text-xs text-on-surface-variant">Dapat menyimpan resep, memberi ulasan, mengunggah foto kreasi.</p>
                     </div>
                 </label>
@@ -436,7 +451,7 @@
 
         if (btnConfirmSuspend) {
             btnConfirmSuspend.addEventListener('click', () => {
-                // Simulasi aksi penangguhan (Karena ini belum terhubung ke backend)
+                // Simulasi aksi penangguhan
                 btnSuspend.classList.remove('bg-error-container', 'text-error');
                 btnSuspend.classList.add('bg-surface-container-highest', 'text-outline');
                 btnSuspend.innerHTML = '<span class="material-symbols-outlined text-[18px]">check_circle</span> Ditangguhkan';

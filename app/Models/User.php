@@ -26,6 +26,18 @@ class User extends Authenticatable
     public function ratings()   { return $this->hasMany(Rating::class); }
     public function tips()      { return $this->hasMany(Tip::class); }
 
+    // Relasi ke tabel simpanan tips
+    public function tipBookmarks()
+    {
+        return $this->hasMany(TipBookmark::class);
+    }
+
+    // Fungsi untuk mengecek apakah user sudah menyimpan tips ini
+    public function hasSavedTip($tipId)
+    {
+        return $this->tipBookmarks()->where('tip_id', $tipId)->exists();
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';

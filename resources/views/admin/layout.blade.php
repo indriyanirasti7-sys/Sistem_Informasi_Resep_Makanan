@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
-    <title>@yield('title', 'Admin — Jelajah Rasa')</title>
+    <title>@yield('title', 'Admin — Griya Rasa')</title>
 
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -137,7 +137,7 @@
             
             <!-- Teks Logo -->
             <div class="flex flex-col flex-1 overflow-hidden whitespace-nowrap sidebar-text transition-all duration-300">
-                <span class="font-display text-[17px] text-white font-bold leading-tight">Jelajah Rasa</span>
+                <span class="font-display text-[17px] text-white font-bold leading-tight">Griya Rasa</span>
                 <span class="text-[10px] uppercase tracking-wider text-white/60 mt-0.5 font-semibold">Portal Gastronomi</span>
             </div>
             

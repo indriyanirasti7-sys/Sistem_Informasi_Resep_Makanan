@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Tambah Kategori — Jelajah Rasa')
+@section('title', 'Tambah Kategori — Griya Rasa')
 @section('breadcrumb', 'Tambah Kategori')
 
 @section('content')
@@ -20,7 +20,7 @@
         <div class="flex flex-col gap-1.5">
             <h1 class="font-['Playfair_Display'] text-4xl text-primary tracking-tight font-bold">Tambah Kategori Baru</h1>
             <p class="text-sm text-on-surface-variant max-w-xl">
-                Definisikan klasifikasi menu baru untuk memperkaya taksonomi kuliner di portal Jelajah Rasa.
+                Definisikan klasifikasi menu baru untuk memperkaya taksonomi kuliner di portal Griya Rasa.
             </p>
         </div>
     </header>

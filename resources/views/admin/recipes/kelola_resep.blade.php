@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Kelola Resep — Jelajah Rasa')
+@section('title', 'Kelola Resep — Griya Rasa')
 @section('breadcrumb', 'Kelola Resep')
 
 @section('content')
@@ -11,7 +11,7 @@
         <div class="flex flex-col gap-1.5">
             <h1 class="font-['Playfair_Display'] text-4xl text-primary tracking-tight font-bold">Kelola Resep</h1>
             <p class="text-sm text-on-surface-variant max-w-xl">
-                Tambah, kurasi, ubah, dan atur sajian kuliner nusantara yang tampil di etalase Jelajah Rasa.
+                Tambah, kurasi, ubah, dan atur sajian kuliner nusantara yang tampil di etalase Griya Rasa.
             </p>
         </div>
 
@@ -244,7 +244,7 @@
                                 </div>
                                 <h3 class="font-['Playfair_Display'] text-xl text-primary font-bold">Belum Ada Resep</h3>
                                 <p class="text-sm text-on-surface-variant max-w-md">
-                                    Mulai tambahkan resep pertama ke kurasi Jelajah Rasa.
+                                    Mulai tambahkan resep pertama ke kurasi Griya Rasa.
                                 </p>
                                 <a href="{{ route('admin.recipes.create') }}"
                                    class="mt-2 inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-full hover:bg-primary-container transition">

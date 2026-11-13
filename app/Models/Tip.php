@@ -33,6 +33,12 @@ class Tip extends Model
         return $this->belongsTo(User::class);
     }
 
+    // Relasi ke tabel simpanan tips
+    public function bookmarks()
+    {
+        return $this->hasMany(TipBookmark::class);
+    }
+
     public function getRouteKeyName():string
     {
         return 'slug';

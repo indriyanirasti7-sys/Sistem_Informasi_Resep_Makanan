@@ -6,7 +6,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
-    <title>{{ $mode === 'signup' ? 'Daftar Akun' : 'Masuk' }} — L'Art de Cuisine</title>
+    <title>{{ $mode === 'signup' ? 'Daftar Akun' : 'Masuk' }} — Griya Rasa</title>
 
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -44,7 +44,7 @@
 <header class="w-full py-4 sm:py-6 px-4 sm:px-6 lg:px-12">
     <div class="max-w-6xl mx-auto flex items-center justify-between">
         <a href="{{ route('home') }}" class="flex items-center gap-2">
-            <span class="font-display text-lg sm:text-xl font-semibold text-primary">L'Art de Cuisine</span>
+            <span class="font-display text-lg sm:text-xl font-semibold text-primary">Griya Rasa</span>
         </a>
         <a href="{{ route('home') }}" class="inline-flex items-center gap-1 text-xs sm:text-sm text-on-surface-variant hover:text-primary transition">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span>
@@ -78,11 +78,11 @@
 
                     <div class="inline-flex items-center justify-center gap-1.5 mx-auto mb-2 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-bold">
                         <span class="material-symbols-outlined text-[14px]">restaurant_menu</span>
-                        <span>Komunitas L'Art de Cuisine</span>
+                        <span>Komunitas Griya Rasa</span>
                     </div>
 
                     <h2 class="font-display text-xl sm:text-2xl font-semibold text-primary">Buat Akun Baru</h2>
-                    <p class="text-xs text-on-surface-variant mt-1 mb-4">Bergabung dengan komunitas pencinta kuliner.</p>
+                    <p class="text-xs text-on-surface-variant mt-1 mb-6">Bergabung dengan komunitas pencinta kuliner.</p>
 
                     @if ($errors->any() && $mode === 'signup')
                         <div class="mb-4 p-3 rounded-xl bg-error-container text-on-error-container text-left text-[11px]">
@@ -94,21 +94,8 @@
                         </div>
                     @endif
 
-                    <div class="flex items-center justify-center gap-2.5 mb-3">
-                        @foreach (['G', 'F', 'A'] as $letter)
-                            <button type="button" class="w-9 h-9 rounded-full flex items-center justify-center bg-surface-container-lowest shadow-sm hover:scale-105 transition text-primary text-xs font-bold">
-                                {{ $letter }}
-                            </button>
-                        @endforeach
-                    </div>
-
-                    <div class="flex items-center my-3">
-                        <span class="flex-grow h-[1px] bg-outline-variant/60"></span>
-                        <span class="px-3 text-[10px] font-semibold text-outline uppercase tracking-wider">atau dengan email</span>
-                        <span class="flex-grow h-[1px] bg-outline-variant/60"></span>
-                    </div>
-
-                    <div class="space-y-2.5 text-left">
+                    {{-- G F A DIHAPUS DARI SINI --}}
+                    <div class="space-y-2.5 text-left mt-2">
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">person</span>
                             <input name="name" type="text" value="{{ old('name') }}" required placeholder="Nama Lengkap Anda"
@@ -158,7 +145,7 @@
                     </div>
 
                     <h2 class="font-display text-xl sm:text-2xl font-semibold text-primary">Masuk ke Akun</h2>
-                    <p class="text-xs text-on-surface-variant mt-1 mb-4">Akses ratusan kurasi resep & catatan rasa.</p>
+                    <p class="text-xs text-on-surface-variant mt-1 mb-6">Akses ratusan kurasi resep & catatan rasa.</p>
 
                     @if (session('status'))
                         <div class="mb-3 p-2.5 rounded-xl bg-secondary/10 text-secondary text-left text-[11px]">
@@ -176,21 +163,8 @@
                         </div>
                     @endif
 
-                    <div class="flex items-center justify-center gap-2.5 mb-3">
-                        @foreach (['G', 'F', 'A'] as $letter)
-                            <button type="button" class="w-9 h-9 rounded-full flex items-center justify-center bg-surface-container-lowest shadow-sm hover:scale-105 transition text-primary text-xs font-bold">
-                                {{ $letter }}
-                            </button>
-                        @endforeach
-                    </div>
-
-                    <div class="flex items-center my-3">
-                        <span class="flex-grow h-[1px] bg-outline-variant/60"></span>
-                        <span class="px-3 text-[10px] font-semibold text-outline uppercase tracking-wider">atau dengan email</span>
-                        <span class="flex-grow h-[1px] bg-outline-variant/60"></span>
-                    </div>
-
-                    <div class="space-y-2.5 text-left">
+                    {{-- G F A DIHAPUS DARI SINI --}}
+                    <div class="space-y-2.5 text-left mt-2">
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">mail</span>
                             <input name="email" type="email" value="{{ old('email') }}" required autofocus placeholder="nama@email.com"
@@ -257,7 +231,7 @@
 </main>
 
 <footer class="w-full py-4 sm:py-5 px-4 sm:px-6 text-center text-[10px] text-outline">
-    <p>© {{ date('Y') }} L'Art de Cuisine. Hak Cipta Dilindungi.</p>
+    <p>© {{ date('Y') }} Griya Rasa. Hak Cipta Dilindungi.</p>
 </footer>
 
 <script>

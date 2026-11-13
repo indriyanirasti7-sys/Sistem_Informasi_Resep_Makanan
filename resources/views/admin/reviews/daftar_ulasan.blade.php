@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Ulasan & Rating — L\'Art de Cuisine')
+@section('title', 'Ulasan & Rating — L\'Griya Rasa')
 @section('breadcrumb', 'Ulasan')
 
 @section('content')
@@ -10,7 +10,7 @@
         <div class="flex flex-col gap-1.5">
             <h1 class="font-['Playfair_Display'] text-4xl text-primary tracking-tight font-bold">Kelola Resep</h1>
             <p class="text-sm text-on-surface-variant max-w-xl">
-                Tambah, kurasi, ubah, dan atur sajian kuliner nusantara yang tampil di etalase Jelajah Rasa.
+                Tambah, kurasi, ubah, dan atur sajian kuliner nusantara yang tampil di etalase Griya Rasa.
             </p>
         </div>
 

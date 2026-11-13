@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Dashboard — L\'Art de Cuisine')
+@section('title', 'Dashboard — L\'Griya Rasa')
 @section('breadcrumb', 'Dashboard')
 
 @section('content')

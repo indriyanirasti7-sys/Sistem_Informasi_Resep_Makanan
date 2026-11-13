@@ -12,11 +12,13 @@ use Illuminate\Support\Facades\Route;
 
 // ========== PUBLIC ROUTES ==========
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/load-more-recipes', [HomeController::class, 'loadMoreRecipes'])->name('home.loadmore');
 Route::get('/resep', [RecipeController::class, 'daftar_resep'])->name('recipes.daftar_resep');
 Route::get('/resep/{recipe:slug}', [RecipeController::class, 'show'])->name('recipes.show');
 Route::get('/tips', [TipController::class, 'panduan'])->name('tips.panduan');
 Route::get('/tips/{tip:slug}', [TipController::class, 'show'])->name('tips.detail_tips');
 Route::get('/bookmark', [BookmarkController::class, 'favorit'])->name('bookmarks.favorit');
+Route::post('/tips/{slug}/bookmark', [BookmarkController::class, 'toggleTip'])->name('tips.bookmark');
 
 require __DIR__.'/auth.php';
 
@@ -24,6 +26,7 @@ require __DIR__.'/auth.php';
 Route::middleware('auth')->group(function () {
     Route::post('/bookmark/{recipe:slug}', [BookmarkController::class, 'toggle'])->name('bookmarks.toggle');
     Route::delete('/bookmark/{bookmark}', [BookmarkController::class, 'destroy'])->name('bookmarks.destroy');
+    Route::delete('/bookmark/tip/{id}', [App\Http\Controllers\BookmarkController::class, 'destroyTip'])->name('bookmarks.destroyTip');
 
     Route::post('/resep/{recipe:slug}/rating', [RatingController::class, 'store'])->name('ratings.store');
     Route::delete('/rating/{rating}', [RatingController::class, 'destroy'])->name('ratings.destroy');

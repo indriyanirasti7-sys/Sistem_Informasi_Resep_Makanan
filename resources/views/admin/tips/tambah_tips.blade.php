@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Tambah Tips — Jelajah Rasa')
+@section('title', 'Tambah Tips — Griya Rasa')
 @section('breadcrumb', 'Tambah Tips')
 
 @section('content')

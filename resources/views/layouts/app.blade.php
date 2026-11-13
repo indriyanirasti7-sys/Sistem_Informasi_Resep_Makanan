@@ -7,7 +7,7 @@
         : [];
         
     // Set variabel dengan nilai default jika belum ada data
-    $siteName = 'Jelajah Rasa'; // Nama dikunci
+    $siteName = 'Griya Rasa '; // Nama dikunci
     $siteTagline = $globalSettings['tagline'] ?? 'Inspirasi & Resep Kuliner';
     $siteDescription = $globalSettings['description'] ?? 'Eksplorasi cita rasa haute cuisine berpadu dengan kekayaan rempah gastronomi Nusantara.';
 @endphp

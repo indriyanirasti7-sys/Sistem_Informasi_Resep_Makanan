@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Data User — Jelajah Rasa')
+@section('title', 'Data User — Griya Rasa')
 @section('breadcrumb', 'Data User')
 
 @section('content')
@@ -10,7 +10,7 @@
     <div class="flex flex-col gap-1.5">
         <h1 class="font-['Playfair_Display'] text-4xl text-primary tracking-tight font-bold">Data User</h1>
         <p class="text-sm text-on-surface-variant max-w-xl">
-            Kelola akun pengguna, termasuk admin dan anggota komunitas, untuk mengatur hak akses dan aktivitas di portal Jelajah Rasa.
+            Kelola akun pengguna, termasuk admin dan anggota komunitas, untuk mengatur hak akses dan aktivitas di portal Griya Rasa.
         </p>
     </div>
 
@@ -361,7 +361,7 @@
             <div class="mt-5 p-4 rounded-2xl bg-tertiary-fixed/60 flex items-start gap-3">
                 <span class="material-symbols-outlined text-[20px] text-tertiary-container mt-0.5">info</span>
                 <p class="text-sm text-on-tertiary-fixed-variant leading-relaxed">
-                    <strong>Peringatan:</strong> Admin dapat mengelola, menyunting, dan menghapus seluruh isi situs Jelajah Rasa.
+                    <strong>Peringatan:</strong> Admin dapat mengelola, menyunting, dan menghapus seluruh isi situs Griya Rasa.
                 </p>
             </div>
             <div class="flex items-center justify-end gap-3 mt-6 pt-5 border-t border-surface-container-high">
