@@ -89,10 +89,11 @@
 
             {{-- TOMBOL AKSI --}}
             <div class="flex flex-wrap items-center gap-2.5 pt-1">
-                <a href="#recipeCoreSection" class="flex-1 sm:flex-none justify-center inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white text-sm font-bold shadow-md hover:bg-primary-container transition-all hover:-translate-y-0.5">
+                {{-- ✅ UBAH MENJADI BUTTON DAN PANGGIL FUNGSI MODAL --}}
+                <button type="button" onclick="openCookingModal()" class="flex-1 sm:flex-none justify-center inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white text-sm font-bold shadow-md hover:bg-primary-container transition-all hover:-translate-y-0.5">
                     <span class="material-symbols-outlined text-[20px]">skillet</span>
                     Mulai Memasak
-                </a>
+                </button>
                 <a href="#recipeCoreSection" class="flex-1 sm:flex-none justify-center inline-flex items-center gap-2 px-6 py-3 rounded-full bg-surface-container-high text-primary text-sm font-bold hover:bg-surface-container-highest transition-all">
                     <span class="material-symbols-outlined text-[20px]">list_alt</span>
                     Baca Instruksi

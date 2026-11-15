@@ -37,7 +37,7 @@ class BookmarkController extends Controller
                 default  => $query->latest(),
             };
 
-            $bookmarks = $query->paginate(12)->withQueryString();
+            $bookmarks = $query->paginate(8)->withQueryString();
 
             // Ambil Tips menggunakan Model
             $bookmarkedTips = TipBookmark::with('tip')

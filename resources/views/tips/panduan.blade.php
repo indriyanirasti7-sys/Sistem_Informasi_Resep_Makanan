@@ -122,7 +122,7 @@
         {{-- ========== 4. TIPS GRID (2 KOLOM DI HP) ========== --}}
         <section class="mb-16">
             {{-- Grid diubah menjadi 2 kolom di HP, 3 kolom di Laptop --}}
-            <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-10">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
                 @foreach ($tips as $tip)
                     <article class="tip-card flex flex-col bg-surface-container-lowest rounded-2xl sm:rounded-[1.5rem] overflow-hidden shadow-sm hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group border border-surface-container/60"
                              data-title="{{ strtolower($tip->title . ' ' . strip_tags($tip->content)) }}">

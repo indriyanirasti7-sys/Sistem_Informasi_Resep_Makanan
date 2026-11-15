@@ -54,7 +54,8 @@
     </div>
 </header>
 
-<main class="w-full flex-1 flex items-start sm:items-center justify-center px-4 sm:px-6 py-4 sm:py-8">
+{{-- ✅ PENYESUAIAN POSISI DI TENGAH --}}
+<main class="w-full flex-1 flex items-start justify-center px-4 sm:px-6 pt-16 pb-12 sm:pt-24">
     <div class="w-full max-w-4xl">
 
         {{-- Mobile Tab --}}
@@ -66,14 +67,14 @@
         </div>
 
         {{-- Auth Container --}}
-        <div class="relative w-full mx-auto bg-surface-container-low rounded-2xl overflow-hidden shadow-[8px_8px_24px_#ded4c3,-8px_-8px_24px_#ffffff] md:min-h-[600px]"
-             id="authContainer" data-mode="{{ $mode }}" style="max-width: 900px;">
+        <div class="relative w-full mx-auto bg-surface-container-low rounded-2xl overflow-hidden shadow-[8px_8px_24px_#ded4c3,-8px_-8px_24px_#ffffff]"
+             id="authContainer" data-mode="{{ $mode }}" style="max-width: 900px; min-height: 550px;">
 
             {{-- SIGN UP PANEL --}}
-            <div class="auth-panel w-full hidden flex-col justify-center px-6 sm:px-10 py-6 transition-all duration-700
+            <div class="auth-panel w-full hidden flex-col justify-center px-6 sm:px-10 py-8 transition-all duration-700
                         md:flex md:absolute md:top-0 md:left-0 md:h-full md:w-1/2 md:z-[1]"
                  id="signUpPanel">
-                <form class="flex flex-col w-full text-center" method="POST" action="{{ route('register') }}">
+                <form class="flex flex-col w-full text-center" method="POST" action="{{ route('register') }}" autocomplete="off">
                     @csrf
 
                     <div class="inline-flex items-center justify-center gap-1.5 mx-auto mb-2 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-bold">
@@ -94,7 +95,6 @@
                         </div>
                     @endif
 
-                    {{-- G F A DIHAPUS DARI SINI --}}
                     <div class="space-y-2.5 text-left mt-2">
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">person</span>
@@ -103,12 +103,12 @@
                         </div>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">mail</span>
-                            <input name="email" type="email" value="{{ old('email') }}" required placeholder="nama@email.com"
+                            <input name="email" type="email" value="{{ old('email') }}" required placeholder="nama@email.com" autocomplete="off"
                                    class="w-full pl-10 pr-4 py-2.5 rounded-full bg-surface-container-lowest text-sm focus:outline-none shadow-[inset_2px_2px_5px_#ded4c3,inset_-2px_-2px_5px_#ffffff]"/>
                         </div>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">lock</span>
-                            <input id="signUpPassword" name="password" type="password" required placeholder="Minimal 8 karakter"
+                            <input id="signUpPassword" name="password" type="password" required placeholder="Minimal 8 karakter" autocomplete="new-password"
                                    class="w-full pl-10 pr-11 py-2.5 rounded-full bg-surface-container-lowest text-sm focus:outline-none shadow-[inset_2px_2px_5px_#ded4c3,inset_-2px_-2px_5px_#ffffff]"/>
                             <button type="button" onclick="togglePasswordVisibility('signUpPassword', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-outline">
                                 <span class="material-symbols-outlined text-[18px]">visibility</span>
@@ -133,10 +133,11 @@
             </div>
 
             {{-- SIGN IN PANEL --}}
-            <div class="auth-panel w-full flex flex-col justify-center px-6 sm:px-10 py-6 transition-all duration-700
+            <div class="auth-panel w-full flex flex-col justify-center px-6 sm:px-10 py-8 transition-all duration-700
                         md:absolute md:top-0 md:left-0 md:h-full md:w-1/2 md:z-[2]"
-                 id="signInPanel">
-                <form class="flex flex-col w-full text-center" method="POST" action="{{ route('login') }}">
+                id="signInPanel">
+                {{-- ✅ TAMBAHKAN pt-20 DI SINI --}}
+                <form class="flex flex-col w-full text-center pt-20" method="POST" action="{{ route('login') }}">
                     @csrf
 
                     <div class="inline-flex items-center justify-center gap-1.5 mx-auto mb-2 px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant text-[11px] font-bold">
@@ -163,7 +164,6 @@
                         </div>
                     @endif
 
-                    {{-- G F A DIHAPUS DARI SINI --}}
                     <div class="space-y-2.5 text-left mt-2">
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">mail</span>
@@ -187,15 +187,10 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="mt-4 w-full py-3 rounded-full bg-primary-container text-white text-xs font-bold tracking-wider hover:bg-primary transition">
+                    {{-- ✅ MENGGUNAKAN mt-8 AGAR TOMBOL TURUN SECARA NATURAL TANPA MENGHILANG --}}
+                    <button type="submit" class="mt-8 w-full py-3 rounded-full bg-primary-container text-white text-xs font-bold tracking-wider hover:bg-primary transition">
                         MASUK
                     </button>
-
-                    <div class="mt-4 p-2.5 bg-secondary/5 border border-secondary/20 rounded-xl text-left">
-                        <p class="text-[10px] font-bold text-secondary mb-1">Akun demo:</p>
-                        <p class="text-[10px] text-on-surface-variant">Admin: admin@jelajahrasa.test / password</p>
-                        <p class="text-[10px] text-on-surface-variant mt-0.5">User: user@jelajahrasa.test / password</p>
-                    </div>
                 </form>
             </div>
 

@@ -123,7 +123,9 @@ function showToast(msg) {
 const stepTimers = {};
 
 function formatTime(s) {
-    return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+    const minutes = Math.floor(s / 60);
+    const seconds = s % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
 function toggleStepTimer(id, defaultSec) {
@@ -267,7 +269,8 @@ function resetModalTimer() {
 }
 
 // ========== 6. RATING ==========
-let userRating = {{ $userRating->rating ?? 5 }};
+// ✅ FIX: Gunakan optional chaining (?) agar tidak error jika user belum login/rating
+let userRating = {{ $userRating?->rating ?? 5 }};
 const ratingLabels = ['', '1 Bintang', '2 Bintang', '3 Bintang', '4 Bintang', '5 Bintang (Sempurna)'];
 
 function setRating(val) {

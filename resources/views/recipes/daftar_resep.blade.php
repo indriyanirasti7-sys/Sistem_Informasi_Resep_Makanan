@@ -68,30 +68,37 @@
         </form>
     </div>
 
-    {{-- Category Filter — Grid 2 kolom di Mobile, Scroll Horizontal di Desktop --}}
+    {{-- Category Filter --}}
     <div class="grid grid-cols-2 gap-3 sm:flex sm:items-stretch sm:gap-3 sm:overflow-x-auto sm:pb-3 mb-6 scrollbar-none">
         {{-- Semua --}}
         <a href="{{ route('recipes.daftar_resep', array_merge(request()->except('category'), [])) }}"
            class="group relative flex flex-col items-center justify-center w-full h-[104px] sm:w-[104px] shrink-0 rounded-2xl border-2 overflow-hidden transition-all
                   {{ !request('category') ? 'border-primary-container shadow-md' : 'border-surface-container hover:border-primary/40' }}">
-            <div class="absolute inset-0 bg-surface-container-lowest"></div>
-            <div class="relative z-10 flex flex-col items-center gap-1.5
-                        {{ !request('category') ? 'text-primary-container' : 'text-on-surface-variant group-hover:text-primary' }}">
-                <span class="material-symbols-outlined text-[26px]">apps</span>
-                <span class="text-[11px] font-bold">Semua</span>
+            
+            <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=400&auto=format&fit=crop" 
+                 alt="Semua Resep" 
+                 class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
+
+            <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent
+                        {{ !request('category') ? 'from-primary/85' : '' }}"></div>
+
+            <div class="relative z-10 p-2">
+                <span class="text-[11px] font-bold text-white leading-tight block text-center drop-shadow-md">
+                    Semua
+                </span>
             </div>
+
             @if(!request('category'))
                 <div class="absolute inset-0 ring-2 ring-primary-container ring-inset rounded-2xl pointer-events-none"></div>
             @endif
         </a>
 
-        {{-- Kategori dari Admin (dengan gambar) --}}
+        {{-- Kategori dari Admin --}}
         @foreach ($categories as $cat)
             <a href="{{ route('recipes.daftar_resep', array_merge(request()->except('category'), ['category' => $cat->slug])) }}"
                class="group relative w-full h-[104px] sm:w-[104px] shrink-0 rounded-2xl overflow-hidden border-2 transition-all
                       {{ request('category') === $cat->slug ? 'border-primary-container shadow-md' : 'border-surface-container hover:border-primary/40' }}">
 
-                {{-- Gambar dari admin --}}
                 @if($cat->image)
                     <img src="{{ Storage::url($cat->image) }}"
                          alt="{{ $cat->name }}"
@@ -100,18 +107,15 @@
                     <div class="absolute inset-0 bg-gradient-to-br from-primary via-primary-container to-tertiary"></div>
                 @endif
 
-                {{-- Overlay gelap agar teks terbaca --}}
                 <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent
                             {{ request('category') === $cat->slug ? 'from-primary/85' : '' }}"></div>
 
-                {{-- Nama kategori --}}
                 <div class="absolute bottom-0 left-0 right-0 p-2 z-10">
                     <span class="text-[11px] font-bold text-white leading-tight line-clamp-2 block text-center drop-shadow-md">
                         {{ $cat->name }}
                     </span>
                 </div>
 
-                {{-- Indikator aktif --}}
                 @if(request('category') === $cat->slug)
                     <div class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white flex items-center justify-center z-10 shadow">
                         <span class="material-symbols-outlined text-[14px] text-primary-container" style="font-variation-settings: 'FILL' 1;">check_circle</span>
@@ -123,8 +127,6 @@
 
     {{-- Difficulty & Sort Row --}}
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-6 p-3.5 rounded-2xl bg-surface-container-lowest shadow-sm">
-
-        {{-- Difficulty Chips --}}
         <div class="flex flex-wrap items-center gap-2">
             <span class="text-[11px] uppercase tracking-wider text-outline font-bold mr-1">Tingkat:</span>
             @foreach (['Mudah', 'Sedang', 'Sulit'] as $level)
@@ -142,7 +144,6 @@
             @endif
         </div>
 
-        {{-- Sort --}}
         <form method="GET" action="{{ route('recipes.daftar_resep') }}" class="flex items-center gap-3">
             @foreach (request()->except('sort') as $k => $v)
                 <input type="hidden" name="{{ $k }}" value="{{ $v }}">
@@ -170,9 +171,9 @@
         <span class="text-outline text-xs hidden sm:inline">Diperbarui setiap minggu</span>
     </div>
 
-    {{-- RECIPE GRID — 2 kolom di Mobile --}}
+    {{-- RECIPE GRID --}}
     @if ($recipes->count())
-        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 mb-12">
+        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 mb-8">
             @foreach ($recipes as $recipe)
                 @php
                     $diffColor = match($recipe->difficulty) {
@@ -183,10 +184,7 @@
                     };
                 @endphp
 
-                {{-- Card — Vertikal semua ukuran --}}
                 <article class="group flex flex-col bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
-
-                    {{-- IMAGE --}}
                     <div class="relative w-full aspect-square sm:aspect-[4/3] shrink-0 overflow-hidden bg-surface-container">
                         <a href="{{ route('recipes.show', $recipe->slug) }}" class="block w-full h-full">
                             <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -194,7 +192,6 @@
                                 alt="{{ $recipe->title }}" />
                         </a>
 
-                        {{-- Tombol Simpan (Bookmark) --}}
                         @auth
                             <button type="button" data-recipe-slug="{{ $recipe->slug }}"
                                     class="bookmark-btn absolute top-2 right-2 md:top-3 md:right-3 w-7 h-7 md:w-9 md:h-9 rounded-full bg-white/90 backdrop-blur-md text-outline hover:text-primary flex items-center justify-center shadow-sm transition-all z-10"
@@ -209,46 +206,39 @@
                         @endauth
                     </div>
 
-                    {{-- BODY --}}
                     <div class="p-2.5 md:p-5 flex flex-col flex-1 justify-between min-w-0">
                         <div class="flex flex-col gap-1">
-                            {{-- Rating (Desktop) --}}
                             <div class="hidden md:flex items-center gap-1.5 text-on-tertiary-container mb-1">
                                 <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="text-base font-bold text-on-surface">{{ $recipe->average_rating }}</span>
-                                <span class="text-xs text-outline">({{ $recipe->rating_count }} ulasan)</span>
+                                <span class="text-base font-bold text-on-surface">{{ $recipe->average_rating ?? 0 }}</span>
+                                <span class="text-xs text-outline">({{ $recipe->rating_count ?? 0 }} ulasan)</span>
                             </div>
 
-                            {{-- Title --}}
                             <a href="{{ route('recipes.show', $recipe->slug) }}">
                                 <h3 class="font-display text-[12px] sm:text-sm md:text-lg font-bold text-primary group-hover:text-primary-container transition line-clamp-2 leading-snug">
                                     {{ $recipe->title }}
                                 </h3>
                             </a>
 
-                            {{-- Author (Mobile) --}}
                             <div class="flex items-center gap-1 mt-0.5 md:hidden">
                                 <div class="w-3.5 h-3.5 rounded-full overflow-hidden bg-surface-container shrink-0">
-                                    <img class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($recipe->user->name ?? 'Chef') }}&background=5a3a22&color=fff&bold=true"/>
+                                    <img class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($recipe->user?->name ?? 'Chef') }}&background=5a3a22&color=fff&bold=true"/>
                                 </div>
                                 <span class="text-[10px] text-on-surface-variant truncate">
-                                    {{ Str::limit($recipe->user->name ?? 'Tim Dapur', 10) }}
+                                    {{ Str::limit($recipe->user?->name ?? 'Tim Dapur', 10) }}
                                 </span>
                             </div>
 
-                            {{-- Description (Desktop) --}}
                             <p class="hidden md:block text-sm text-on-surface-variant mb-4 line-clamp-2 mt-1">
                                 {{ $recipe->description }}
                             </p>
                         </div>
 
-                        {{-- FOOTER --}}
                         <div>
-                            {{-- Metrics (Mobile) — ringkas --}}
                             <div class="flex items-center gap-2 mt-1.5 pt-1.5 border-t border-surface-container/50 md:hidden">
                                 <span class="flex items-center gap-0.5 text-[10px] font-bold text-primary">
                                     <span class="material-symbols-outlined text-[12px] text-tertiary-container" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    {{ $recipe->average_rating }}
+                                    {{ $recipe->average_rating ?? 0 }}
                                 </span>
                                 <span class="flex items-center gap-0.5 text-[10px] text-on-surface-variant">
                                     <span class="material-symbols-outlined text-[12px] text-primary" style="font-variation-settings: 'FILL' 1;">bookmark</span>
@@ -260,7 +250,6 @@
                                 </span>
                             </div>
 
-                            {{-- Metrics Grid (Desktop) --}}
                             <div class="hidden md:grid grid-cols-4 gap-1 p-2 rounded-2xl bg-surface-container-low mb-4 text-center">
                                 <div class="flex flex-col items-center">
                                     <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
@@ -268,7 +257,7 @@
                                 </div>
                                 <div class="flex flex-col items-center">
                                     <span class="material-symbols-outlined text-[16px] text-secondary">group</span>
-                                    <span class="text-[10px] text-on-surface font-semibold mt-0.5">{{ $recipe->servings }} Porsi</span>
+                                    <span class="text-[10px] text-on-surface font-semibold mt-0.5">{{ $recipe->servings ?? '-' }} Porsi</span>
                                 </div>
                                 <div class="flex flex-col items-center">
                                     <span class="material-symbols-outlined text-[16px] text-secondary">local_fire_department</span>
@@ -276,19 +265,18 @@
                                 </div>
                                 <div class="flex flex-col items-center">
                                     <span class="material-symbols-outlined text-[16px] text-secondary">visibility</span>
-                                    <span class="text-[10px] text-on-surface font-semibold mt-0.5">{{ $recipe->views }}</span>
+                                    <span class="text-[10px] text-on-surface font-semibold mt-0.5">{{ $recipe->views ?? 0 }}</span>
                                 </div>
                             </div>
 
-                            {{-- Chef & Button (Desktop) --}}
                             <div class="hidden md:flex mt-auto pt-2 items-center justify-between border-t border-surface-container pt-4">
                                 <div class="flex items-center gap-2">
                                     <div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container">
                                         <img class="w-full h-full object-cover"
-                                             src="https://ui-avatars.com/api/?name={{ urlencode($recipe->user->name ?? 'Chef') }}&background=5a3a22&color=fff&bold=true"/>
+                                             src="https://ui-avatars.com/api/?name={{ urlencode($recipe->user?->name ?? 'Chef') }}&background=5a3a22&color=fff&bold=true"/>
                                     </div>
                                     <span class="text-[11px] text-on-surface-variant font-medium">
-                                        {{ Str::limit($recipe->user->name ?? 'Tim Dapur', 12) }}
+                                        {{ Str::limit($recipe->user?->name ?? 'Tim Dapur', 12) }}
                                     </span>
                                 </div>
                                 <a href="{{ route('recipes.show', $recipe->slug) }}"
@@ -316,8 +304,52 @@
         </div>
     @endif
 
-    {{-- Pantry Banner --}}
-    <!-- ID asisten-kulkas DITAMBAHKAN DI SINI -->
+    {{-- ✅ PAGINATION (DIPINDAH KE ATAS BANNER & DIBERI JARAK mb-6) --}}
+    @if ($recipes->hasPages())
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-surface-container-lowest shadow-sm mb-6">
+            @if ($recipes->onFirstPage())
+                <span class="inline-flex items-center gap-1 px-4 py-2 rounded-full text-on-surface-variant text-xs font-semibold opacity-40 cursor-not-allowed">
+                    <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    <span>Sebelumnya</span>
+                </span>
+            @else
+                <a href="{{ $recipes->previousPageUrl() }}"
+                   class="inline-flex items-center gap-1 px-4 py-2 rounded-full text-on-surface-variant text-xs font-semibold hover:bg-surface-container transition">
+                    <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    <span>Sebelumnya</span>
+                </a>
+            @endif
+
+            <div class="flex items-center gap-1">
+                @foreach ($recipes->getUrlRange(max(1, $recipes->currentPage() - 2), min($recipes->lastPage(), $recipes->currentPage() + 2)) as $page => $url)
+                    @if ($page == $recipes->currentPage())
+                        <span class="w-10 h-10 rounded-full bg-primary-container text-white text-xs font-bold flex items-center justify-center shadow-sm">
+                            {{ $page }}
+                        </span>
+                    @else
+                        <a href="{{ $url }}"
+                           class="w-10 h-10 rounded-full text-on-surface-variant text-xs font-bold flex items-center justify-center hover:bg-surface-container transition">
+                            {{ $page }}
+                        </a>
+                    @endif
+                @endforeach
+            </div>
+
+            @if ($recipes->hasMorePages())
+                <a href="{{ $recipes->nextPageUrl() }}"
+                   class="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-surface-container text-primary text-xs font-bold hover:bg-surface-container-high transition shadow-sm">
+                    <span>Berikutnya</span>
+                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                </a>
+            @else
+                <span class="inline-flex items-center gap-1 px-4 py-2 rounded-full text-on-surface-variant text-xs font-semibold opacity-40 cursor-not-allowed">
+                    <span>Berikutnya</span>
+                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                </span>
+            @endif
+        </div>
+    @endif
+
     {{-- Pantry Banner --}}
     <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary via-primary-container to-tertiary p-6 lg:p-8 text-white shadow-lg mb-8">
         <div class="absolute -right-10 -bottom-10 w-72 h-72 rounded-full bg-secondary/20 blur-2xl pointer-events-none"></div>
@@ -335,64 +367,13 @@
                 </div>
             </div>
             
-            <!-- UBAH JADI LINK KE HALAMAN BERANDA -->
             <a href="{{ route('home') }}#asisten-kulkas"
             class="px-6 py-3 rounded-full bg-secondary text-white text-sm font-bold hover:opacity-90 transition flex items-center gap-2 shadow-md shrink-0">
                 <span class="material-symbols-outlined text-[18px]">auto_fix_high</span>
                 <span>Pelajari Selengkapnya</span>
             </a>
-            
         </div>
     </div>
-
-    {{-- Pagination --}}
-    @if ($recipes->hasPages())
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-surface-container-lowest shadow-sm">
-            {{-- Prev --}}
-            @if ($recipes->onFirstPage())
-                <span class="inline-flex items-center gap-1 px-4 py-2 rounded-full text-on-surface-variant text-xs font-semibold opacity-40 cursor-not-allowed">
-                    <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-                    <span>Sebelumnya</span>
-                </span>
-            @else
-                <a href="{{ $recipes->previousPageUrl() }}"
-                   class="inline-flex items-center gap-1 px-4 py-2 rounded-full text-on-surface-variant text-xs font-semibold hover:bg-surface-container transition">
-                    <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-                    <span>Sebelumnya</span>
-                </a>
-            @endif
-
-            {{-- Page Numbers --}}
-            <div class="flex items-center gap-1">
-                @foreach ($recipes->getUrlRange(max(1, $recipes->currentPage() - 2), min($recipes->lastPage(), $recipes->currentPage() + 2)) as $page => $url)
-                    @if ($page == $recipes->currentPage())
-                        <span class="w-10 h-10 rounded-full bg-primary-container text-white text-xs font-bold flex items-center justify-center shadow-sm">
-                            {{ $page }}
-                        </span>
-                    @else
-                        <a href="{{ $url }}"
-                           class="w-10 h-10 rounded-full text-on-surface-variant text-xs font-bold flex items-center justify-center hover:bg-surface-container transition">
-                            {{ $page }}
-                        </a>
-                    @endif
-                @endforeach
-            </div>
-
-            {{-- Next --}}
-            @if ($recipes->hasMorePages())
-                <a href="{{ $recipes->nextPageUrl() }}"
-                   class="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-surface-container text-primary text-xs font-bold hover:bg-surface-container-high transition shadow-sm">
-                    <span>Berikutnya</span>
-                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-                </a>
-            @else
-                <span class="inline-flex items-center gap-1 px-4 py-2 rounded-full text-on-surface-variant text-xs font-semibold opacity-40 cursor-not-allowed">
-                    <span>Berikutnya</span>
-                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-                </span>
-            @endif
-        </div>
-    @endif
 </div>
 
 {{-- Toast --}}
@@ -406,7 +387,6 @@
 
 @push('scripts')
 <script>
-// Fungsi Notifikasi Toast
 function showToast(message, icon = 'check_circle') {
     const toast = document.getElementById('toastNotification');
     const msg = document.getElementById('toastMessage');
@@ -422,7 +402,6 @@ function showToast(message, icon = 'check_circle') {
     }, 2800);
 }
 
-// Logika Simpan Resep (AJAX) — Bookmark
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.bookmark-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
@@ -432,14 +411,24 @@ document.addEventListener('DOMContentLoaded', function() {
             const slug = btn.dataset.recipeSlug;
             const icon = btn.querySelector('.material-symbols-outlined');
 
+            const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+            if (!csrfMeta) {
+                showToast('CSRF token tidak ditemukan di layout', 'error');
+                return;
+            }
+
             try {
                 const res = await fetch(`/bookmark/${slug}`, {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-CSRF-TOKEN': csrfMeta.content,
                         'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
                 });
+                
+                if (!res.ok) throw new Error('Gagal');
+                
                 const data = await res.json();
 
                 if (data.status === 'added') {

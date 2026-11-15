@@ -7,8 +7,7 @@
             <span class="material-symbols-outlined text-secondary-fixed text-[32px]">skillet</span>
             <div class="flex flex-col">
                 <span class="text-[11px] uppercase tracking-wider text-secondary-fixed font-bold">Mode Memasak Terpandu</span>
-                <span class="text-base font-bold text-white">{{ $recipe->title }}</span>
-            </div>
+                <span class="text-base font-bold text-white" id="modalRecipeTitle">{{ $recipe->title ?? 'Memuat...' }}</span>            </div>
         </div>
 
         <div class="flex items-center gap-4">

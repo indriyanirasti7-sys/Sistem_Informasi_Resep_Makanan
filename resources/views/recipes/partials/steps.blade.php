@@ -53,7 +53,8 @@
                             <div>
                                 <span class="text-[11px] text-on-surface-variant block">Timer Langkah {{ $step->step_number }}</span>
                                 <span class="text-lg font-bold text-primary font-mono" id="stepTimerDisplay_{{ $stepIdx }}">
-                                    {{ str_pad(intval($step->duration_minutes / 60), 2, '0', STR_PAD_LEFT) }}:{{ str_pad($step->duration_minutes % 60, 2, '0', STR_PAD_LEFT) }}
+                                    {{-- ✅ UBAH FORMAT JADI 05:00 --}}
+                                    {{ str_pad(intval($step->duration_minutes), 2, '0', STR_PAD_LEFT) }}:00
                                 </span>
                             </div>
                         </div>
@@ -102,7 +103,7 @@
             'detail'       => $s->instruction,
             'timerSeconds' => (int) (($s->duration_minutes ?? 0) * 60),
             'timerLabel'   => $s->duration_minutes ? 'Timer ' . $s->duration_minutes . ' menit' : 'Tanpa Timer',
-            'image'        => $s->image ? asset('storage/'.$s->image) : null, // <--- TAMBAHKAN INI
+            'image'        => $s->image ? asset('storage/'.$s->image) : null,
         ];
     }
 @endphp

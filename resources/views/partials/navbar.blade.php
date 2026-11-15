@@ -19,21 +19,23 @@
         
         {{-- Logo & Brand --}}
         <a href="{{ route('home') }}" class="flex items-center gap-2 sm:gap-3 shrink-0 group">
-            <img alt="{{ $brandName }}"
-                 class="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/50 transition-all"
-                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5GoTuEyWYTwoGI225Teo5lSMZZidm_qW5jpOCHm646LCZ6IigJoJ8PCQzpjzZXs1XGwyLjm50AN_e0RjVErbcxNrVmPcoeWGvGBXWGVYNUqTI6fxTEE5KLwNFMrDJnAwjYbV889BwRPQw3COYUhsD4mVHPKgF83SEBb-6095KMwryj3kb5-1o84Ay9tydqVY8K2cGqBKijQd2TBEXlGQETt0j5Pzxtc8YeVMK8emsi_fGZGP3Dy1Y" />
+            
+            {{-- ✅ GAMBAR LOGO YANG BENAR --}}
+            <img src="{{ Storage::url('images/logo.png') }}" 
+                alt="Logo {{ $brandName }}" 
+                class="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/50 transition-all">
+
             <div class="flex flex-col leading-tight">
-                {{-- NAMA BRAND (Dikunci) --}}
+                {{-- NAMA BRAND --}}
                 <span class="font-['Playfair_Display'] text-[17px] sm:text-[20px] font-semibold tracking-tight text-white">
                     {{ $brandName }}
                 </span>
-                {{-- TAGLINE (Dinamis dari Admin) --}}
+                {{-- TAGLINE --}}
                 <span class="text-[9px] sm:text-[11px] text-primary-fixed-dim font-medium tracking-wide">
                     {{ $siteTagline ?? 'Inspirasi & Resep Kuliner' }}
                 </span>
             </div>
         </a>
-
         {{-- Menu Navigasi Tengah (Desktop Only) --}}
         <nav class="hidden lg:flex items-center gap-1.5">
             @foreach ($navItems as $item)

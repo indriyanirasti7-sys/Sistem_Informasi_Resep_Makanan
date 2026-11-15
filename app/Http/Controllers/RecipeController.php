@@ -56,7 +56,7 @@ class RecipeController extends Controller
             default     => $query->latest(),
         };
 
-        $recipes    = $query->paginate(9)->withQueryString();
+        $recipes    = $query->paginate(8)->withQueryString();
         $categories = Category::all();
 
         return view('recipes.daftar_resep', compact('recipes', 'categories'));

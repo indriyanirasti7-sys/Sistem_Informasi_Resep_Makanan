@@ -1,4 +1,5 @@
-<div class="lg:col-span-5 flex flex-col gap-4 lg:sticky lg:top-24">
+{{-- ✅ CUKUP GUNAKAN CLASS INI, CSS STICKY DIATUR OLEH LAYOUT --}}
+<div class="lg:col-span-5 flex flex-col gap-4">
     <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col gap-4">
 
         <div class="flex items-center justify-between pb-4 border-b border-surface-container-highest">
@@ -7,20 +8,11 @@
                 <span class="text-xs text-on-surface-variant">Takar porsi sesuai kebutuhan</span>
             </div>
 
-            {{-- Portion Scaler --}}
-            <div class="flex items-center bg-surface-container rounded-full p-1 shadow-inner">
-                <button type="button" onclick="changePortion(-1)" aria-label="Kurangi Porsi"
-                        class="w-8 h-8 rounded-full bg-surface-container-lowest text-primary flex items-center justify-center hover:bg-surface-container-highest transition font-bold shadow-sm active:scale-95">
-                    <span class="material-symbols-outlined text-[16px]">remove</span>
-                </button>
-                <div class="px-3 min-w-[70px] text-center">
-                    <span class="text-base font-bold text-primary" id="currentPortionDisplay">{{ $recipe->servings }}</span>
-                    <span class="text-[11px] text-on-surface-variant block -mt-1">Porsi</span>
-                </div>
-                <button type="button" onclick="changePortion(1)" aria-label="Tambah Porsi"
-                        class="w-8 h-8 rounded-full bg-surface-container-lowest text-primary flex items-center justify-center hover:bg-surface-container-highest transition font-bold shadow-sm active:scale-95">
-                    <span class="material-symbols-outlined text-[16px]">add</span>
-                </button>
+            <div class="flex items-center gap-2 bg-surface-container rounded-full px-4 py-2">
+                <span class="material-symbols-outlined text-[18px] text-secondary">group</span>
+                <span class="text-sm font-bold text-primary">
+                    {{ $recipe->servings }} Porsi
+                </span>
             </div>
         </div>
 
@@ -47,12 +39,11 @@
 </div>
 
 @php
-    // Data bahan untuk JavaScript
     $ingredientsArray = [];
     foreach ($recipe->recipeIngredients as $ri) {
         $ingredientsArray[] = [
-            'name'   => $ri->ingredient->name, // Karena semua teks sudah digabung di sini
-            'amount' => 1, // Nilai dummy
+            'name'   => $ri->ingredient->name,
+            'amount' => 1,
             'unit'   => '', 
         ];
     }

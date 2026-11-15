@@ -5,23 +5,15 @@
 @push('styles')
 <style>
     .line-clamp-2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-    /* Full-bleed image: keluar dari container utama untuk full width */
-    .full-bleed {
-        width: 100vw;
-        position: relative;
-        left: 50%;
-        right: 50%;
-        margin-left: -50vw;
-        margin-right: -50vw;
-    }
 </style>
 @endpush
 
 @section('content')
 
-<div class="w-full bg-surface-container-low/30">
+<div class="w-full bg-surface-container-low/30 pb-16">
     {{-- ========== HEADER / BREADCRUMB & TITLE ========== --}}
-<section class="w-full max-w-[900px] mx-auto px-5 lg:px-8 pt-10 lg:pt-12 pb-8">
+    {{-- ✅ max-w DIPERLEBAR DARI 900px MENJADI 1100px --}}
+    <section class="w-full max-w-[1100px] mx-auto px-5 lg:px-8 pt-10 lg:pt-12 pb-8">
 
         {{-- Breadcrumb --}}
         <nav class="flex items-center gap-2 text-on-surface-variant text-[12px] sm:text-[13px] font-semibold mb-8 flex-wrap">
@@ -52,8 +44,7 @@
             "{{ Str::limit(strip_tags($tip->content), 200) }}"
         </p>
 
-        {{-- Author Meta Bar --}}
-                {{-- Author Meta Bar & Action Buttons --}}
+        {{-- Author Meta Bar & Action Buttons --}}
         <div class="pt-6 flex flex-col md:flex-row md:items-center justify-between gap-6 border-t border-surface-container-high">
 
             {{-- Sisi Kiri: Info Penulis --}}
@@ -75,10 +66,8 @@
                 @endif
             </div>
 
-            {{-- Sisi Kanan: Tombol Aksi (Disamakan Lebarnya) --}}
-            {{-- Menggunakan grid-cols-3 di HP agar lebarnya sama rata --}}
+            {{-- Sisi Kanan: Tombol Aksi --}}
             <div class="grid grid-cols-3 md:flex md:items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
-                
                 {{-- Tombol Simpan --}}
                 <button type="button" onclick="toggleSave()" id="save-btn"
                         class="w-full justify-center flex items-center gap-1.5 px-3 py-2.5 bg-surface-container-lowest border border-surface-container-high hover:bg-surface-container rounded-full text-on-surface text-xs font-bold transition shadow-sm">
@@ -99,22 +88,23 @@
                     <span class="material-symbols-outlined text-[18px]">print</span>
                     <span>Cetak</span>
                 </button>
-                
             </div>
         </div>
     </section>
 
-    {{-- ========== HERO IMAGE — FULL WIDTH ========== --}}
+    {{-- ========== HERO IMAGE (MELENGKUNG & LEBAR) ========== --}}
     @if ($tip->image)
-        <section class="full-bleed mb-12">
-            <div class="relative w-full aspect-[16/9] max-h-[600px] overflow-hidden bg-surface-container-high">
-                <img class="w-full h-full object-cover"
+        {{-- ✅ max-w DIPERLEBAR DAN GAMBAR DIBERI ROUNDED-3XL --}}
+        <section class="w-full max-w-[1100px] mx-auto px-5 lg:px-8 mb-12">
+            {{-- Hapus trik full-bleed, ganti dengan container max-w-1100 dan rounded-3xl --}}
+            <div class="relative w-full h-[300px] sm:h-[400px] md:h-[450px] rounded-3xl overflow-hidden shadow-lg bg-surface-container-high">
+                <img class="w-full h-full object-cover object-center"
                      src="{{ Storage::url($tip->image) }}"
                      alt="{{ $tip->title }}"/>
 
                 {{-- Overlay caption --}}
                 <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent flex items-end">
-                    <div class="p-6 md:p-10 text-white max-w-[900px] mx-auto w-full">
+                    <div class="p-6 md:p-10 text-white w-full">
                         <span class="inline-block bg-white/20 backdrop-blur-md border border-white/30 text-white text-[10px] font-bold px-3 py-1 rounded-full mb-3 uppercase tracking-wider">
                             Sorotan Visual
                         </span>
@@ -128,7 +118,8 @@
     @endif
 
     {{-- ========== MAIN CONTENT ========== --}}
-    <main class="w-full max-w-[900px] mx-auto px-5 lg:px-8 mb-16">
+    {{-- ✅ max-w DIPERLEBAR MENJADI 1100px AGAR TEKS TIDAK TERLALU SEMPIT --}}
+    <main class="w-full max-w-[1100px] mx-auto px-5 lg:px-8 mb-16">
         <article class="flex flex-col gap-8">
 
             {{-- Content dengan Drop Cap & Text Justify --}}
@@ -203,7 +194,8 @@
 {{-- ========== RELATED TIPS (HORIZONTAL SCROLL) ========== --}}
 @if ($related->count())
     <section class="w-full bg-surface-container-high py-16 border-t border-surface-container-highest">
-        <div class="max-w-[1000px] mx-auto px-5 lg:px-8 flex flex-col gap-8">
+        {{-- ✅ max-w Diperlebar agar sejajar dengan konten utama --}}
+        <div class="max-w-[1100px] mx-auto px-5 lg:px-8 flex flex-col gap-8">
 
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div class="flex flex-col gap-1">
@@ -222,7 +214,7 @@
             {{-- Container Scroll Horizontal --}}
             <div class="flex items-stretch gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar scroll-smooth cursor-grab active:cursor-grabbing">
                 @foreach ($related as $item)
-                    <a href="{{ route('tips.panduan', $item->slug) }}"
+                    <a href="{{ route('tips.detail_tips', $item->slug) }}"
                        class="snap-start shrink-0 w-[260px] sm:w-[300px] bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col group border border-surface-container/50">
 
                         <div class="aspect-[4/3] w-full overflow-hidden bg-surface-container relative">
@@ -239,7 +231,7 @@
                                 <div class="flex items-center gap-2 text-outline text-[10px] sm:text-[11px] font-medium">
                                     <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">schedule</span> {{ ceil(str_word_count(strip_tags($item->content)) / 200) }} mnt</span>
                                     <span>•</span>
-                                    <span class="truncate">Oleh {{ $item->user->name ?? 'Tim Dapur' }}</span>
+                                    <span class="truncate">Oleh {{ $item->user?->name ?? 'Tim Dapur' }}</span>
                                 </div>
                                 <h3 class="font-['Playfair_Display'] text-base sm:text-lg text-primary group-hover:text-secondary transition-colors leading-snug line-clamp-2 font-bold">
                                     {{ $item->title }}
@@ -328,18 +320,15 @@ function rateArticle(stars) {
 }
 function shareArticle() {
     if (navigator.share) {
-        // Jika browser mendukung Web Share API (seperti di Chrome/Safari HP)
         navigator.share({
             title: '{{ $tip->title }}',
             url: window.location.href
         }).catch(console.error);
     } else {
-        // Fallback: Salin URL jika dibuka di Desktop atau browser lama
         navigator.clipboard.writeText(window.location.href)
             .then(() => showTipToast('Tautan berhasil disalin!'))
             .catch(() => showTipToast('Gagal menyalin tautan.'));
     }
 }
-
 </script>
 @endpush

@@ -54,56 +54,59 @@
     </header>
 
     {{-- ========== TAB MENU ========== --}}
-    <div class="flex items-center gap-2 mb-6 border-b border-surface-container-high pb-4 overflow-x-auto no-scrollbar">
-        <button onclick="switchTab('resep')" id="tab-btn-resep" class="px-6 py-3 rounded-full bg-primary text-white text-sm font-bold transition-all shadow-sm flex items-center gap-2 whitespace-nowrap">
-            <span class="material-symbols-outlined text-[18px]">restaurant_menu</span>
-            Resep Tersimpan ({{ $bookmarks->total() ?? 0 }})
-        </button>
-        <button onclick="switchTab('tips')" id="tab-btn-tips" class="px-6 py-3 rounded-full bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container border border-surface-container-high text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap">
-            <span class="material-symbols-outlined text-[18px]">lightbulb</span>
-            Tips Tersimpan ({{ $bookmarkedTips->count() ?? 0 }})
-        </button>
+    <div class="flex justify-center mb-6 border-b border-surface-container-high pb-4">
+        <div class="flex items-center gap-2 w-full max-w-md mx-auto overflow-hidden">
+            <button onclick="switchTab('resep')" id="tab-btn-resep" class="flex-1 justify-center px-2 sm:px-6 py-2.5 sm:py-3 rounded-full bg-primary text-white text-[11px] sm:text-sm font-bold transition-all shadow-sm flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
+                <span class="material-symbols-outlined text-[16px] sm:text-[18px]">restaurant_menu</span>
+                Resep ({{ $bookmarks->total() ?? 0 }})
+            </button>
+            
+            <button onclick="switchTab('tips')" id="tab-btn-tips" class="flex-1 justify-center px-2 sm:px-6 py-2.5 sm:py-3 rounded-full bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container border border-surface-container-high text-[11px] sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
+                <span class="material-symbols-outlined text-[16px] sm:text-[18px]">lightbulb</span>
+                Tips ({{ $bookmarkedTips->count() ?? 0 }})
+            </button>
+        </div>
     </div>
 
     {{-- ============================================ --}}
     {{-- TAB CONTENT: RESEP --}}
     {{-- ============================================ --}}
     <div id="tab-content-resep" class="tab-content active">
-        @if ($bookmarks->total() > 0)
-            {{-- Filter Resep --}}
-            <section class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 bg-surface-container-lowest p-3 rounded-2xl shadow-sm border border-surface-container">
-                <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-1">
-                    <a href="{{ route('bookmarks.favorit', request()->except('category')) }}"
+        
+        {{-- Filter Resep --}}
+        <section class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 bg-surface-container-lowest p-3 rounded-2xl shadow-sm border border-surface-container">
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-1">
+                <a href="{{ route('bookmarks.favorit', request()->except('category')) }}"
+                   class="px-4 py-2 rounded-full text-xs font-bold transition whitespace-nowrap
+                          {{ !request('category') ? 'bg-primary text-white shadow-sm' : 'text-on-surface-variant hover:bg-surface-container' }}">
+                    Semua
+                </a>
+                @foreach ($categories as $cat)
+                    <a href="{{ route('bookmarks.favorit', array_merge(request()->except('category'), ['category' => $cat->slug])) }}"
                        class="px-4 py-2 rounded-full text-xs font-bold transition whitespace-nowrap
-                              {{ !request('category') ? 'bg-primary text-white shadow-sm' : 'text-on-surface-variant hover:bg-surface-container' }}">
-                        Semua
+                              {{ request('category') === $cat->slug ? 'bg-primary text-white shadow-sm' : 'text-on-surface-variant hover:bg-surface-container' }}">
+                        {{ $cat->name }}
                     </a>
-                    @foreach ($categories as $cat)
-                        <a href="{{ route('bookmarks.favorit', array_merge(request()->except('category'), ['category' => $cat->slug])) }}"
-                           class="px-4 py-2 rounded-full text-xs font-bold transition whitespace-nowrap
-                                  {{ request('category') === $cat->slug ? 'bg-primary text-white shadow-sm' : 'text-on-surface-variant hover:bg-surface-container' }}">
-                            {{ $cat->name }}
-                        </a>
-                    @endforeach
+                @endforeach
+            </div>
+
+            <form method="GET" action="{{ route('bookmarks.favorit') }}" class="shrink-0 flex items-center gap-2 px-1">
+                @foreach (request()->except('sort') as $k => $v)
+                    <input type="hidden" name="{{ $k }}" value="{{ $v }}">
+                @endforeach
+                <div class="relative">
+                    <select name="sort" onchange="this.form.submit()" class="appearance-none bg-surface-container-low text-primary text-xs font-bold py-2 pl-4 pr-10 rounded-full focus:outline-none cursor-pointer">
+                        <option value="newest" {{ request('sort', 'newest') === 'newest' ? 'selected' : '' }}>Terbaru</option>
+                        <option value="rating" {{ request('sort') === 'rating' ? 'selected' : '' }}>Rating Tertinggi</option>
+                        <option value="time"   {{ request('sort') === 'time'   ? 'selected' : '' }}>Tercepat</option>
+                        <option value="az"     {{ request('sort') === 'az'     ? 'selected' : '' }}>A-Z</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[16px]">expand_more</span>
                 </div>
+            </form>
+        </section>
 
-                <form method="GET" action="{{ route('bookmarks.favorit') }}" class="shrink-0 flex items-center gap-2 px-1">
-                    @foreach (request()->except('sort') as $k => $v)
-                        <input type="hidden" name="{{ $k }}" value="{{ $v }}">
-                    @endforeach
-                    <div class="relative">
-                        <select name="sort" onchange="this.form.submit()" class="appearance-none bg-surface-container-low text-primary text-xs font-bold py-2 pl-4 pr-10 rounded-full focus:outline-none cursor-pointer">
-                            <option value="newest" {{ request('sort', 'newest') === 'newest' ? 'selected' : '' }}>Terbaru</option>
-                            <option value="rating" {{ request('sort') === 'rating' ? 'selected' : '' }}>Rating Tertinggi</option>
-                            <option value="time"   {{ request('sort') === 'time'   ? 'selected' : '' }}>Tercepat</option>
-                            <option value="az"     {{ request('sort') === 'az'     ? 'selected' : '' }}>A-Z</option>
-                        </select>
-                        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[16px]">expand_more</span>
-                    </div>
-                </form>
-            </section>
-
-            {{-- Tanda Bookmark / Info Tambahan --}}
+        @if ($bookmarks->total() > 0)
             <div class="flex items-center justify-between mb-4 px-1">
                 <div class="flex items-center gap-2 text-[11px] sm:text-xs text-secondary font-bold">
                     <span class="material-symbols-outlined text-[16px]">bookmark</span>
@@ -112,8 +115,8 @@
                 <span class="text-[11px] text-outline">Diperbarui setiap saat</span>
             </div>
 
-            {{-- Grid Resep --}}
-            <div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6 mb-12">
+            {{-- ✅ GRID RESEP (UBAH MENJADI 4 KOLOM) --}}
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-12">
                 @foreach ($bookmarks as $bookmark)
                     @php $recipe = $bookmark->recipe; @endphp
                     @if (!$recipe) @continue @endif
@@ -149,7 +152,7 @@
                                 </div>
                                 <div class="flex items-center gap-1">
                                     <span class="material-symbols-outlined text-tertiary-container text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="font-bold">{{ $recipe->average_rating }}</span>
+                                    <span class="font-bold">{{ $recipe->average_rating ?? 0 }}</span>
                                 </div>
                             </div>
                         </div>
@@ -160,14 +163,12 @@
             {{-- Pagination Resep --}}
             @if ($bookmarks->hasPages())
                 <div class="flex justify-center gap-2 mb-12">
-                    {{-- Prev --}}
                     @if (!$bookmarks->onFirstPage())
                         <a href="{{ $bookmarks->previousPageUrl() }}" class="w-10 h-10 rounded-full bg-surface-container-lowest border border-surface-container text-primary flex items-center justify-center hover:bg-surface-container transition shadow-sm">
                             <span class="material-symbols-outlined text-[20px]">chevron_left</span>
                         </a>
                     @endif
 
-                    {{-- Numbers --}}
                     @foreach ($bookmarks->getUrlRange(max(1, $bookmarks->currentPage() - 2), min($bookmarks->lastPage(), $bookmarks->currentPage() + 2)) as $page => $url)
                         @if ($page == $bookmarks->currentPage())
                             <span class="w-10 h-10 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shadow-md transform scale-110">{{ $page }}</span>
@@ -176,7 +177,6 @@
                         @endif
                     @endforeach
 
-                    {{-- Next --}}
                     @if ($bookmarks->hasMorePages())
                         <a href="{{ $bookmarks->nextPageUrl() }}" class="w-10 h-10 rounded-full bg-surface-container-lowest border border-surface-container text-primary flex items-center justify-center hover:bg-surface-container transition shadow-sm">
                             <span class="material-symbols-outlined text-[20px]">chevron_right</span>
@@ -193,7 +193,11 @@
                 </div>
                 <h2 class="font-display text-2xl text-primary font-bold mb-2">Belum Ada Resep Tersimpan</h2>
                 <p class="text-sm text-on-surface-variant max-w-md mb-8 leading-relaxed">
-                    Ketuk ikon simpan (bookmark) pada resep yang Anda suka, dan resep tersebut akan muncul di sini.
+                    @if(request('category'))
+                        Kamu belum menyimpan resep apapun di kategori ini. Yuk, jelajahi dan simpan resep pertamamu!
+                    @else
+                        Ketuk ikon simpan (bookmark) pada resep yang Anda suka, dan resep tersebut akan muncul di sini.
+                    @endif
                 </p>
                 <a href="{{ route('recipes.daftar_resep') }}" class="inline-flex items-center gap-2 bg-primary hover:bg-primary-container text-white text-sm font-bold px-8 py-3.5 rounded-full shadow-md transition-all">
                     <span class="material-symbols-outlined text-[20px]">explore</span>
@@ -208,7 +212,6 @@
     {{-- ============================================ --}}
     <div id="tab-content-tips" class="tab-content">
         @if ($bookmarkedTips->count() > 0)
-            {{-- Tanda Bookmark / Info Tambahan Tips --}}
             <div class="flex items-center justify-between mb-4 px-1">
                 <div class="flex items-center gap-2 text-[11px] sm:text-xs text-secondary font-bold">
                     <span class="material-symbols-outlined text-[16px]">bookmark</span>
@@ -216,7 +219,8 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 mb-12">
+            {{-- ✅ GRID TIPS (UBAH MENJADI 4 KOLOM) --}}
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-12">
                 @foreach ($bookmarkedTips as $bm)
                     @php $tip = $bm->tip; @endphp
                     @if (!$tip) @continue @endif
@@ -250,7 +254,7 @@
                                     <span class="material-symbols-outlined text-secondary text-[14px]">schedule</span>
                                     <span>{{ ceil(str_word_count(strip_tags($tip->content)) / 200) }} mnt</span>
                                 </div>
-                                <span class="text-outline truncate max-w-[80px]">Oleh {{ $tip->user->name ?? 'Tim' }}</span>
+                                <span class="text-outline truncate max-w-[80px]">Oleh {{ $tip->user?->name ?? 'Tim' }}</span>
                             </div>
                         </div>
                     </article>
@@ -275,14 +279,10 @@
     </div>
 
     {{-- ============================================ --}}
-    {{-- REKOMENDASI RESEP POPULER (BAGIAN BAWAH) --}}
-    {{-- ============================================ --}}
-        {{-- ============================================ --}}
-    {{-- REKOMENDASI RESEP POPULER (BAGIAN BAWAH) --}}
+    {{-- REKOMENDASI RESEP POPULER --}}
     {{-- ============================================ --}}
     @if ($popularRecipes->count())
         <section class="mt-16 pt-10 border-t border-surface-container-high">
-            {{-- Header Rekomendasi --}}
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
                 <div class="flex flex-col gap-1">
                     <span class="text-[10px] sm:text-[11px] text-secondary uppercase tracking-widest font-bold">Kurasi Editorial</span>
@@ -294,7 +294,6 @@
                     </p>
                 </div>
                 
-                {{-- Tombol Lihat Semua (Dibuat lebih terlihat) --}}
                 <a href="{{ route('recipes.daftar_resep') }}" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-surface-container-lowest border border-surface-container-high hover:bg-surface-container text-primary text-sm font-bold transition-all shadow-sm shrink-0 group">
                     <span>Lihat Koleksi Lengkap</span>
                     <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
@@ -305,7 +304,6 @@
                 @foreach ($popularRecipes as $recipe)
                     <article class="group bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col justify-between border border-surface-container/50">
                         <div>
-                            {{-- Image --}}
                             <div class="relative w-full aspect-[4/3] overflow-hidden bg-surface-container">
                                 <a href="{{ route('recipes.show', $recipe->slug) }}">
                                     <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -313,12 +311,10 @@
                                          alt="{{ $recipe->title }}"/>
                                 </a>
 
-                                {{-- Difficulty Badge --}}
                                 <span class="absolute top-3 left-3 px-3 py-1 rounded-full bg-surface-container-lowest/90 backdrop-blur-md text-primary text-[10px] uppercase tracking-wider font-bold shadow-sm">
                                     {{ $recipe->difficulty }}
                                 </span>
 
-                                {{-- Tombol Bookmark (BARU DITAMBAHKAN) --}}
                                 @auth
                                     <button type="button" data-recipe-slug="{{ $recipe->slug }}"
                                             class="bookmark-btn absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md text-outline hover:text-primary flex items-center justify-center shadow-sm transition-all z-10">
@@ -332,7 +328,6 @@
                                 @endauth
                             </div>
 
-                            {{-- Info --}}
                             <div class="p-3 sm:p-4 flex flex-col gap-1.5">
                                 <div class="flex items-center justify-between text-[10px] text-secondary">
                                     <span class="flex items-center gap-1 text-tertiary-container font-bold">
@@ -386,15 +381,19 @@ function switchTab(tab) {
     const btnResep = document.getElementById('tab-btn-resep');
     const btnTips = document.getElementById('tab-btn-tips');
     
-    btnResep.className = 'px-6 py-3 rounded-full bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container border border-surface-container-high text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap';
-    btnTips.className = 'px-6 py-3 rounded-full bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container border border-surface-container-high text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap';
+    const defaultClass = 'flex-1 justify-center px-2 sm:px-6 py-2.5 sm:py-3 rounded-full bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container border border-surface-container-high text-[11px] sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap';
+    
+    const activeClass = 'flex-1 justify-center px-2 sm:px-6 py-2.5 sm:py-3 rounded-full bg-primary text-white text-[11px] sm:text-sm font-bold transition-all shadow-sm flex items-center gap-1.5 sm:gap-2 whitespace-nowrap';
+
+    btnResep.className = defaultClass;
+    btnTips.className = defaultClass;
 
     if (tab === 'resep') {
         document.getElementById('tab-content-resep').classList.add('active');
-        btnResep.className = 'px-6 py-3 rounded-full bg-primary text-white text-sm font-bold transition-all shadow-sm flex items-center gap-2 whitespace-nowrap';
+        btnResep.className = activeClass;
     } else {
         document.getElementById('tab-content-tips').classList.add('active');
-        btnTips.className = 'px-6 py-3 rounded-full bg-primary text-white text-sm font-bold transition-all shadow-sm flex items-center gap-2 whitespace-nowrap';
+        btnTips.className = activeClass;
     }
 }
 

@@ -3,8 +3,9 @@
 @section('title', $recipe->title . " — Griya Rasa")
 
 @section('content')
+{{-- ✅ HAPUS overflow-x-hidden DARI SINI --}}
 <div class="flex flex-col w-full relative">
-    
+        
     {{-- Ambient Background Glow --}}
     <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary-fixed/20 rounded-full blur-[100px] pointer-events-none -z-10"></div>
     <div class="absolute top-96 right-0 w-96 h-96 bg-secondary-fixed/20 rounded-full blur-[100px] pointer-events-none -z-10"></div>
@@ -13,14 +14,12 @@
     <div class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2 px-5 py-3 bg-primary text-white rounded-full shadow-2xl"
          id="toastNotification">
         <span class="material-symbols-outlined text-[20px]">check_circle</span>
-        <span class="text-sm font-semibold" id="toastMessage">Tautan berhasil disalin!</span>
+        <span class="text-sm font-semibold" id="toastMessage">Berhasil!</span>
     </div>
 
     <div class="max-w-[1280px] w-full mx-auto px-5 lg:px-12 pt-28 lg:pt-32 pb-12 flex flex-col gap-6">
     
-        {{-- ============================================================ --}}
         {{-- BREADCRUMB & ACTION BUTTONS --}}
-        {{-- ============================================================ --}}
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             
             {{-- Breadcrumb --}}
@@ -43,19 +42,21 @@
                 
                 {{-- Tombol Simpan --}}
                 <button type="button" id="bookmarkBtn"
-                        data-recipe-id="{{ $recipe->id }}"
+                        data-recipe-slug="{{ $recipe->slug }}"
                         data-bookmarked="{{ $isBookmarked ? 'true' : 'false' }}"
                         onclick="toggleBookmark()"
-                        class="w-full justify-center flex items-center gap-1.5 px-3 py-2.5 bg-surface-container-lowest border border-surface-container-high hover:bg-surface-container text-on-surface rounded-full text-[11px] sm:text-xs font-bold transition shadow-sm group">
-                    <span class="material-symbols-outlined text-[18px] text-primary" id="bookmarkIcon"
+                        class="w-full justify-center flex items-center gap-1.5 px-3 py-2.5 border rounded-full text-[11px] sm:text-xs font-bold transition shadow-sm
+                               {{ $isBookmarked ? 'bg-primary border-primary text-white' : 'bg-surface-container-lowest border-surface-container-high hover:bg-surface-container text-on-surface' }}">
+                    
+                    <span class="material-symbols-outlined text-[18px] transition-colors {{ $isBookmarked ? 'text-white' : 'text-outline' }}" id="bookmarkIcon"
                           style="font-variation-settings: 'FILL' {{ $isBookmarked ? 1 : 0 }};">
                         {{ $isBookmarked ? 'bookmark' : 'bookmark_border' }}
                     </span>
-                    <span class="hidden sm:inline ml-1" id="bookmarkText">Simpan</span>
+                    <span class="hidden sm:inline ml-1" id="bookmarkText">{{ $isBookmarked ? 'Tersimpan' : 'Simpan' }}</span>
                     <span class="hidden sm:inline ml-1" id="bookmarkCount">({{ $recipe->bookmarks()->count() }})</span>
                 </button>
 
-                {{-- Tombol Bagikan (Menu Share Bawaan HP) --}}
+                {{-- Tombol Bagikan --}}
                 <button type="button" onclick="shareRecipe()" title="Bagikan Resep"
                         class="w-full justify-center flex items-center gap-1.5 px-3 py-2.5 bg-surface-container-lowest border border-surface-container-high hover:bg-surface-container rounded-full text-on-surface text-[11px] sm:text-xs font-bold transition shadow-sm">
                     <span class="material-symbols-outlined text-[18px]">share</span>
@@ -72,30 +73,23 @@
             </div>
         </div>
 
-        {{-- ============================================================ --}}
         {{-- MAIN CONTENT AREA --}}
-        {{-- ============================================================ --}}
-        
-        {{-- HERO SECTION --}}
         @include('recipes.partials.hero', ['recipe' => $recipe])
 
-        {{-- INGREDIENTS + STEPS --}}
+        {{-- ✅ PASTIKAN ADA items-start DI SINI --}}
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start mt-4" id="recipeCoreSection">
             @include('recipes.partials.ingredients', ['recipe' => $recipe])
             @include('recipes.partials.steps', ['recipe' => $recipe])
         </div>
 
-        {{-- REVIEWS --}}
         <div class="mt-4">
             @include('recipes.partials.reviews', ['recipe' => $recipe, 'userRating' => $userRating])
         </div>
 
-        {{-- RELATED (JAMUAN RESEP TERKAIT) --}}
         @include('recipes.partials.related', ['related' => $related])
 
-    </div> {{-- PENUTUP max-w-[1280px] --}}
+    </div>
 
-    {{-- COOKING MODE MODAL --}}
     @include('recipes.partials.cooking_modal')
 
     {{-- MODAL LOGIN PROMPT --}}
@@ -128,7 +122,7 @@
 
 @push('scripts')
 <script>
-// Fungsi Toast
+// Toast Notification
 function showToast(msg) {
     const t = document.getElementById('toastNotification');
     const m = document.getElementById('toastMessage');
@@ -142,7 +136,7 @@ function showToast(msg) {
     }, 2500);
 }
 
-// Fitur Bagikan (Share via HP)
+// Share via HP
 function shareRecipe() {
     if (navigator.share) {
         navigator.share({
@@ -151,57 +145,71 @@ function shareRecipe() {
             url: window.location.href
         }).catch((error) => console.log('Error sharing', error));
     } else {
-        // Jika dibuka di Desktop (yang tidak mendukung menu Share HP), salin link
         navigator.clipboard.writeText(window.location.href)
             .then(() => showToast('Tautan resep berhasil disalin!'))
             .catch(() => showToast('Gagal menyalin tautan.'));
     }
 }
 
-// Fitur Simpan Resep (AJAX)
+// BOOKMARK (AJAX & Ubah Warna)
 async function toggleBookmark() {
     const btn = document.getElementById('bookmarkBtn');
     if (!btn) return;
 
-    const recipeId = btn.getAttribute('data-recipe-id');
-    const icon = document.getElementById('bookmarkIcon');
-    const text = document.getElementById('bookmarkText');
-    const countSpan = document.getElementById('bookmarkCount');
+    @guest
+        document.getElementById('loginPromptModal').classList.remove('hidden');
+        return;
+    @endguest
 
-    try {
-        const res = await fetch(`/bookmark/${recipeId}`, { 
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json',
-            },
-        });
-        
-        if (res.status === 401) {
-            document.getElementById('loginPromptModal').classList.remove('hidden');
-            return;
-        }
+    @auth
+        const recipeSlug = btn.getAttribute('data-recipe-slug');
+        const icon = document.getElementById('bookmarkIcon');
+        const text = document.getElementById('bookmarkText');
+        const countSpan = document.getElementById('bookmarkCount');
+        const isBookmarked = btn.getAttribute('data-bookmarked') === 'true';
 
-        const data = await res.json();
-
-        if (data.status === 'added') {
-            btn.setAttribute('data-bookmarked', 'true');
+        if (!isBookmarked) {
+            btn.classList.add('bg-primary', 'border-primary', 'text-white');
+            btn.classList.remove('bg-surface-container-lowest', 'text-on-surface', 'border-surface-container-high');
             icon.textContent = 'bookmark';
             icon.style.fontVariationSettings = "'FILL' 1";
+            icon.classList.add('text-white');
+            icon.classList.remove('text-outline');
             if(text) text.textContent = 'Tersimpan';
-            if(countSpan) countSpan.textContent = `(${parseInt(countSpan.textContent.replace(/\D/g,'')) + 1})`;
-            showToast('Resep berhasil disimpan!');
         } else {
-            btn.setAttribute('data-bookmarked', 'false');
+            btn.classList.remove('bg-primary', 'border-primary', 'text-white');
+            btn.classList.add('bg-surface-container-lowest', 'text-on-surface', 'border-surface-container-high');
             icon.textContent = 'bookmark_border';
             icon.style.fontVariationSettings = "'FILL' 0";
+            icon.classList.remove('text-white');
+            icon.classList.add('text-outline');
             if(text) text.textContent = 'Simpan';
-            if(countSpan) countSpan.textContent = `(${Math.max(0, parseInt(countSpan.textContent.replace(/\D/g,'')) - 1)})`;
-            showToast('Resep dihapus dari simpanan.');
         }
-    } catch (err) {
-        console.error(err);
-    }
+
+        try {
+            const res = await fetch(`/bookmark/${recipeSlug}`, { 
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                },
+            });
+            const data = await res.json();
+            if (data.status === 'added') {
+                btn.setAttribute('data-bookmarked', 'true');
+                if(countSpan) countSpan.textContent = `(${parseInt(countSpan.textContent.replace(/\D/g,'')) + 1})`;
+                showToast('Resep berhasil disimpan!');
+            } else {
+                btn.setAttribute('data-bookmarked', 'false');
+                if(countSpan) countSpan.textContent = `(${Math.max(0, parseInt(countSpan.textContent.replace(/\D/g,'')) - 1)})`;
+                showToast('Resep dihapus dari simpanan.');
+            }
+        } catch (err) {
+            console.error(err);
+            showToast('Gagal menyimpan. Coba lagi.');
+        }
+    @endauth
 }
 </script>
+@include('recipes.partials.scripts')
 @endpush
