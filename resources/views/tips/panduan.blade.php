@@ -202,45 +202,50 @@
             </div>
         </section>
 
+        
         {{-- ========== 5. PAGINATION ========== --}}
         @if ($tips->hasPages())
             <section class="flex justify-center mb-16">
-                <div class="flex items-center gap-3">
-                    {{-- Prev --}}
+                <div class="flex items-center gap-2">
+                    {{-- Tombol Previous (Panah Kiri) --}}
                     @if (!$tips->onFirstPage())
                         <a href="{{ $tips->previousPageUrl() }}"
-                           class="w-12 h-12 rounded-full bg-surface-container-lowest border border-surface-container text-primary flex items-center justify-center hover:bg-surface-container transition shadow-sm">
-                            <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                           class="w-10 h-10 rounded-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface flex items-center justify-center hover:bg-surface-container transition shadow-sm">
+                            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
                         </a>
                     @else
-                        <span class="w-12 h-12 rounded-full bg-surface-container/50 text-outline/50 flex items-center justify-center cursor-not-allowed">
-                            <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                        <span class="w-10 h-10 rounded-full bg-surface-container-low border border-outline-variant/30 text-outline flex items-center justify-center opacity-40 cursor-not-allowed shadow-sm">
+                            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
                         </span>
                     @endif
 
-                    {{-- Numbers --}}
-                    @foreach ($tips->getUrlRange(max(1, $tips->currentPage() - 2), min($tips->lastPage(), $tips->currentPage() + 2)) as $page => $url)
-                        @if ($page == $tips->currentPage())
-                            <span class="w-12 h-12 rounded-full bg-primary text-white text-sm font-bold flex items-center justify-center shadow-md transform scale-110">
-                                {{ $page }}
-                            </span>
-                        @else
-                            <a href="{{ $url }}"
-                               class="w-12 h-12 rounded-full bg-surface-container-lowest border border-surface-container text-on-surface-variant text-sm font-bold flex items-center justify-center hover:bg-surface-container transition shadow-sm">
-                                {{ $page }}
-                            </a>
-                        @endif
-                    @endforeach
+                    {{-- Nomor Halaman --}}
+                    <div class="flex items-center gap-1.5">
+                        @foreach ($tips->getUrlRange(max(1, $tips->currentPage() - 2), min($tips->lastPage(), $tips->currentPage() + 2)) as $page => $url)
+                            @if ($page == $tips->currentPage())
+                                {{-- Halaman Aktif (Cokelat Gelap / Primary) --}}
+                                <span class="w-10 h-10 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shadow-md">
+                                    {{ $page }}
+                                </span>
+                            @else
+                                {{-- Halaman Lain --}}
+                                <a href="{{ $url }}"
+                                   class="w-10 h-10 rounded-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface-variant text-xs font-bold flex items-center justify-center hover:bg-surface-container transition shadow-sm">
+                                    {{ $page }}
+                                </a>
+                            @endif
+                        @endforeach
+                    </div>
 
-                    {{-- Next --}}
+                    {{-- Tombol Next (Panah Kanan) --}}
                     @if ($tips->hasMorePages())
                         <a href="{{ $tips->nextPageUrl() }}"
-                           class="w-12 h-12 rounded-full bg-surface-container-lowest border border-surface-container text-primary flex items-center justify-center hover:bg-surface-container transition shadow-sm">
-                            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                           class="w-10 h-10 rounded-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface flex items-center justify-center hover:bg-surface-container transition shadow-sm">
+                            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
                         </a>
                     @else
-                        <span class="w-12 h-12 rounded-full bg-surface-container/50 text-outline/50 flex items-center justify-center cursor-not-allowed">
-                            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                        <span class="w-10 h-10 rounded-full bg-surface-container-low border border-outline-variant/30 text-outline flex items-center justify-center opacity-40 cursor-not-allowed shadow-sm">
+                            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
                         </span>
                     @endif
                 </div>

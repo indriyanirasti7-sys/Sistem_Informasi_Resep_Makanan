@@ -305,46 +305,48 @@
     @endif
 
     {{-- ✅ PAGINATION (DIPINDAH KE ATAS BANNER & DIBERI JARAK mb-6) --}}
+    {{-- PAGINATION MINIMALIS SESUAI GAMBAR --}}
     @if ($recipes->hasPages())
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-surface-container-lowest shadow-sm mb-6">
+        <div class="flex items-center justify-center gap-2 my-8">
+            {{-- Tombol Previous (Panah Kiri) --}}
             @if ($recipes->onFirstPage())
-                <span class="inline-flex items-center gap-1 px-4 py-2 rounded-full text-on-surface-variant text-xs font-semibold opacity-40 cursor-not-allowed">
-                    <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-                    <span>Sebelumnya</span>
+                <span class="w-10 h-10 rounded-full bg-surface-container-low text-outline flex items-center justify-center opacity-40 cursor-not-allowed shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">chevron_left</span>
                 </span>
             @else
                 <a href="{{ $recipes->previousPageUrl() }}"
-                   class="inline-flex items-center gap-1 px-4 py-2 rounded-full text-on-surface-variant text-xs font-semibold hover:bg-surface-container transition">
-                    <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-                    <span>Sebelumnya</span>
+                   class="w-10 h-10 rounded-full bg-surface-container-lowest text-on-surface hover:bg-surface-container flex items-center justify-center transition shadow-sm border border-outline-variant/30">
+                    <span class="material-symbols-outlined text-[18px]">chevron_left</span>
                 </a>
             @endif
 
-            <div class="flex items-center gap-1">
+            {{-- Nomor Halaman --}}
+            <div class="flex items-center gap-1.5">
                 @foreach ($recipes->getUrlRange(max(1, $recipes->currentPage() - 2), min($recipes->lastPage(), $recipes->currentPage() + 2)) as $page => $url)
                     @if ($page == $recipes->currentPage())
-                        <span class="w-10 h-10 rounded-full bg-primary-container text-white text-xs font-bold flex items-center justify-center shadow-sm">
+                        {{-- Halaman Aktif (Cokelat Gelap / Primary) --}}
+                        <span class="w-10 h-10 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shadow-md">
                             {{ $page }}
                         </span>
                     @else
+                        {{-- Halaman Lain --}}
                         <a href="{{ $url }}"
-                           class="w-10 h-10 rounded-full text-on-surface-variant text-xs font-bold flex items-center justify-center hover:bg-surface-container transition">
+                           class="w-10 h-10 rounded-full bg-surface-container-lowest text-on-surface-variant text-xs font-bold flex items-center justify-center hover:bg-surface-container transition shadow-sm border border-outline-variant/30">
                             {{ $page }}
                         </a>
                     @endif
                 @endforeach
             </div>
 
+            {{-- Tombol Next (Panah Kanan) --}}
             @if ($recipes->hasMorePages())
                 <a href="{{ $recipes->nextPageUrl() }}"
-                   class="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-surface-container text-primary text-xs font-bold hover:bg-surface-container-high transition shadow-sm">
-                    <span>Berikutnya</span>
-                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                   class="w-10 h-10 rounded-full bg-surface-container-lowest text-on-surface hover:bg-surface-container flex items-center justify-center transition shadow-sm border border-outline-variant/30">
+                    <span class="material-symbols-outlined text-[18px]">chevron_right</span>
                 </a>
             @else
-                <span class="inline-flex items-center gap-1 px-4 py-2 rounded-full text-on-surface-variant text-xs font-semibold opacity-40 cursor-not-allowed">
-                    <span>Berikutnya</span>
-                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                <span class="w-10 h-10 rounded-full bg-surface-container-low text-outline flex items-center justify-center opacity-40 cursor-not-allowed shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">chevron_right</span>
                 </span>
             @endif
         </div>

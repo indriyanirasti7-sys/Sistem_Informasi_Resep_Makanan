@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $tip->title . " — Jelajah Rasa")
+@section('title', $tip->title . " — Griya Rasa")
 
 @push('styles')
 <style>
@@ -67,8 +67,7 @@
             </div>
 
             {{-- Sisi Kanan: Tombol Aksi --}}
-            <div class="grid grid-cols-3 md:flex md:items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
-                {{-- Tombol Simpan --}}
+            <div class="grid grid-cols-2 md:flex md:items-center gap-2 w-full md:w-auto mt-2 md:mt-0">                {{-- Tombol Simpan --}}
                 <button type="button" onclick="toggleSave()" id="save-btn"
                         class="w-full justify-center flex items-center gap-1.5 px-3 py-2.5 bg-surface-container-lowest border border-surface-container-high hover:bg-surface-container rounded-full text-on-surface text-xs font-bold transition shadow-sm">
                     <span class="material-symbols-outlined text-[18px]" id="save-icon">bookmark_border</span>
@@ -82,12 +81,6 @@
                     <span>Bagikan</span>
                 </button>
 
-                {{-- Tombol Cetak --}}
-                <button type="button" id="print-btn" onclick="window.print()" title="Cetak"
-                        class="w-full justify-center flex items-center gap-1.5 px-3 py-2.5 bg-surface-container-lowest border border-surface-container-high hover:bg-surface-container rounded-full text-on-surface text-xs font-bold transition shadow-sm">
-                    <span class="material-symbols-outlined text-[18px]">print</span>
-                    <span>Cetak</span>
-                </button>
             </div>
         </div>
     </section>
@@ -119,23 +112,13 @@
 
     {{-- ========== MAIN CONTENT ========== --}}
     {{-- ✅ max-w DIPERLEBAR MENJADI 1100px AGAR TEKS TIDAK TERLALU SEMPIT --}}
+    {{-- ========== MAIN CONTENT ========== --}}
     <main class="w-full max-w-[1100px] mx-auto px-5 lg:px-8 mb-16">
         <article class="flex flex-col gap-8">
 
-            {{-- Content dengan Drop Cap & Text Justify --}}
-            <div class="text-[15px] sm:text-[17px] text-on-surface leading-[1.8] text-justify">
-                @php
-                    $content = e($tip->content);
-                    $firstChar = mb_substr($content, 0, 1);
-                    $rest = mb_substr($content, 1);
-                @endphp
-
-                <p>
-                    <span class="float-left font-['Playfair_Display'] text-[64px] sm:text-[80px] leading-[50px] sm:leading-[64px] pr-3 sm:pr-4 pt-1 sm:pt-2 font-bold text-primary">
-                        {{ $firstChar }}
-                    </span>
-                    {!! nl2br($rest) !!}
-                </p>
+            {{-- Content dengan render HTML yang benar menggunakan {!! !!} --}}
+            <div class="prose max-w-none text-[15px] sm:text-[17px] text-on-surface leading-[1.8] text-justify">
+                {!! $tip->content !!}
             </div>
 
             {{-- Divider --}}

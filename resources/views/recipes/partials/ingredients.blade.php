@@ -27,14 +27,7 @@
 
         {{-- Ingredient List (di-render JavaScript) --}}
         <div class="flex flex-col divide-y divide-surface-container" id="ingredientsContainer"></div>
-
-        <div class="p-3 bg-surface-container rounded-xl flex items-start gap-3">
-            <span class="material-symbols-outlined text-secondary text-[20px] shrink-0 mt-0.5">skillet</span>
-            <div class="flex flex-col">
-                <span class="text-base font-semibold text-primary">Peralatan Ideal</span>
-                <p class="text-xs text-on-surface-variant">Gunakan wajan cekung tebal untuk menjaga suhu konstan saat pengadukan.</p>
-            </div>
-        </div>
+        
     </div>
 </div>
 

@@ -63,12 +63,7 @@
                     <span class="hidden sm:inline">Bagikan</span>
                 </button>
 
-                {{-- Tombol Cetak --}}
-                <button type="button" onclick="window.print()" title="Cetak Resep"
-                        class="w-full justify-center flex items-center gap-1.5 px-3 py-2.5 bg-surface-container-lowest border border-surface-container-high hover:bg-surface-container rounded-full text-on-surface text-[11px] sm:text-xs font-bold transition shadow-sm">
-                    <span class="material-symbols-outlined text-[18px]">print</span>
-                    <span class="hidden sm:inline">Cetak</span>
-                </button>
+
                 
             </div>
         </div>

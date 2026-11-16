@@ -5,19 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Recipe;
 use App\Models\Tip;
-use Illuminate\Http\Request; // TAMBAHKAN INI UNTUK AJAX
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        // 1. RESEP TERPOPULER DIUBAH MENJADI PAGINATION (misal 8 item per halaman)
         $featured = Recipe::published()
             ->with(['category', 'ratings'])
             ->orderByDesc('views')
-            ->limit(6)
-            ->get();
+            ->paginate(8)
+            ->withQueryString();
 
-        // DIUBAH: Menjadi 20 agar load awal tidak terlalu berat
+        // Resep terbaru (tetap menggunakan sistem muat lebih banyak / take 20)
         $latest = Recipe::published()
             ->with(['category'])
             ->latest()
@@ -28,14 +29,14 @@ class HomeController extends Controller
             $q->where('status', 'published');
         }])->get();
 
-        // Tips tetap 3 atau bisa disesuaikan
-        $tips = Tip::latest()->limit(3)->get();
+        // 2. TIPS DIUBAH MENJADI 9 ITEM
+        $tips = Tip::latest()->limit(9)->get();
 
         return view('home', compact('featured', 'latest', 'categories', 'tips'));
     }
 
     /**
-     * FUNGSI BARU UNTUK AJAX "MUAT LEBIH BANYAK"
+     * FUNGSI UNTUK AJAX "MUAT LEBIH BANYAK" (RESEP TERBARU)
      */
     public function loadMoreRecipes(Request $request)
     {
