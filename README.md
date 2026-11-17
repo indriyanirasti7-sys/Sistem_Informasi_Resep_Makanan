@@ -1,58 +1,203 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🍲 Griya Rasa — Sistem Informasi Resep Makanan 
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+</div>
 
-## About Laravel
+## 📖 Deskripsi
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<div align="justify">
+Griya Rasa adalah platform aplikasi web katalog resep masakan Nusantara berbasis digital yang dirancang untuk memudahkan para pencinta kuliner dalam menemukan, mengelola, dan mengeksplorasi ragam resep makanan tradisional khas Indonesia maupun hidangan rumahan sehari-hari.Di tengah kekayaan kuliner Nusantara, Griya Rasa hadir sebagai wadah praktis yang menyajikan informasi resep pilihan secara interaktif dan terstruktur. Website ini dikembangkan dengan teknologi modern menggunakan Laravel 12 dan Tailwind CSS, memastikan performa yang cepat, tampilan antarmuka yang bersih (clean UI), serta pengalaman pengguna (User Experience) yang nyaman di berbagai perangkat.Griya Rasa memiliki dua jenis peran pengguna, yaitu **Admin** dan **Pengguna (User)**, dengan hak akses dan fitur yang berbeda.
+</div>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 👤 Fitur Pengguna (User)
+- **Eksplorasi Resep & Kategori**: Pencarian dan filter resep berdasarkan kategori masakan.
+- **Scaler Porsi Bahan Otomatis**: Menghitung takaran bahan secara otomatis saat jumlah porsi diubah, lengkap dengan fitur centang bahan dan salin daftar belanja.
+- **Panduan Memasak Interaktif (*Cooking Mode*)**: Tampilan fokus langkah demi langkah dilengkapi *timer* hitung mundur otomatis pada setiap tahapan memasak.
+- **Koleksi Bookmark (Resep & Tips)**: Menyimpan dan mengelola daftar resep serta tips dapur favorit secara instan menggunakan AJAX.
+- **Ulasan & Rating**: Memberikan penilaian bintang dan ulasan pada setiap resep.
+- **Tips Dapur**: Artikel panduan dan trik seputar dunia kuliner dan pengolahan bahan makanan.
 
-## Learning Laravel
+### 🛠️ Fitur Administrator (Admin)
+- **Dashboard Statistik**: Ringkasan data total resep, kategori, tips dapur, ulasan, dan pengguna terdaftar.
+- **Manajemen Resep & Tips**: Tambah, edit, dan hapus data resep (beserta bahan & langkah memasak) maupun artikel tips dapur.
+- **Manajemen Kategori**: Pengelolaan kategori masakan.
+- **Moderasi Ulasan & Data Pengguna**: Pemantauan ulasan masuk serta pengelolaan akun pengguna.
+- **Pengaturan Sistem**: Konfigurasi informasi dasar aplikasi.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🛠️ Teknologi yang Digunakan
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Komponen | Teknologi / Platform | Keterangan |
+| :--- | :--- | :--- |
+| **Framework Backend** | Laravel 12 (PHP 8.2+) | Kerangka kerja utama aplikasi web |
+| **Database** | MySQL | Penyimpanan basis data relasional |
+| **Frontend & Styling** | Blade, Tailwind CSS, JavaScript | Antarmuka pengguna dan interaktivitas |
+| **Keamanan** | SSL/HTTPS (Let's Encrypt) | Enkripsi dan keamanan koneksi web |
+| **Hosting** | InfinityFree | Layanan web hosting aplikasi |
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## 📸 Screenshot Aplikasi
 
-## Agentic Development
+<div align="center">
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Halaman Login & Register
+
+| Login | Register |
+| :---: | :---: |
+| <img src="Screenshoots/login.png" alt="Login Griya Rasa" width="400"> | <img src="Screenshoots/register.png" alt="Register Griya Rasa" width="400"> |
+
+### Tampilan Pengguna (User)
+
+| Beranda (Home) | Beranda (Bagian Kategori) |
+| :---: | :---: |
+| <img src="Screenshoots/user_dashboard.png" alt="Beranda Griya Rasa" width="400"> | <img src="Screenshoots/user_dashboardk.png" alt="Beranda Kategori" width="400"> |
+
+| Beranda (Bagian Tips) | Beranda (Bagian Ajakan) |
+| :---: | :---: |
+| <img src="Screenshoots/user_dashboardt.png" alt="Beranda Tips" width="400"> | <img src="Screenshoots/user_dashboarda.png" alt="Beranda Ajakan" width="400"> |
+
+| Kategori Resep | Pencarian Bahan Dapur |
+| :---: | :---: |
+| <img src="Screenshoots/user_kategori.png" alt="Kategori Resep" width="400"> | <img src="Screenshoots/user_bahandpr.png" alt="Bahan Dapur" width="400"> |
+
+| Detail Resep | Langkah Memasak |
+| :---: | :---: |
+| <img src="Screenshoots/user_detailrsp.png" alt="Detail Resep" width="400"> | <img src="Screenshoots/user_detaillngkh.png" alt="Langkah Memasak" width="400"> |
+
+| Ulasan Resep | Daftar Tips Dapur |
+| :---: | :---: |
+| <img src="Screenshoots/user_detailulsn.png" alt="Ulasan Resep" width="400"> | <img src="Screenshoots/user_tips.png" alt="Tips Dapur" width="400"> |
+
+| Tips Dapur (Lanjutan) | Detail Tips Dapur |
+| :---: | :---: |
+| <img src="Screenshoots/user_tips1.png" alt="Tips Dapur 2" width="400"> | <img src="Screenshoots/user_detailtps.png" alt="Detail Tips Dapur" width="400"> |
+
+| Detail Tips (Lanjutan) | Koleksi Resep Tersimpan |
+| :---: | :---: |
+| <img src="Screenshoots/user_detailtps2.png" alt="Detail Tips 2" width="400"> | <img src="Screenshoots/user_koleksirsp.png" alt="Koleksi Resep" width="400"> |
+
+| Koleksi Tips Tersimpan | 
+| :---: | 
+| <img src="Screenshoots/user_kolesitps.png" alt="Koleksi Tips" width="400"> | 
+
+### Tampilan Administrator (Admin)
+
+| Dashboard Admin | Dashboard Admin (Statistik) |
+| :---: | :---: |
+| <img src="Screenshoots/admin_dashboard.png" alt="Dashboard Admin" width="400"> | <img src="Screenshoots/admin_dashboard1.png" alt="Dashboard Admin 2" width="400"> |
+
+| Kelola Resep | Tambah Resep |
+| :---: | :---: |
+| <img src="Screenshoots/admin_kelolarsp.png" alt="Kelola Resep" width="400"> | <img src="Screenshoots/admin_tambahrsp.png" alt="Tambah Resep" width="400"> |
+
+| Kelola Kategori | Tambah Kategori |
+| :---: | :---: |
+| <img src="Screenshoots/admin_kelolaktgr.png" alt="Kelola Kategori" width="400"> | <img src="Screenshoots/admin_tambahktgr.png" alt="Tambah Kategori" width="400"> |
+
+| Kelola Tips Dapur | Tambah Tips Dapur |
+| :---: | :---: |
+| <img src="Screenshoots/admin_kelolatps.png" alt="Kelola Tips" width="400"> | <img src="Screenshoots/admin_tambahtps.png" alt="Tambah Tips" width="400"> |
+
+| Kelola Ulasan | Data Pengguna |
+| :---: | :---: |
+| <img src="Screenshoots/admin_ulasan.png" alt="Kelola Ulasan" width="400"> | <img src="Screenshoots/admin_datausr.png" alt="Data Pengguna" width="400"> |
+
+| Pengaturan Sistem | 
+| :---: | 
+| <img src="Screenshoots/admin_pengaturan.png" alt="Pengaturan Sistem" width="400"> | 
+
+</div>
+
+## Instalasi dan Menjalankan Project
+
+### Persyaratan
+
+* PHP (>= 8.2)
+* Composer
+* MySQL
+* Node.js dan NPM
+* Git
+
+### Langkah Instalasi
+
+**1. Clone repository**
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/indriyanirasti7-sys/Sistem_Informasi_Resep_Makanan.git
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+**2. Masuk ke direktori project**
 
-## Contributing
+```bash
+cd Sistem_Informasi_Resep_Makanan
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**3. Install dependency Laravel**
 
-## Code of Conduct
+```bash
+composer install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**4. Install dependency frontend (Tailwind CSS & Vite)**
 
-## Security Vulnerabilities
+```bash
+npm install
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**5. Salin file environment (.env)**
 
-## License
+```bash
+cp .env.example .env
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**6. Generate application key**
+
+```bash
+php artisan key:generate
+```
+
+**7. Konfigurasi database pada file .env**
+
+```bash
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=griya_rasa
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+**8. Jalankan migrasi database dan seeder**
+
+```bash
+php artisan migrate --seed
+```
+
+**9. Buat symbolic link untuk folder storage**
+
+```bash
+php artisan storage:link
+```
+
+**10. Build aset frontend**
+
+```bash
+npm run build
+```
+
+**11. Jalankan server lokal Laravel**
+
+```bash
+php artisan serve
+```
+
+## Akun Demo
+
+Berikut adalah akun bawaan (*default*) yang dapat digunakan untuk menguji fitur aplikasi setelah menjalankan `php artisan migrate --seed`:
+
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Admin** | `admin@griyarasa.com` | `12345678` |
+| **User** | `user@griyarasa.com` | `12345678` |
+
+
+
