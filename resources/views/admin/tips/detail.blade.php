@@ -53,13 +53,38 @@
                 </span>
             </div>
 
+            {{-- PROFIL PEMBUAT / PENULIS (DENGAN LOKAL STORAGE AVATAR) --}}
+            @php
+                $author = $tip->user;
+                $authorAvatar = null;
+                if ($author && $author->avatar) {
+                    $cleanAuthorAvatar = str_replace(['storage/', 'uploads/avatars/', 'avatars/'], '', $author->avatar);
+                    if (file_exists(public_path('storage/' . $author->avatar))) {
+                        $authorAvatar = asset('storage/' . $author->avatar);
+                    } elseif (file_exists(public_path('storage/' . $cleanAuthorAvatar))) {
+                        $authorAvatar = asset('storage/' . $cleanAuthorAvatar);
+                    } elseif (file_exists(public_path('storage/avatars/' . $cleanAuthorAvatar))) {
+                        $authorAvatar = asset('storage/avatars/' . $cleanAuthorAvatar);
+                    } elseif (file_exists(public_path('uploads/' . $cleanAuthorAvatar))) {
+                        $authorAvatar = asset('uploads/' . $cleanAuthorAvatar);
+                    } else {
+                        $authorAvatar = asset('storage/' . $author->avatar);
+                    }
+                }
+                $authorInitials = collect(explode(' ', $author->name ?? 'A'))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('');
+            @endphp
+
             <div class="flex items-center gap-3 bg-surface-container-low px-4 py-2 rounded-2xl w-fit">
-                <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs shrink-0">
-                    {{ substr($tip->user->name ?? 'A', 0, 1) }}
+                <div class="w-10 h-10 rounded-full overflow-hidden bg-primary text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">
+                    @if($authorAvatar)
+                        <img src="{{ $authorAvatar }}" alt="{{ $author->name ?? 'Penulis' }}" class="w-full h-full object-cover">
+                    @else
+                        {{ $authorInitials }}
+                    @endif
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-xs font-bold text-primary leading-tight">{{ $tip->user->name ?? 'Anonim' }}</span>
-                    <span class="text-[10px] text-on-surface-variant leading-tight">{{ $tip->user->email ?? 'email@domain.com' }}</span>
+                    <span class="text-xs font-bold text-primary leading-tight">{{ $author->name ?? 'Anonim' }}</span>
+                    <span class="text-[10px] text-on-surface-variant leading-tight">{{ $author->email ?? 'email@domain.com' }}</span>
                 </div>
             </div>
         </div>
@@ -87,10 +112,28 @@
         <!-- A. Hero Image & Title -->
         <article class="bg-surface-container-lowest rounded-3xl p-5 sm:p-8 shadow-sm flex flex-col gap-6">
             
-            <!-- Hero Image -->
+            {{-- HERO IMAGE DENGAN LOKAL STORAGE --}}
+            @php
+                $tipImg = null;
+                if ($tip->image) {
+                    $cleanTipImg = str_replace(['storage/', 'uploads/tips/', 'uploads/'], '', $tip->image);
+                    if (file_exists(public_path('storage/' . $tip->image))) {
+                        $tipImg = asset('storage/' . $tip->image);
+                    } elseif (file_exists(public_path('storage/' . $cleanTipImg))) {
+                        $tipImg = asset('storage/' . $cleanTipImg);
+                    } elseif (file_exists(public_path('storage/tips/' . $cleanTipImg))) {
+                        $tipImg = asset('storage/tips/' . $cleanTipImg);
+                    } elseif (file_exists(public_path('uploads/' . $cleanTipImg))) {
+                        $tipImg = asset('uploads/' . $cleanTipImg);
+                    } else {
+                        $tipImg = asset('storage/' . $tip->image);
+                    }
+                }
+            @endphp
+
             <div class="relative w-full aspect-video rounded-2xl overflow-hidden shadow-sm group bg-surface-container-high">
-                @if($tip->image)
-                    <img src="{{ asset('storage/'.$tip->image) }}" alt="{{ $tip->title }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"/>
+                @if($tipImg)
+                    <img src="{{ $tipImg }}" alt="{{ $tip->title }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"/>
                 @else
                     <div class="w-full h-full flex items-center justify-center text-outline">
                         <span class="material-symbols-outlined text-[64px]">image_not_supported</span>
@@ -134,7 +177,7 @@
             </div>
         </article>
 
-        <!-- Catatan Audit Internal -->
+        <!-- Catatan Audit Internal (Dengan Dukungan Profil Chef Antoine / Editor) -->
         <section class="bg-surface-container-lowest rounded-3xl p-5 sm:p-8 shadow-sm flex flex-col gap-6">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-container-high pb-4">
                 <div class="flex flex-col">
@@ -151,13 +194,19 @@
 
             <!-- Timeline Log -->
             <div class="flex flex-col gap-4" id="audit-log-container">
-                <!-- Log 1 -->
+                <!-- Log 1 (Admin Utama) -->
                 <div class="flex items-start gap-4 p-4 rounded-2xl bg-surface-container-low">
-                    <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold shrink-0">A</div>
+                    <div class="w-10 h-10 rounded-full overflow-hidden bg-primary text-white flex items-center justify-center font-bold shrink-0 shadow-sm">
+                        @if($authorAvatar)
+                            <img src="{{ $authorAvatar }}" alt="{{ $author->name ?? 'Admin' }}" class="w-full h-full object-cover">
+                        @else
+                            {{ $authorInitials }}
+                        @endif
+                    </div>
                     <div class="flex flex-col flex-grow">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <div class="flex items-center gap-2">
-                                <span class="text-sm font-bold text-primary">{{ $tip->user->name ?? 'Admin' }}</span>
+                                <span class="text-sm font-bold text-primary">{{ $author->name ?? 'Admin' }}</span>
                                 <span class="px-2 py-0.5 rounded-full bg-primary-container text-white text-[10px] font-bold">Super Admin</span>
                             </div>
                             <span class="text-[11px] text-outline">{{ $tip->updated_at->translatedFormat('d F Y, H:i') }} WIB</span>
@@ -168,19 +217,21 @@
                     </div>
                 </div>
 
-                <!-- Log 2 -->
+                <!-- Log 2 (Chef Antoine / Editor) -->
                 <div class="flex items-start gap-4 p-4 rounded-2xl bg-surface-container-low">
-                    <div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center font-bold shrink-0">M</div>
+                    <div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center font-bold shrink-0 shadow-sm">
+                        CA
+                    </div>
                     <div class="flex flex-col flex-grow">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <div class="flex items-center gap-2">
-                                <span class="text-sm font-bold text-primary">Maya Kartika</span>
-                                <span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold">Editor Konten</span>
+                                <span class="text-sm font-bold text-primary">Chef Antoine</span>
+                                <span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold">Kepala Kurator</span>
                             </div>
                             <span class="text-[11px] text-outline">14 September 2026, 09:20 WIB</span>
                         </div>
                         <p class="text-sm text-on-surface mt-2 leading-relaxed">
-                            Menambahkan istilah terminologi Prancis (chiffonade & brunoise) serta mengoptimalkan meta deskripsi.
+                            Menambahkan istilah terminologi kuliner profesional serta mengoptimalkan panduan praktik langsung di dapur uji.
                         </p>
                     </div>
                 </div>
@@ -318,7 +369,7 @@
         });
     })();
 
-    // --- SCRIPT UNTUK CATATAN AUDIT (BAWAAN ANDA) ---
+    // --- SCRIPT UNTUK CATATAN AUDIT DENGAN PROFIL ---
     document.getElementById('save-note-btn')?.addEventListener('click', function() {
         const input = document.getElementById('admin-note-input');
         const text = input.value.trim();
@@ -336,11 +387,17 @@
         const newLog = document.createElement('div');
         newLog.className = 'flex items-start gap-4 p-4 rounded-xl bg-surface-container-lowest border border-secondary/30 shadow-sm animate-pulse';
         newLog.innerHTML = `
-            <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold shrink-0">A</div>
+            <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold shrink-0 shadow-sm">
+                @if($authorAvatar)
+                    <img src="{{ $authorAvatar }}" alt="{{ $author->name ?? 'Admin' }}" class="w-full h-full object-cover rounded-full">
+                @else
+                    {{ $authorInitials }}
+                @endif
+            </div>
             <div class="flex flex-col flex-grow">
                 <div class="flex flex-wrap items-center justify-between gap-2">
                     <div class="flex items-center gap-2">
-                        <span class="text-sm font-bold text-primary">Anda</span>
+                        <span class="text-sm font-bold text-primary">{{ $author->name ?? 'Anda' }}</span>
                         <span class="px-2 py-0.5 rounded-full bg-primary-container text-white text-[10px] font-bold">Super Admin</span>
                     </div>
                     <span class="text-[11px] text-outline">${dateStr}</span>
@@ -352,7 +409,6 @@
         container.prepend(newLog);
         input.value = '';
         
-        // Hapus animasi pulse setelah ditambahkan
         setTimeout(() => newLog.classList.remove('animate-pulse', 'border-secondary/30'), 1000);
     });
 </script>

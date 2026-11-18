@@ -15,8 +15,21 @@ class ProfileController extends Controller
      */
     public function edit()
     {
+        $user = Auth::user();
+
+        // 1. Hitung total bookmark resep
+        $recipeBookmarksCount = method_exists($user, 'bookmarks') ? $user->bookmarks()->count() : 0;
+
+        // 2. Hitung total bookmark tips (jika ada relasi bookmarkedTips / tipBookmarks)
+        // Sesuaikan nama fungsi relasinya dengan model User Anda jika berbeda
+        $tipBookmarksCount = method_exists($user, 'tipBookmarks') ? $user->tipBookmarks()->count() : 0;
+        
+        // Total keseluruhan bookmark
+        $totalBookmarks = $recipeBookmarksCount + $tipBookmarksCount;
+
         return view('profile.edit', [
-            'user' => Auth::user(),
+            'user' => $user,
+            'totalBookmarks' => $totalBookmarks, // Kirim variabel ini ke view
         ]);
     }
 
@@ -33,13 +46,15 @@ class ProfileController extends Controller
             'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
-        // Upload avatar kalau ada
+        // Upload avatar kalau ada (disesuaikan dengan folder public/uploads jika Anda memakainya)
         if ($request->hasFile('avatar')) {
-            // Hapus avatar lama
-            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-                Storage::disk('public')->delete($user->avatar);
+            if ($user->avatar && file_exists(public_path('uploads/' . $user->avatar))) {
+                @unlink(public_path('uploads/' . $user->avatar));
             }
-            $validated['avatar'] = $request->file('avatar')->store('avatars', 'public');
+            $file = $request->file('avatar');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/avatars'), $filename);
+            $validated['avatar'] = 'avatars/' . $filename;
         }
 
         $user->update($validated);

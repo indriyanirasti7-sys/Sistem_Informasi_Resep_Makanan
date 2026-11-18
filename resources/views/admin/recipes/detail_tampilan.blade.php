@@ -56,17 +56,41 @@
                 <span class="text-on-surface text-sm font-semibold mt-1">{{ $recipe->updated_at->translatedFormat('d M Y, H:i') }} WIB</span>
             </div>
 
-            <!-- Author / Curator -->
+            <!-- Author / Curator (DENGAN LOKAL STORAGE AVATAR) -->
+            @php
+                $author = $recipe->user;
+                $authorAvatar = null;
+                if ($author && $author->avatar) {
+                    $cleanAuthorAvatar = str_replace(['storage/', 'uploads/avatars/', 'avatars/'], '', $author->avatar);
+                    if (file_exists(public_path('storage/' . $author->avatar))) {
+                        $authorAvatar = asset('storage/' . $author->avatar);
+                    } elseif (file_exists(public_path('storage/' . $cleanAuthorAvatar))) {
+                        $authorAvatar = asset('storage/' . $cleanAuthorAvatar);
+                    } elseif (file_exists(public_path('storage/avatars/' . $cleanAuthorAvatar))) {
+                        $authorAvatar = asset('storage/avatars/' . $cleanAuthorAvatar);
+                    } elseif (file_exists(public_path('uploads/' . $cleanAuthorAvatar))) {
+                        $authorAvatar = asset('uploads/' . $cleanAuthorAvatar);
+                    } else {
+                        $authorAvatar = asset('storage/' . $author->avatar);
+                    }
+                }
+                $authorInitials = collect(explode(' ', $author->name ?? 'A'))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('');
+            @endphp
+
             <div class="flex items-center gap-3 mt-1 xl:mt-0">
-                <div class="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs shrink-0">
-                    {{ substr($recipe->user->name ?? 'A', 0, 1) }}
+                <div class="w-9 h-9 rounded-full overflow-hidden bg-primary text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">
+                    @if($authorAvatar)
+                        <img src="{{ $authorAvatar }}" alt="{{ $author->name ?? 'Penulis' }}" class="w-full h-full object-cover">
+                    @else
+                        {{ $authorInitials }}
+                    @endif
                 </div>
                 <div class="flex flex-col min-w-0">
                     <div class="flex items-center gap-1">
-                        <span class="text-primary text-xs font-bold truncate">{{ $recipe->user->name ?? 'Anonim' }}</span>
+                        <span class="text-primary text-xs font-bold truncate">{{ $author->name ?? 'Anonim' }}</span>
                         <span class="material-symbols-outlined text-secondary text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
                     </div>
-                    <span class="text-outline text-[10px] truncate">{{ $recipe->user->email ?? 'email@domain.com' }}</span>
+                    <span class="text-outline text-[10px] truncate">{{ $author->email ?? 'email@domain.com' }}</span>
                 </div>
             </div>
 
@@ -86,10 +110,28 @@
         
         <!-- 1. Featured Visual & Title Narrative -->
         <div class="bg-surface-container-lowest rounded-3xl p-5 sm:p-8 shadow-sm flex flex-col">
-            <!-- Hero Visual Frame -->
+            {{-- HERO VISUAL DENGAN LOKAL STORAGE --}}
+            @php
+                $recipeImg = null;
+                if ($recipe->image) {
+                    $cleanRecipeImg = str_replace(['storage/', 'uploads/recipes/', 'uploads/'], '', $recipe->image);
+                    if (file_exists(public_path('storage/' . $recipe->image))) {
+                        $recipeImg = asset('storage/' . $recipe->image);
+                    } elseif (file_exists(public_path('storage/' . $cleanRecipeImg))) {
+                        $recipeImg = asset('storage/' . $cleanRecipeImg);
+                    } elseif (file_exists(public_path('storage/recipes/' . $cleanRecipeImg))) {
+                        $recipeImg = asset('storage/recipes/' . $cleanRecipeImg);
+                    } elseif (file_exists(public_path('uploads/' . $cleanRecipeImg))) {
+                        $recipeImg = asset('uploads/' . $cleanRecipeImg);
+                    } else {
+                        $recipeImg = asset('storage/' . $recipe->image);
+                    }
+                }
+            @endphp
+
             <div class="relative w-full h-64 sm:h-96 rounded-2xl overflow-hidden bg-surface-container-high mb-6 group">
-                @if($recipe->image)
-                    <img class="w-full h-full object-cover object-center group-hover:scale-[1.02] transition-transform duration-700" src="{{ asset('storage/'.$recipe->image) }}" alt="{{ $recipe->title }}"/>
+                @if($recipeImg)
+                    <img class="w-full h-full object-cover object-center group-hover:scale-[1.02] transition-transform duration-700" src="{{ $recipeImg }}" alt="{{ $recipe->title }}"/>
                 @else
                     <div class="w-full h-full flex items-center justify-center text-outline">
                         <span class="material-symbols-outlined text-[64px]">image_not_supported</span>
@@ -110,7 +152,6 @@
                 <span class="material-symbols-outlined text-secondary text-[22px]">restaurant</span>
                 <h2 class="font-['Playfair_Display'] text-lg text-primary font-bold">Spesifikasi Dapur</h2>
             </div>
-            {{-- Diubah menjadi 4 kolom agar Kalori muat --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-sm">
                 <div class="flex flex-col bg-surface-container-low p-4 rounded-2xl">
                     <span class="text-on-surface-variant text-[11px] sm:text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">timer</span> Total Waktu</span>
@@ -124,7 +165,6 @@
                     <span class="text-on-surface-variant text-[11px] sm:text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">speed</span> Kesulitan</span>
                     <span class="font-bold text-primary mt-1">{{ $recipe->difficulty }}</span>
                 </div>
-                {{-- KOTAK KALORI BARU --}}
                 <div class="flex flex-col bg-surface-container-low p-4 rounded-2xl">
                     <span class="text-on-surface-variant text-[11px] sm:text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">local_fire_department</span> Kalori</span>
                     <span class="font-bold text-primary mt-1">{{ $recipe->calories ? $recipe->calories . ' kkal' : '-' }}</span>
@@ -178,6 +218,25 @@
             
             <div class="flex flex-col gap-4">
                 @foreach($recipe->steps as $step)
+                    {{-- STEP IMAGE DENGAN LOKAL STORAGE --}}
+                    @php
+                        $stepImg = null;
+                        if ($step->image) {
+                            $cleanStepImg = str_replace(['storage/', 'uploads/steps/', 'uploads/'], '', $step->image);
+                            if (file_exists(public_path('storage/' . $step->image))) {
+                                $stepImg = asset('storage/' . $step->image);
+                            } elseif (file_exists(public_path('storage/' . $cleanStepImg))) {
+                                $stepImg = asset('storage/' . $cleanStepImg);
+                            } elseif (file_exists(public_path('storage/steps/' . $cleanStepImg))) {
+                                $stepImg = asset('storage/steps/' . $cleanStepImg);
+                            } elseif (file_exists(public_path('uploads/' . $cleanStepImg))) {
+                                $stepImg = asset('uploads/' . $cleanStepImg);
+                            } else {
+                                $stepImg = asset('storage/' . $step->image);
+                            }
+                        }
+                    @endphp
+
                     <div class="bg-surface-container-low rounded-xl p-4 flex flex-col sm:flex-row gap-4 items-start">
                         <div class="flex sm:flex-col items-center justify-between w-full sm:w-20 gap-2 shrink-0 border-b sm:border-b-0 pb-3 sm:pb-0 border-surface-container-high">
                             <span class="w-10 h-10 rounded-full bg-primary text-white font-bold text-sm flex items-center justify-center">
@@ -189,9 +248,8 @@
                                 {{ $step->instruction }}
                             </p>
                             
-                            {{-- TAMPILKAN GAMBAR STEP --}}
-                            @if($step->image)
-                                <img src="{{ asset('storage/'.$step->image) }}" alt="Langkah {{ $step->step_number }}" class="w-full max-w-sm rounded-xl shadow-sm object-cover h-40">
+                            @if($stepImg)
+                                <img src="{{ $stepImg }}" alt="Langkah {{ $step->step_number }}" class="w-full max-w-sm rounded-xl shadow-sm object-cover h-40">
                             @endif
                         </div>
                     </div>

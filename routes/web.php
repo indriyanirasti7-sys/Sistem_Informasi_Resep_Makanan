@@ -61,6 +61,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // ---------- RESOURCES LAIN (pakai id, default) ----------
     Route::resource('categories', Admin\CategoryController::class);
     Route::resource('users', Admin\UserController::class)->except(['create', 'store', 'edit']);
+    Route::put('/users/{user}/verify', [Admin\UserController::class, 'verifyEmail'])->name('users.verify');
     Route::resource('reviews', Admin\ReviewController::class)->only(['index', 'destroy']);
 
     // Settings & Export

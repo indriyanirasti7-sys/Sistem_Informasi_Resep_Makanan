@@ -80,7 +80,9 @@ public function index()
                 'month' => $monthName,
                 'tradisional_raw' => $tradisional,
                 'pastry_raw' => $pastry,
-                'akses' => $views > 0 ? number_format($views / 1000, 1) . 'k' : '0',
+                'akses' => $views >= 1000 
+                    ? number_format($views / 1000, 1, ',', '.') . 'k' 
+                    : ($views > 0 ? number_format($views, 0, ',', '.') : '0'),
             ];
 
             // Cari nilai tertinggi untuk menentukan tinggi bar (persentase)

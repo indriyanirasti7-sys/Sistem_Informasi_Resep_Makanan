@@ -90,4 +90,17 @@ class UserController extends Controller
             ->route('admin.users.index')
             ->with('success', "Akun {$name} berhasil dihapus.");
     }
+
+    /**
+     * Memverifikasi email pengguna secara manual oleh admin.
+     */
+    public function verifyEmail(User $user)
+    {
+        $user->email_verified_at = now();
+        $user->save();
+
+        return redirect()
+            ->back()
+            ->with('success', "Status email untuk {$user->name} berhasil diverifikasi.");
+    }
 }

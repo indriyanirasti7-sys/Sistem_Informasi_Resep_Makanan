@@ -26,7 +26,7 @@
         </div>
 
         <p class="text-sm text-on-surface-variant mt-1">
-            Tinjau informasi profil, statistik interaksi, dan catatan internal pengguna.
+            Tinjau informasi profil dan statistik interaksi pengguna.
         </p>
     </header>
 
@@ -40,10 +40,23 @@
             <!-- Kiri: Avatar & Info -->
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
                 <div class="relative shrink-0">
-                    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1 bg-gradient-to-tr from-primary via-secondary to-primary-fixed-dim shadow-sm">
-                        <div class="w-full h-full rounded-full bg-surface-container flex items-center justify-center text-4xl font-bold text-primary">
-                            {{ substr($user->name, 0, 1) }}
-                        </div>
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1 bg-gradient-to-tr from-primary via-secondary to-primary-fixed-dim shadow-sm overflow-hidden">
+                        @php
+                            $avatarClean = null;
+                            if ($user->avatar) {
+                                $avatarClean = str_replace(['uploads/avatars/', 'uploads/', 'storage/avatars/', 'storage/', 'avatars/'], '', $user->avatar);
+                            }
+                        @endphp
+
+                        @if ($avatarClean && file_exists(public_path('uploads/avatars/' . $avatarClean)))
+                            <img src="{{ asset('uploads/avatars/' . $avatarClean) }}" alt="{{ $user->name }}" class="w-full h-full rounded-full object-cover">
+                        @elseif ($avatarClean && file_exists(public_path('uploads/' . $avatarClean)))
+                            <img src="{{ asset('uploads/' . $avatarClean) }}" alt="{{ $user->name }}" class="w-full h-full rounded-full object-cover">
+                        @else
+                            <div class="w-full h-full rounded-full bg-surface-container flex items-center justify-center text-4xl font-bold text-primary">
+                                {{ substr($user->name, 0, 1) }}
+                            </div>
+                        @endif
                     </div>
                     <div class="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-secondary text-white flex items-center justify-center shadow-md border-2 border-surface-container-lowest" title="Akun Terverifikasi">
                         <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">verified</span>
@@ -137,13 +150,24 @@
                         </div>
                         <span class="font-semibold text-on-surface text-right">{{ $user->created_at->translatedFormat('d M Y, H:i') }} WIB</span>
                     </div>
-                    <div class="p-3.5 rounded-2xl bg-surface-container-low flex items-start justify-between gap-3">
+                    <div class="p-3.5 rounded-2xl bg-surface-container-low flex items-center justify-between gap-3">
                         <div class="flex items-center gap-2 text-on-surface-variant">
                             <span class="material-symbols-outlined text-[18px] text-outline">verified</span>
                             <span>Status Email</span>
                         </div>
-                        <div class="text-right">
-                            <span class="font-bold {{ $user->email_verified_at ? 'text-secondary' : 'text-error' }} block">{{ $user->email_verified_at ? 'Terverifikasi' : 'Belum Verifikasi' }}</span>
+                        <div class="text-right flex items-center gap-2">
+                            @if ($user->email_verified_at)
+                                <span class="font-bold text-secondary">Terverifikasi</span>
+                            @else
+                                <span class="font-bold text-error">Belum Verifikasi</span>
+                                <form action="{{ route('admin.users.verify', $user->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="px-2.5 py-1 bg-primary text-white text-xs font-bold rounded-full hover:bg-primary-container transition">
+                                        Verifikasi
+                                    </button>
+                                </form>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -254,63 +278,13 @@
         </div>
     </div>
 
-    <!-- Admin Internal Notes Section -->
-    <div class="bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col gap-6 mb-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-surface-container-high pb-4">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                    <span class="material-symbols-outlined text-[22px]">lock_person</span>
-                </div>
-                <div>
-                    <h2 class="text-xl text-primary font-bold">Catatan Internal Staf Admin</h2>
-                    <p class="text-sm text-on-surface-variant">Dokumentasi rahasia operasional untuk tim redaksi.</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- History List -->
-        <div class="flex flex-col gap-3" id="admin-notes-container">
-            <!-- Note 1 -->
-            <div class="p-4 rounded-2xl bg-surface-container-low flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shrink-0 font-bold text-xs">A</div>
-                    <div>
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <span class="text-sm font-bold text-primary">Admin</span>
-                            <span class="px-2 py-0.5 rounded-full bg-primary-container text-white text-[10px]">Super Admin</span>
-                            <span class="text-outline text-[11px]">• {{ now()->translatedFormat('d M Y') }}</span>
-                        </div>
-                        <p class="text-sm text-on-surface mt-1">Pengguna sangat aktif dan berwawasan luas dalam memberikan masukan teknik pembuatan bumbu dasar tradisional.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Add New Note Form -->
-        <div class="flex flex-col gap-3 pt-2">
-            <label class="text-sm font-bold text-primary flex items-center gap-1.5" for="adminNoteInput">
-                <span class="material-symbols-outlined text-[16px]">edit_note</span> Tambahkan Catatan Baru:
-            </label>
-            <textarea id="adminNoteInput" rows="3" placeholder="Tuliskan catatan administratif baru, verifikasi manual..."
-                      class="w-full p-4 rounded-2xl bg-surface-container-low text-on-surface text-sm outline-none focus:ring-2 focus:ring-secondary/40 transition-all resize-none"></textarea>
-            <div class="flex items-center justify-between flex-wrap gap-3">
-                <span class="text-[11px] text-outline flex items-center gap-1 font-semibold">
-                    <span class="material-symbols-outlined text-[14px]">info</span> Catatan akan dicatat bersama identitas Anda.
-                </span>
-                <button type="button" id="btnSaveNote" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary-container transition-all">
-                    <span class="material-symbols-outlined text-[18px]">save</span> Simpan Catatan
-                </button>
-            </div>
-        </div>
-    </div>
-
     {{-- ========== BOTTOM ACTIONS (KANAN BAWAH) ========== --}}
     <div class="flex items-center justify-between pt-6 border-t border-surface-container-high mt-2">
         
         {{-- Kiri Bawah: Kembali --}}
         <a href="{{ route('admin.users.index') }}"
            class="px-6 py-3 rounded-full bg-surface-container-high text-primary text-sm font-bold hover:bg-surface-container transition">
-            Batal & Kembali
+            Batal 
         </a>
 
         {{-- Kanan Bawah: Aksi Modifikasi --}}
@@ -456,45 +430,6 @@
                 btnSuspend.classList.add('bg-surface-container-highest', 'text-outline');
                 btnSuspend.innerHTML = '<span class="material-symbols-outlined text-[18px]">check_circle</span> Ditangguhkan';
                 closeSuspendModal();
-            });
-        }
-
-        // --- Simpan Catatan Internal ---
-        const btnSaveNote = document.getElementById('btnSaveNote');
-        const noteInput = document.getElementById('adminNoteInput');
-        const notesContainer = document.getElementById('admin-notes-container');
-
-        if (btnSaveNote && noteInput && notesContainer) {
-            btnSaveNote.addEventListener('click', function() {
-                const text = noteInput.value.trim();
-                if (!text) {
-                    noteInput.focus();
-                    return;
-                }
-
-                const date = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-                
-                const newNote = document.createElement('div');
-                newNote.className = 'p-4 rounded-2xl bg-surface-container-low flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mt-3 animate-pulse';
-                newNote.innerHTML = `
-                    <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shrink-0 font-bold text-xs">
-                            {{ substr(auth()->user()->name ?? 'A', 0, 1) }}
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="text-sm font-bold text-primary">Anda</span>
-                                <span class="px-2 py-0.5 rounded-full bg-primary-container text-white text-[10px]">Super Admin</span>
-                                <span class="text-outline text-[11px]">• ${date}</span>
-                            </div>
-                            <p class="text-sm text-on-surface mt-1">${text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
-                        </div>
-                    </div>
-                `;
-                
-                notesContainer.prepend(newNote);
-                noteInput.value = '';
-                setTimeout(() => newNote.classList.remove('animate-pulse'), 1000);
             });
         }
     });

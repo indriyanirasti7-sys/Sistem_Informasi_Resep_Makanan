@@ -17,9 +17,31 @@
     <div class="bg-surface-container-lowest rounded-3xl p-6 md:p-8 shadow-sm">
         <div class="flex flex-col md:flex-row md:items-center gap-6">
 
-            {{-- Icon --}}
-            <div class="w-20 h-20 rounded-3xl bg-secondary/15 flex items-center justify-center text-secondary shrink-0">
-                <span class="material-symbols-outlined text-[44px]">{{ $category->icon ?? 'restaurant' }}</span>
+            {{-- Icon / Gambar Kategori (Mendukung Storage Lokal) --}}
+            @php
+                $catImg = null;
+                if ($category->image) {
+                    $cleanCat = str_replace(['storage/', 'uploads/categories/', 'uploads/'], '', $category->image);
+                    if (file_exists(public_path('storage/' . $category->image))) {
+                        $catImg = asset('storage/' . $category->image);
+                    } elseif (file_exists(public_path('storage/' . $cleanCat))) {
+                        $catImg = asset('storage/' . $cleanCat);
+                    } elseif (file_exists(public_path('storage/categories/' . $cleanCat))) {
+                        $catImg = asset('storage/categories/' . $cleanCat);
+                    } elseif (file_exists(public_path('uploads/' . $cleanCat))) {
+                        $catImg = asset('uploads/' . $cleanCat);
+                    } else {
+                        $catImg = asset('storage/' . $category->image);
+                    }
+                }
+            @endphp
+
+            <div class="w-20 h-20 rounded-3xl bg-secondary/15 flex items-center justify-center text-secondary shrink-0 overflow-hidden">
+                @if ($catImg)
+                    <img src="{{ $catImg }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
+                @else
+                    <span class="material-symbols-outlined text-[44px]">{{ $category->icon ?? 'restaurant' }}</span>
+                @endif
             </div>
 
             {{-- Info --}}
@@ -37,7 +59,7 @@
                     </code>
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container/70 text-on-secondary-container text-[11px] font-bold">
                         <span class="material-symbols-outlined text-[14px]">menu_book</span>
-                        {{ $category->recipes_count ?? 0 }} resep
+                        {{ $category->recipes->count() }} resep
                     </span>
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold
                                  {{ ($category->is_active ?? true) ? 'bg-secondary/15 text-secondary' : 'bg-surface-container text-on-surface-variant' }}">
@@ -55,7 +77,7 @@
                     <span>Edit</span>
                 </a>
 
-                {{-- TOMBOL HAPUS BARU (Memanggil Modal, bukan confirm browser) --}}
+                {{-- TOMBOL HAPUS (Memanggil Modal) --}}
                 <button type="button"
                         class="delete-category-btn p-2.5 text-error hover:bg-error-container/60 rounded-full transition" 
                         title="Hapus"
@@ -80,7 +102,7 @@
     <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm flex items-center justify-between">
         <div class="flex flex-col">
             <span class="text-xs text-on-surface-variant font-medium">Jumlah Resep</span>
-            <span class="font-display text-3xl text-primary font-bold mt-1">{{ $category->recipes_count ?? 0 }}</span>
+            <span class="font-display text-3xl text-primary font-bold mt-1">{{ $category->recipes->count() }}</span>
             <span class="text-[11px] text-on-surface-variant/80 mt-0.5">Total resep terdaftar</span>
         </div>
         <div class="w-12 h-12 rounded-full bg-secondary/15 flex items-center justify-center text-secondary">
@@ -125,7 +147,7 @@
             </p>
         </div>
 
-        @if (!empty($category->recipes_count))
+        @if ($category->recipes->count() > 0)
             <a href="{{ route('admin.recipes.index', ['category' => $category->id]) }}"
                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-primary hover:bg-surface-container transition">
                 <span>Lihat Semua</span>
@@ -145,7 +167,7 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-surface-container-high/40 text-on-surface">
-                @forelse (($recipes ?? collect()) as $recipe)
+                @forelse (($category->recipes ?? collect()) as $recipe)
                     <tr class="hover:bg-surface-container-low/40 transition group">
                         <td class="py-4 px-4">
                             <span class="text-sm font-bold text-primary group-hover:text-tertiary-container transition">
@@ -153,7 +175,7 @@
                             </span>
                         </td>
                         <td class="py-4 px-4 text-xs text-on-surface-variant">
-                            {{ $recipe->duration ?? '—' }} menit
+                            {{ $recipe->duration_minutes ?? '—' }} menit
                         </td>
                         <td class="py-4 px-4 text-xs text-on-surface-variant">
                             {{ $recipe->servings ?? '—' }} porsi
@@ -231,11 +253,9 @@
     const cancelDelete = document.getElementById('cancelDeleteCategoryBtn');
 
     function openDeleteModal(btn) {
-        // Ambil data dari tombol yang diklik
         deleteTarget.textContent = btn.dataset.title;
         deleteForm.action = btn.dataset.url;
         
-        // Tampilkan Modal
         deleteModal.classList.remove('hidden');
         deleteModal.classList.add('flex');
     }
@@ -245,7 +265,6 @@
         deleteModal.classList.remove('flex');
     }
 
-    // Delegasi Event Listener untuk Tombol Hapus
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.delete-category-btn');
         if (btn) {
@@ -253,13 +272,11 @@
         }
     });
 
-    // Tombol Batal & Tombol ESC
     cancelDelete.addEventListener('click', closeDeleteModal);
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeDeleteModal();
     });
 
-    // Klik di luar area modal untuk menutup
     deleteModal.addEventListener('click', (e) => {
         if (e.target === deleteModal) closeDeleteModal();
     });

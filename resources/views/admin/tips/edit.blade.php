@@ -69,6 +69,7 @@
                     <label class="text-xs font-bold text-primary">Kategori Rubrik</label>
                     <div class="relative">
                         <select name="category" class="w-full appearance-none bg-surface-container-low text-on-surface px-4 py-3 rounded-2xl text-sm outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/40 transition-all cursor-pointer">
+                            <option value="">— Pilih rubrik —</option>
                             <option value="knife-skills" {{ old('category', $tip->category ?? '') == 'knife-skills' ? 'selected' : '' }}>Knife Skills (Teknik Pisau)</option>
                             <option value="sauces" {{ old('category', $tip->category ?? '') == 'sauces' ? 'selected' : '' }}>Saus Dasar</option>
                             <option value="baking" {{ old('category', $tip->category ?? '') == 'baking' ? 'selected' : '' }}>Pastry & Bakery</option>
@@ -82,14 +83,13 @@
                 <div class="flex flex-col gap-1.5">
                     <label class="text-xs font-bold text-primary">Tingkat Keahlian</label>
                     <div class="flex items-center gap-2 bg-surface-container-low p-1.5 rounded-2xl shadow-sm h-[46px]">
-                        <input type="radio" name="difficulty" id="pemula" value="Pemula" class="peer sr-only" {{ old('difficulty', $tip->difficulty ?? '') == 'Pemula' ? 'checked' : '' }}>
-                        <label for="pemula" class="flex-1 text-center py-1.5 rounded-xl text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white cursor-pointer transition-all">Pemula</label>
-
-                        <input type="radio" name="difficulty" id="menengah" value="Menengah" class="peer sr-only" {{ old('difficulty', $tip->difficulty ?? '') == 'Menengah' ? 'checked' : '' }}>
-                        <label for="menengah" class="flex-1 text-center py-1.5 rounded-xl text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white cursor-pointer transition-all">Menengah</label>
-
-                        <input type="radio" name="difficulty" id="mahir" value="Mahir" class="peer sr-only" {{ old('difficulty', $tip->difficulty ?? '') == 'Mahir' ? 'checked' : '' }}>
-                        <label for="mahir" class="flex-1 text-center py-1.5 rounded-xl text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white cursor-pointer transition-all">Mahir</label>
+                        @foreach (['Pemula', 'Menengah', 'Mahir'] as $level)
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="difficulty" value="{{ $level }}" class="peer sr-only"
+                                    {{ old('difficulty', $tip->level ?? $tip->difficulty ?? $tip->tingkat ?? '') === $level ? 'checked' : '' }}>
+                                <span class="block text-center py-1.5 rounded-xl text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">{{ $level }}</span>
+                            </label>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -97,7 +97,7 @@
             <!-- Ringkasan -->
             <div class="flex flex-col gap-1.5 pt-2">
                 <label class="text-xs font-bold text-primary" for="summary">Ringkasan Singkat / Lead-in Artikel</label>
-                <textarea id="summary" name="summary" rows="3" class="w-full bg-surface-container-low text-on-surface p-4 rounded-2xl text-sm outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/40 transition-all resize-none">{{ old('summary', $tip->summary ?? '') }}</textarea>
+                <textarea id="summary" name="summary" rows="3" maxlength="300" class="w-full bg-surface-container-low text-on-surface p-4 rounded-2xl text-sm outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/40 transition-all resize-none">{{ old('summary', $tip->summary ?? '') }}</textarea>
             </div>
         </section>
 
@@ -113,11 +113,29 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-                <!-- Current Active Image Card -->
+                <!-- Current Active Image Card (DENGAN LOKAL STORAGE) -->
+                @php
+                    $tipImg = null;
+                    if ($tip->image) {
+                        $cleanTipImg = str_replace(['storage/', 'uploads/tips/', 'uploads/'], '', $tip->image);
+                        if (file_exists(public_path('storage/' . $tip->image))) {
+                            $tipImg = asset('storage/' . $tip->image);
+                        } elseif (file_exists(public_path('storage/' . $cleanTipImg))) {
+                            $tipImg = asset('storage/' . $cleanTipImg);
+                        } elseif (file_exists(public_path('storage/tips/' . $cleanTipImg))) {
+                            $tipImg = asset('storage/tips/' . $cleanTipImg);
+                        } elseif (file_exists(public_path('uploads/' . $cleanTipImg))) {
+                            $tipImg = asset('uploads/' . $cleanTipImg);
+                        } else {
+                            $tipImg = asset('storage/' . $tip->image);
+                        }
+                    }
+                @endphp
+
                 <div class="lg:col-span-6 flex flex-col rounded-2xl overflow-hidden bg-surface-container-low p-3 gap-3 shadow-sm">
                     <div class="relative w-full aspect-video rounded-xl overflow-hidden group bg-surface-container">
-                        @if($tip->image)
-                            <img class="w-full h-full object-cover" src="{{ asset('storage/'.$tip->image) }}" alt="{{ $tip->title }}"/>
+                        @if($tipImg)
+                            <img class="w-full h-full object-cover" src="{{ $tipImg }}" alt="{{ $tip->title }}"/>
                         @else
                             <div class="flex items-center justify-center w-full h-full text-outline">
                                 <span class="material-symbols-outlined text-[48px]">image_not_supported</span>
@@ -157,20 +175,21 @@
                 </div>
             </div>
 
-            <!-- Dummy Toolbar -->
-            <div class="p-3 bg-surface-container-high/40 flex flex-wrap items-center gap-2 border-b border-surface-container-high">
-                <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center bg-surface-container-lowest text-primary font-bold shadow-sm hover:bg-surface-container"><span class="text-xs">B</span></button>
-                <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container"><span class="text-xs italic">I</span></button>
-                <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container"><span class="text-xs underline">U</span></button>
-                <div class="h-5 w-px bg-outline-variant mx-1"></div>
-                <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container"><span class="material-symbols-outlined text-[18px]">format_list_bulleted</span></button>
-                <button type="button" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container"><span class="material-symbols-outlined text-[18px]">format_quote</span></button>
-            </div>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css">
+            <style>
+                .ql-toolbar.ql-snow { border:0; border-bottom:1px solid #efe7d9; background:rgba(239,231,217,.4); padding:10px 16px; }
+                .ql-container.ql-snow { border:0; font-family:inherit; font-size:15px; }
+                .ql-editor { min-height:380px; padding:24px; line-height:1.75; color:#1e1b12; }
+                .ql-editor h2 { font-family:'Playfair Display',serif; font-size:1.55rem; font-weight:700; color:#41240e; margin:1.2em 0 .5em; }
+                .ql-editor h3 { font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:700; color:#41240e; margin:1.1em 0 .4em; }
+                .ql-editor p  { margin-bottom:.8em; }
+                .ql-editor ul, .ql-editor ol { padding-left:1.2em; margin-bottom:.8em; }
+                .ql-editor blockquote { border-left:4px solid #55643b; padding-left:1em; color:#50443d; font-style:italic; }
+            </style>
 
-            <!-- Textarea -->
-            <textarea name="content" rows="16" required
-                      class="w-full p-6 text-sm text-on-surface leading-relaxed outline-none resize-y bg-transparent focus:ring-0 border-0"
-                      placeholder="Tuliskan isi panduan di sini...">{{ old('content', $tip->content) }}</textarea>
+            <!-- Editor teks kaya -->
+            <div id="editor"></div>
+            <input type="hidden" name="content" id="content">
         </section>
 
         <!-- Grid for Status & Author -->
@@ -187,7 +206,6 @@
                             <span class="text-sm text-primary font-bold">Visibilitas Publik</span>
                             <span class="text-xs text-on-surface-variant">Tampil di portal umum</span>
                         </div>
-                        {{-- Toggle switch untuk indikator visual saja, status di-handle oleh tombol submit di bawah --}}
                         <div class="relative inline-flex items-center cursor-default">
                             <div class="w-11 h-6 bg-surface-container-high rounded-full peer-checked:bg-secondary transition-colors {{ (old('status', $tip->status) === 'published') ? 'bg-secondary' : '' }}"></div>
                             <div class="absolute left-[2px] top-[2px] bg-white border-gray-300 border rounded-full h-5 w-5 transition-transform {{ (old('status', $tip->status) === 'published') ? 'translate-x-full border-white' : '' }}"></div>
@@ -196,33 +214,54 @@
                 </div>
             </section>
 
-            <!-- Penulis Kurator -->
+            <!-- Penulis Kurator (SESUAI USER YANG LOGIN DENGAN LOKAL STORAGE AVATAR) -->
+            @php
+                $currUser = auth()->user() ?? $tip->user;
+                $currAvatar = null;
+                if ($currUser && $currUser->avatar) {
+                    $cleanCurrAvatar = str_replace(['storage/', 'uploads/avatars/', 'avatars/'], '', $currUser->avatar);
+                    if (file_exists(public_path('storage/' . $currUser->avatar))) {
+                        $currAvatar = asset('storage/' . $currUser->avatar);
+                    } elseif (file_exists(public_path('storage/' . $cleanCurrAvatar))) {
+                        $currAvatar = asset('storage/' . $cleanCurrAvatar);
+                    } elseif (file_exists(public_path('storage/avatars/' . $cleanCurrAvatar))) {
+                        $currAvatar = asset('storage/avatars/' . $cleanCurrAvatar);
+                    } elseif (file_exists(public_path('uploads/' . $cleanCurrAvatar))) {
+                        $currAvatar = asset('uploads/' . $cleanCurrAvatar);
+                    } else {
+                        $currAvatar = asset('storage/' . $currUser->avatar);
+                    }
+                }
+                $currInitials = collect(explode(' ', $currUser->name ?? 'A'))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('');
+            @endphp
+
             <section class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm flex flex-col gap-4">
                 <div class="flex items-center justify-between border-b border-surface-container-high pb-3">
                     <h3 class="text-base text-primary font-bold">Penulis / Kurator Ahli</h3>
                 </div>
                 <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-surface-container-low">
-                    <div class="w-11 h-11 rounded-full bg-primary flex items-center justify-center text-on-primary shrink-0 shadow-sm font-bold text-lg">
-                        {{ substr($tip->user->name ?? 'A', 0, 1) }}
+                    <div class="w-11 h-11 rounded-full overflow-hidden bg-primary flex items-center justify-center text-white shrink-0 shadow-sm font-bold text-lg">
+                        @if($currAvatar)
+                            <img src="{{ $currAvatar }}" alt="{{ $currUser->name ?? 'Kurator' }}" class="w-full h-full object-cover">
+                        @else
+                            {{ $currInitials }}
+                        @endif
                     </div>
                     <div class="min-w-0 flex-1">
-                        <span class="text-sm text-primary font-bold truncate block">{{ $tip->user->name ?? 'Anonim' }}</span>
-                        <span class="text-xs text-secondary truncate block">Super Admin</span>
+                        <span class="text-sm text-primary font-bold truncate block">{{ $currUser->name ?? 'Anonim' }}</span>
+                        <span class="text-xs text-secondary truncate block">Super Admin / Kurator</span>
                     </div>
                 </div>
             </section>
         </div>
 
-        <!-- ACTIONS (KIRI DRAFT, KANAN PUBLISH) -->
+        <!-- ACTIONS -->
         <div class="flex items-center justify-between pt-4 border-t border-surface-container-high mt-2">
-            
-            {{-- Kiri Bawah: Simpan Draft --}}
             <button type="submit" name="status" value="draft" class="px-6 py-3 rounded-full bg-surface-container-high text-primary text-sm font-bold hover:bg-surface-container transition flex items-center gap-2">
                 <span class="material-symbols-outlined text-[18px]">save</span>
                 Simpan sebagai Draft
             </button>
 
-            {{-- Kanan Bawah: Perbarui & Publikasikan --}}
             <div class="flex items-center gap-3">
                 <button type="submit" name="status" value="published" class="px-6 py-3 rounded-full bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary-container transition flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">check_circle</span>
@@ -237,11 +276,12 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script>
     function previewImage(event) {
         const input = event.target;
         const preview = document.getElementById('imagePreview');
-        
+
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -251,5 +291,32 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const quill = new Quill('#editor', {
+            theme: 'snow',
+            placeholder: 'Tuliskan isi panduan di sini...',
+            modules: {
+                toolbar: [
+                    [{ header: [2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    ['blockquote', 'link'],
+                    ['clean']
+                ]
+            }
+        });
+
+        const initial = @json(old('content', $tip->content));
+        if (initial) {
+            quill.setContents(quill.clipboard.convert({ html: initial }), 'silent');
+        }
+
+        document.querySelector('form').addEventListener('submit', function () {
+            const html = quill.getSemanticHTML().replace(/&nbsp;/g, ' ');
+            const isEmpty = quill.getText().trim().length === 0;
+            document.getElementById('content').value = isEmpty ? '' : html;
+        });
+    });
 </script>
 @endpush

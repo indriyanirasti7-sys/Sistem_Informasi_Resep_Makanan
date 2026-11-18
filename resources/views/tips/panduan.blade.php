@@ -60,9 +60,41 @@
 
         {{-- ========== 2. FEATURED TIP HERO ========== --}}
         @if ($featured)
+            @php
+                // Path Gambar Featured Tips (Mendukung Storage / Public / Uploads)
+                $featuredImagePath = 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1400';
+                if ($featured->image) {
+                    $cleanFeatured = str_replace(['storage/', 'uploads/tips/', 'uploads/'], '', $featured->image);
+                    if (file_exists(public_path('storage/' . $cleanFeatured))) {
+                        $featuredImagePath = asset('storage/' . $cleanFeatured);
+                    } elseif (file_exists(public_path('storage/tips/' . $cleanFeatured))) {
+                        $featuredImagePath = asset('storage/tips/' . $cleanFeatured);
+                    } elseif (file_exists(public_path('uploads/' . $cleanFeatured))) {
+                        $featuredImagePath = asset('uploads/' . $cleanFeatured);
+                    } else {
+                        $featuredImagePath = asset('storage/' . $featured->image);
+                    }
+                }
+
+                // Path Avatar Penulis Featured
+                $featuredAvatar = null;
+                if ($featured->user?->avatar) {
+                    $cleanAvatar = str_replace(['storage/', 'uploads/avatars/', 'avatars/'], '', $featured->user->avatar);
+                    if (file_exists(public_path('storage/avatars/' . $cleanAvatar))) {
+                        $featuredAvatar = asset('storage/avatars/' . $cleanAvatar);
+                    } elseif (file_exists(public_path('storage/' . $featured->user->avatar))) {
+                        $featuredAvatar = asset('storage/' . $featured->user->avatar);
+                    } else {
+                        $featuredAvatar = asset('storage/avatars/' . $cleanAvatar);
+                    }
+                } else {
+                    $featuredAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($featured->user?->name ?? 'Chef') . '&background=5a3a22&color=fff&bold=true';
+                }
+            @endphp
+
             <section class="relative w-full rounded-[2rem] overflow-hidden shadow-2xl group mb-16">
                 <div class="relative w-full aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9] min-h-[400px] bg-surface-container">
-                    <img src="{{ $featured->image ? Storage::url($featured->image) : 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1400' }}" 
+                    <img src="{{ $featuredImagePath }}" 
                          alt="{{ $featured->title }}" 
                          class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                     
@@ -92,10 +124,12 @@
                                     </span>
                                     <span class="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-white/40"></span>
                                     @if ($featured->user)
-                                        <span class="flex items-center gap-1.5">
-                                            <span class="material-symbols-outlined text-[18px] text-secondary-fixed">person</span>
-                                            {{ $featured->user->name }}
-                                        </span>
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-6 h-6 rounded-full overflow-hidden bg-white/20 shrink-0">
+                                                <img class="w-full h-full object-cover" src="{{ $featuredAvatar }}" alt="{{ $featured->user->name }}">
+                                            </div>
+                                            <span>{{ $featured->user->name }}</span>
+                                        </div>
                                     @endif
                                 </div>
 
@@ -121,9 +155,40 @@
 
         {{-- ========== 4. TIPS GRID (2 KOLOM DI HP) ========== --}}
         <section class="mb-16">
-            {{-- Grid diubah menjadi 2 kolom di HP, 3 kolom di Laptop --}}
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
                 @foreach ($tips as $tip)
+                    @php
+                        // Path Gambar Tips
+                        $tipImagePath = 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800';
+                        if ($tip->image) {
+                            $cleanTipImg = str_replace(['storage/', 'uploads/tips/', 'uploads/'], '', $tip->image);
+                            if (file_exists(public_path('storage/' . $cleanTipImg))) {
+                                $tipImagePath = asset('storage/' . $cleanTipImg);
+                            } elseif (file_exists(public_path('storage/tips/' . $cleanTipImg))) {
+                                $tipImagePath = asset('storage/tips/' . $cleanTipImg);
+                            } elseif (file_exists(public_path('uploads/' . $cleanTipImg))) {
+                                $tipImagePath = asset('uploads/' . $cleanTipImg);
+                            } else {
+                                $tipImagePath = asset('storage/' . $tip->image);
+                            }
+                        }
+
+                        // Path Avatar User / Kurator Tips
+                        $tipAvatar = null;
+                        if ($tip->user?->avatar) {
+                            $cleanTipAvatar = str_replace(['storage/', 'uploads/avatars/', 'avatars/'], '', $tip->user->avatar);
+                            if (file_exists(public_path('storage/avatars/' . $cleanTipAvatar))) {
+                                $tipAvatar = asset('storage/avatars/' . $cleanTipAvatar);
+                            } elseif (file_exists(public_path('storage/' . $tip->user->avatar))) {
+                                $tipAvatar = asset('storage/' . $tip->user->avatar);
+                            } else {
+                                $tipAvatar = asset('storage/avatars/' . $cleanTipAvatar);
+                            }
+                        } else {
+                            $tipAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($tip->user?->name ?? 'Chef') . '&background=5a3a22&color=fff&bold=true';
+                        }
+                    @endphp
+
                     <article class="tip-card flex flex-col bg-surface-container-lowest rounded-2xl sm:rounded-[1.5rem] overflow-hidden shadow-sm hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group border border-surface-container/60"
                              data-title="{{ strtolower($tip->title . ' ' . strip_tags($tip->content)) }}">
 
@@ -132,7 +197,7 @@
                             <a href="{{ route('tips.detail_tips', $tip->slug) }}" class="block w-full h-full">
                                 <img alt="{{ $tip->title }}"
                                      class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                     src="{{ $tip->image ? Storage::url($tip->image) : 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800' }}"/>
+                                     src="{{ $tipImagePath }}"/>
                             </a>
 
                             <div class="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">
@@ -173,9 +238,9 @@
                                     <span class="material-symbols-outlined text-[13px] sm:text-[16px] text-secondary">schedule</span>
                                     <span>{{ ceil(str_word_count(strip_tags($tip->content)) / 200) }} min</span>
                                 </div>
-                                <div class="flex items-center gap-1 sm:gap-2 max-w-[80px] sm:max-w-[140px]">
-                                    <div class="w-4 h-4 sm:w-6 sm:h-6 rounded-full bg-secondary/15 flex items-center justify-center text-secondary shrink-0">
-                                        <span class="material-symbols-outlined text-[10px] sm:text-[14px]">person</span>
+                                <div class="flex items-center gap-1.5 sm:gap-2 max-w-[90px] sm:max-w-[140px]">
+                                    <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full overflow-hidden bg-surface-container shrink-0 shadow-sm">
+                                        <img class="w-full h-full object-cover" src="{{ $tipAvatar }}" alt="{{ $tip->user->name ?? 'Tim Dapur' }}"/>
                                     </div>
                                     <span class="truncate">{{ $tip->user->name ?? 'Tim Dapur' }}</span>
                                 </div>
@@ -202,12 +267,11 @@
             </div>
         </section>
 
-        
         {{-- ========== 5. PAGINATION ========== --}}
         @if ($tips->hasPages())
             <section class="flex justify-center mb-16">
                 <div class="flex items-center gap-2">
-                    {{-- Tombol Previous (Panah Kiri) --}}
+                    {{-- Tombol Previous --}}
                     @if (!$tips->onFirstPage())
                         <a href="{{ $tips->previousPageUrl() }}"
                            class="w-10 h-10 rounded-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface flex items-center justify-center hover:bg-surface-container transition shadow-sm">
@@ -223,12 +287,10 @@
                     <div class="flex items-center gap-1.5">
                         @foreach ($tips->getUrlRange(max(1, $tips->currentPage() - 2), min($tips->lastPage(), $tips->currentPage() + 2)) as $page => $url)
                             @if ($page == $tips->currentPage())
-                                {{-- Halaman Aktif (Cokelat Gelap / Primary) --}}
                                 <span class="w-10 h-10 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shadow-md">
                                     {{ $page }}
                                 </span>
                             @else
-                                {{-- Halaman Lain --}}
                                 <a href="{{ $url }}"
                                    class="w-10 h-10 rounded-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface-variant text-xs font-bold flex items-center justify-center hover:bg-surface-container transition shadow-sm">
                                     {{ $page }}
@@ -237,7 +299,7 @@
                         @endforeach
                     </div>
 
-                    {{-- Tombol Next (Panah Kanan) --}}
+                    {{-- Tombol Next --}}
                     @if ($tips->hasMorePages())
                         <a href="{{ $tips->nextPageUrl() }}"
                            class="w-10 h-10 rounded-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface flex items-center justify-center hover:bg-surface-container transition shadow-sm">
@@ -277,10 +339,35 @@
     @endif
 
 </div>
+
+{{-- Toast --}}
+<div class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-full shadow-lg"
+     id="toastNotification">
+    <span class="material-symbols-outlined text-[20px]" id="toastIcon">check_circle</span>
+    <span class="text-sm font-semibold" id="toastMessage">Berhasil!</span>
+</div>
+
 @endsection
 
 @push('scripts')
 <script>
+let toastTimer;
+function showToast(message, icon = 'check_circle') {
+    const toast = document.getElementById('toastNotification');
+    const msg = document.getElementById('toastMessage');
+    const ic = document.getElementById('toastIcon');
+    if (!toast) return;
+    msg.textContent = message;
+    ic.textContent = icon;
+    toast.classList.remove('translate-y-24', 'opacity-0');
+    toast.classList.add('translate-y-0', 'opacity-100');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-24', 'opacity-0');
+    }, 2800);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // ==========================================
     // 1. FITUR PENCARIAN
@@ -358,36 +445,52 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', async (e) => {
             e.preventDefault();
             e.stopPropagation();
+            if (btn.disabled) return;
 
             const tipSlug = btn.getAttribute('data-tip-slug');
             const icon = btn.querySelector('.material-symbols-outlined');
-            const isFilled = icon.style.fontVariationSettings?.includes("'FILL' 1");
+            const csrfMeta = document.querySelector('meta[name="csrf-token"]');
 
+            if (!csrfMeta) {
+                showToast('CSRF token tidak ditemukan di layout', 'error');
+                return;
+            }
+
+            btn.disabled = true;
             try {
                 const res = await fetch(`/tips/${tipSlug}/bookmark`, {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-CSRF-TOKEN': csrfMeta.content,
                         'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
                 });
-                
+
+                if (res.status === 401) {
+                    showToast('Masuk dulu untuk menyimpan tips.', 'login');
+                    return;
+                }
                 if (!res.ok) throw new Error('Gagal');
-                
+
                 const data = await res.json();
 
                 if (data.status === 'added') {
                     icon.style.fontVariationSettings = "'FILL' 1";
                     btn.classList.remove('text-outline');
                     btn.classList.add('text-primary');
+                    showToast('Tips disimpan!', 'bookmark_added');
                 } else {
                     icon.style.fontVariationSettings = "'FILL' 0";
                     btn.classList.remove('text-primary');
                     btn.classList.add('text-outline');
+                    showToast('Tips dihapus dari simpanan', 'bookmark_remove');
                 }
             } catch (err) {
-                console.error(err);
-                alert('Gagal menyimpan. Silakan login terlebih dahulu.');
+                console.error('Gagal menyimpan tips:', err);
+                showToast('Gagal menyimpan. Coba lagi.', 'error');
+            } finally {
+                btn.disabled = false;
             }
         });
     });

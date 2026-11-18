@@ -7,12 +7,12 @@
 
 {{-- ========== HEADER ========== --}}
 <header class="flex flex-col gap-6 mb-8 pt-8">
-        <div class="flex flex-col gap-1.5">
-            <h1 class="font-['Playfair_Display'] text-4xl text-primary tracking-tight font-bold">Kelola Resep</h1>
-            <p class="text-sm text-on-surface-variant max-w-xl">
-                Tambah, kurasi, ubah, dan atur sajian kuliner nusantara yang tampil di etalase Griya Rasa.
-            </p>
-        </div>
+    <div class="flex flex-col gap-1.5">
+        <h1 class="font-['Playfair_Display'] text-4xl text-primary tracking-tight font-bold">Ulasan & Rating</h1>
+        <p class="text-sm text-on-surface-variant max-w-xl">
+            Pantau kualitas ulasan, kelola komentar, dan lihat interaksi dari komunitas Griya Rasa.
+        </p>
+    </div>
 
     {{-- ========== 4 STAT CARDS ========== --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mt-2">
@@ -124,7 +124,7 @@
                     <option value="rating_low" @selected(request('sort') === 'rating_low')>Rating Terendah</option>
                 </select>
                 <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant pointer-events-none">expand_more</span>
-            </div> 
+            </div>
         </div>
     </form>
     <div class="flex items-center justify-between pt-3 px-2">
@@ -191,15 +191,38 @@
             $isVerified = $user && !is_null($user->email_verified_at);
             $initials = collect(explode(' ', $user->name ?? 'Anonim'))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('');
             $rating = (int) $review->rating;
+
+            // ✅ FIX LOKAL STORAGE: Deteksi aman avatar pengguna di storage/ atau uploads/
+            $avatarUrl = null;
+            if ($user && $user->avatar) {
+                $cleanAvatar = str_replace(['storage/', 'uploads/avatars/', 'avatars/'], '', $user->avatar);
+                if (file_exists(public_path('storage/' . $user->avatar))) {
+                    $avatarUrl = asset('storage/' . $user->avatar);
+                } elseif (file_exists(public_path('storage/' . $cleanAvatar))) {
+                    $avatarUrl = asset('storage/' . $cleanAvatar);
+                } elseif (file_exists(public_path('storage/avatars/' . $cleanAvatar))) {
+                    $avatarUrl = asset('storage/avatars/' . $cleanAvatar);
+                } elseif (file_exists(public_path('uploads/' . $cleanAvatar))) {
+                    $avatarUrl = asset('uploads/' . $cleanAvatar);
+                } else {
+                    $avatarUrl = asset('storage/' . $user->avatar);
+                }
+            }
         @endphp
 
-        {{-- Border merah untuk ulasan bintang 1-2 --}}
         <article class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col gap-4 {{ $rating <= 2 ? 'border-l-4 border-error' : '' }}">
             <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                 <div class="flex items-start gap-3">
-                    <div class="w-12 h-12 rounded-full {{ $isAdmin ? 'bg-primary-fixed text-primary' : 'bg-secondary-container text-secondary' }} flex items-center justify-center font-bold text-sm shrink-0">
-                        {{ $initials }}
+                    
+                    {{-- ✅ TAMPILKAN FOTO PROFIL DENGAN AMAN --}}
+                    <div class="w-12 h-12 rounded-full overflow-hidden shrink-0 shadow-sm ring-2 ring-surface-container {{ $isAdmin ? 'bg-primary-fixed text-primary' : 'bg-secondary-container text-secondary' }} flex items-center justify-center font-bold text-sm">
+                        @if($avatarUrl)
+                            <img src="{{ $avatarUrl }}" alt="{{ $user->name }}" class="w-full h-full object-cover" />
+                        @else
+                            {{ $initials }}
+                        @endif
                     </div>
+
                     <div class="flex flex-col gap-0.5">
                         <div class="flex items-center gap-2 flex-wrap">
                             <h3 class="font-bold text-primary">{{ $user->name ?? 'Anonim' }}</h3>
@@ -227,7 +250,6 @@
                         @endfor
                     </div>
                     
-                    {{-- Badge Perlu Tanggapan --}}
                     @if ($rating <= 2)
                         <span class="inline-flex items-center gap-1 bg-error-container px-2.5 py-0.5 rounded-full text-error text-[10px] font-bold">
                             <span class="material-symbols-outlined text-[12px]">notification_important</span> Perlu Tanggapan
@@ -248,10 +270,22 @@
 
             <p class="text-sm text-on-surface leading-relaxed">“{{ $review->comment }}”</p>
 
-            <div class="flex items-center justify-between flex-wrap gap-2 pt-1">
-                <div class="inline-flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-full">
+            <div class="flex items-center justify-between flex-wrap gap-2 pt-1 border-t border-surface-container-high/60 mt-1">
+                <div class="inline-flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-full mt-2">
                     <span class="material-symbols-outlined text-[16px] text-primary">restaurant_menu</span>
                     <span class="text-xs font-bold text-primary">{{ $review->recipe->title ?? 'Resep dihapus' }}</span>
+                </div>
+
+                {{-- LIKE & DISLIKE ADMIN --}}
+                <div class="flex items-center gap-3 mt-2">
+                    <span class="flex items-center gap-1 text-xs font-bold text-secondary">
+                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">thumb_up</span>
+                        {{ $review->votes->where('vote_type', 'like')->count() }}
+                    </span>
+                    <span class="flex items-center gap-1 text-xs font-bold text-error">
+                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">thumb_down</span>
+                        {{ $review->votes->where('vote_type', 'dislike')->count() }}
+                    </span>
                 </div>
             </div>
         </article>

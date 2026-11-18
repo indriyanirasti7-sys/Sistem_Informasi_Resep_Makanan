@@ -10,6 +10,8 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
 @endpush
 
@@ -22,6 +24,25 @@
     @php
         $heroRecipes = $featured->take(3);
         $heroDishes = $heroRecipes->map(function ($r) {
+            // ✅ FIX LOKAL STORAGE: Prioritaskan storage/ lalu fallback ke uploads/
+            $imgSrc = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop';
+            if ($r->image) {
+                $cleanName = str_replace(['storage/', 'uploads/recipes/', 'uploads/'], '', $r->image);
+                if (file_exists(public_path('storage/' . $r->image))) {
+                    $imgSrc = asset('storage/' . $r->image);
+                } elseif (file_exists(public_path('storage/' . $cleanName))) {
+                    $imgSrc = asset('storage/' . $cleanName);
+                } elseif (file_exists(public_path('storage/recipes/' . $cleanName))) {
+                    $imgSrc = asset('storage/recipes/' . $cleanName);
+                } elseif (file_exists(public_path('uploads/' . $cleanName))) {
+                    $imgSrc = asset('uploads/' . $cleanName);
+                } elseif (file_exists(public_path('uploads/recipes/' . $cleanName))) {
+                    $imgSrc = asset('uploads/recipes/' . $cleanName);
+                } else {
+                    $imgSrc = asset('storage/' . $r->image);
+                }
+            }
+
             return [
                 'id'         => $r->id,
                 'title'      => $r->title,
@@ -31,16 +52,13 @@
                 'servings'   => $r->servings . ' Porsi',
                 'difficulty' => $r->difficulty,
                 'calories'   => $r->calories ? $r->calories . ' kkal' : '-',
-                // ✅ FIX: Hapus public/ dan gunakan file_exists
-                'image'      => $r->image 
-                                ? (file_exists(public_path('uploads/' . $r->image)) ? asset('uploads/' . $r->image) : asset('uploads/recipes/' . $r->image))
-                                : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop',
+                'image'      => $imgSrc,
                 'ingredients'=> $r->ingredients->take(5)->pluck('name'),
             ];
         })->values();
     @endphp
-    <section class="w-full px-5 lg:px-12 pt-28 lg:pt-32 pb-12">
-        
+    <section class="w-full px-5 lg:px-12 pt-12 lg:pt-16 -mt-6 lg:-mt-8 pb-12">
+
         <div class="relative rounded-[2.5rem] p-6 lg:p-12 shadow-2xl overflow-hidden text-white">
     
             <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2070&auto=format&fit=crop" 
@@ -122,7 +140,6 @@
                             <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
                         </a>
                         
-                        {{-- ✅ TOMBOL MULAI MASAK (ARAHKAN KE DETAIL RESEP) --}}
                         <a href="{{ $heroDishes[0]['url'] ?? '#' }}" id="hero-cook-btn"
                            class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold shadow-sm hover:bg-white/20 backdrop-blur-md transition-all">
                             <span class="material-symbols-outlined text-primary-fixed text-[22px]" style="font-variation-settings: 'FILL' 1;">skillet</span>
@@ -198,17 +215,25 @@
                     <a href="{{ route('recipes.daftar_resep', ['category' => $cat->slug]) }}"
                        class="group relative flex flex-col justify-end w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
                         
-                        {{-- ✅ FIX: Hapus public/ dan gunakan file_exists --}}
+                        {{-- ✅ FIX LOKAL STORAGE: Deteksi otomatis folder storage/ atau uploads/ --}}
                         @php
-                            $catPath = $cat->image && file_exists(public_path('uploads/' . $cat->image)) 
-                                       ? 'uploads/' . $cat->image 
-                                       : 'uploads/recipes/' . $cat->image;
+                            $catImg = 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=800&auto=format&fit=crop';
+                            if ($cat->image) {
+                                $cleanCat = str_replace(['storage/', 'uploads/categories/', 'uploads/'], '', $cat->image);
+                                if (file_exists(public_path('storage/' . $cat->image))) {
+                                    $catImg = asset('storage/' . $cat->image);
+                                } elseif (file_exists(public_path('storage/' . $cleanCat))) {
+                                    $catImg = asset('storage/' . $cleanCat);
+                                } elseif (file_exists(public_path('storage/categories/' . $cleanCat))) {
+                                    $catImg = asset('storage/categories/' . $cleanCat);
+                                } elseif (file_exists(public_path('uploads/' . $cleanCat))) {
+                                    $catImg = asset('uploads/' . $cleanCat);
+                                } else {
+                                    $catImg = asset('storage/' . $cat->image);
+                                }
+                            }
                         @endphp
-                        @if($cat->image)
-                            <img src="{{ asset($catPath) }}" alt="{{ $cat->name }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        @else
-                            <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=800&auto=format&fit=crop" alt="{{ $cat->name }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        @endif
+                        <img src="{{ $catImg }}" alt="{{ $cat->name }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
 
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10 group-hover:from-black/90 transition-colors duration-300"></div>
 
@@ -246,7 +271,6 @@
             @include('recipes.partials.recipe_items', ['recipes' => $latest])
         </div>
 
-        {{-- ✅ FIX: Ubah kondisi dari 20 menjadi 12 --}}
         @if($latest->count() >= 12)
             <div class="flex justify-center mt-4">
                 <button id="btn-load-more" data-skip="12" class="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-surface-container text-primary font-bold text-sm hover:bg-surface-container-high transition shadow-sm border border-outline-variant">
@@ -258,7 +282,7 @@
     </section>
 
     {{-- ============================================================ --}}
-    {{-- 4. SMART PANTRY --}}
+    {{-- 4. SMART PANTRY (ASISTEN KULKAS PINTAR) --}}
     {{-- ============================================================ --}}
     <section id="asisten-kulkas" class="w-full px-5 lg:px-12 py-8">
         <div class="relative rounded-3xl bg-surface-container-high p-6 lg:p-10 overflow-hidden shadow-sm">
@@ -343,14 +367,26 @@
                 <article class="snap-start shrink-0 w-[280px] sm:w-[320px] flex flex-col bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group">
                     
                     <div class="relative w-full aspect-[16/10] overflow-hidden bg-surface-container">
-                        {{-- ✅ FIX: Hapus public/ --}}
+                        {{-- ✅ FIX LOKAL STORAGE: Deteksi otomatis folder storage/ atau uploads/ --}}
                         @php
-                            $tipPath = $tip->image && file_exists(public_path('uploads/' . $tip->image)) 
-                                       ? 'uploads/' . $tip->image 
-                                       : 'uploads/tips/' . $tip->image;
+                            $tipImg = 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=800&auto=format&fit=crop';
+                            if ($tip->image) {
+                                $cleanTip = str_replace(['storage/', 'uploads/tips/', 'uploads/'], '', $tip->image);
+                                if (file_exists(public_path('storage/' . $tip->image))) {
+                                    $tipImg = asset('storage/' . $tip->image);
+                                } elseif (file_exists(public_path('storage/' . $cleanTip))) {
+                                    $tipImg = asset('storage/' . $cleanTip);
+                                } elseif (file_exists(public_path('storage/tips/' . $cleanTip))) {
+                                    $tipImg = asset('storage/tips/' . $cleanTip);
+                                } elseif (file_exists(public_path('uploads/' . $cleanTip))) {
+                                    $tipImg = asset('uploads/' . $cleanTip);
+                                } else {
+                                    $tipImg = asset('storage/' . $tip->image);
+                                }
+                            }
                         @endphp
                         <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                             src="{{ $tip->image ? asset($tipPath) : 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=800&auto=format&fit=crop' }}"
+                             src="{{ $tipImg }}"
                              alt="{{ $tip->title }}" />
                         
                         @auth
@@ -416,7 +452,6 @@
     function showToast(msg) {
         let t = document.getElementById('toastNotification');
         if (!t) {
-            // Buat elemen toast otomatis jika belum ada di home.blade.php
             const toastHtml = `
                 <div class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2 px-5 py-3 bg-primary text-white rounded-full shadow-2xl" id="toastNotification">
                     <span class="material-symbols-outlined text-[20px]">check_circle</span>
@@ -526,53 +561,72 @@
     }
 
     // ===========================================================
-    // 2. BOOKMARK RESEP (AJAX) - DIPERBARUI DENGAN TEKS & NOTIFIKASI
+    // 2. BOOKMARK RESEP (AJAX) - DENGAN PENGECEKAN LOGIN
     // ===========================================================
     document.querySelectorAll('.bookmark-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
             e.preventDefault();
             e.stopPropagation();
 
-            const recipeSlug = btn.getAttribute('data-recipe-slug');
-            const icon = btn.querySelector('.material-symbols-outlined');
-            const textSpan = btn.querySelector('.bookmark-text'); // Cari elemen teks tombol jika ada
-            const isFilled = icon.style.fontVariationSettings?.includes("'FILL' 1");
+            @guest
+                const loginModal = document.getElementById('loginPromptModal');
+                if (loginModal) {
+                    loginModal.classList.remove('hidden');
+                } else {
+                    window.location.href = "{{ route('login') }}";
+                }
+                return;
+            @endguest
 
-            try {
-                const res = await fetch(`/bookmark/${recipeSlug}`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                });
-                if (!res.ok) throw new Error('Gagal');
+            @auth
+                const recipeSlug = btn.getAttribute('data-recipe-slug');
+                const icon = btn.querySelector('.material-symbols-outlined');
+                const textSpan = btn.querySelector('.bookmark-text');
 
-                const data = await res.json();
+                try {
+                    const res = await fetch(`/bookmark/${recipeSlug}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                    });
+
+                    if (!res.ok) throw new Error('Gagal memproses server');
+
+                    const data = await res.json();
+
+                    const cardElement = btn.closest('.group');
+                const countSpan = cardElement.querySelector('.bookmark-count');
 
                 if (data.status === 'added') {
-                    // Ubah jadi Terisi (Tersimpan)
                     icon.style.fontVariationSettings = "'FILL' 1";
-                    btn.classList.remove('text-outline', 'bg-surface-container-lowest');
-                    btn.classList.add('text-primary', 'bg-primary-container/20');
-                    if (textSpan) textSpan.textContent = 'Tersimpan';
-                    showToast('Resep berhasil disimpan!');
+                    btn.classList.remove('text-outline');
+                    btn.classList.add('text-primary', 'bg-primary-container/30');
+                    
+                    // Update angka counter bertambah 1
+                    if (countSpan) countSpan.textContent = parseInt(countSpan.textContent) + 1;
+                    
+                    showToast('Resep berhasil disimpan ke koleksi!');
                 } else {
-                    // Ubah jadi Kosong (Hapus Simpanan)
                     icon.style.fontVariationSettings = "'FILL' 0";
-                    btn.classList.remove('text-primary', 'bg-primary-container/20');
-                    btn.classList.add('text-outline', 'bg-surface-container-lowest');
-                    if (textSpan) textSpan.textContent = 'Simpan';
-                    showToast('Resep dihapus dari simpanan.');
+                    btn.classList.remove('text-primary', 'bg-primary-container/30');
+                    btn.classList.add('text-outline');
+                    
+                    // Update angka counter berkurang 1 (minimal 0)
+                    if (countSpan) countSpan.textContent = Math.max(0, parseInt(countSpan.textContent) - 1);
+                    
+                    showToast('Resep dihapus dari koleksi.');
                 }
-            } catch (err) {
-                console.error(err);
-                showToast('Gagal memproses bookmark. Silakan coba lagi.');
-            }
+                } catch (err) {
+                    console.error('Bookmark Error:', err);
+                    showToast('Gagal. Coba lagi.');
+                }
+            @endauth
         });
     });
-
+    
     // ===========================================================
     // 3. PANTRY CHIPS (Pilih Bahan)
     // ===========================================================
@@ -617,7 +671,7 @@
     });
 
     // ===========================================================
-    // 4. SEARCH FROM PANTRY
+    // 4. SEARCH FROM PANTRY (Kirim parameter ?ingredients= ke Controller)
     // ===========================================================
     const btnSearchPantry = document.getElementById('btn-search-pantry');
 
@@ -632,7 +686,7 @@
             });
 
             if (selectedIngredients.length === 0) {
-                alert('Silakan pilih minimal 1 bahan di kulkas Anda terlebih dahulu!');
+                showToast('Silakan pilih minimal 1 bahan di kulkas Anda terlebih dahulu!');
                 return;
             }
 
@@ -653,7 +707,6 @@
 
             const tipSlug = btn.getAttribute('data-tip-slug');
             const icon = btn.querySelector('.material-symbols-outlined');
-            const isFilled = icon.style.fontVariationSettings?.includes("'FILL' 1");
 
             try {
                 const res = await fetch(`/tips/${tipSlug}/bookmark`, {
@@ -680,8 +733,8 @@
                     showToast('Tips dihapus dari simpanan.');
                 }
             } catch (err) {
-                console.error(err);
-                showToast('Gagal menyimpan tips.');
+                console.error('Detail Error:', err);
+                showToast('Error: ' + err.message);
             }
         });
     });

@@ -12,11 +12,11 @@
 @endpush
 
 @section('content')
-<div class="relative w-full px-5 lg:px-12 pt-6 pb-16">
+<div class="relative w-full px-5 lg:px-12 pt-6 pb-16 overflow-hidden">
     {{-- Ambient Glow --}}
-    <div class="absolute top-0 left-1/3 w-96 h-96 bg-primary-fixed/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
-    <div class="absolute top-24 right-10 w-80 h-80 bg-secondary-fixed/25 rounded-full blur-3xl pointer-events-none -z-10"></div>
-
+    <div class="hidden md:block absolute top-0 left-1/3 w-96 h-96 bg-primary-fixed/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
+    <div class="hidden md:block absolute top-24 right-10 w-80 h-80 bg-secondary-fixed/25 rounded-full blur-3xl pointer-events-none -z-10"></div>
+    
     {{-- Breadcrumb --}}
     <nav class="flex items-center gap-1.5 text-sm text-on-surface-variant mb-3">
         <a href="{{ route('home') }}" class="hover:text-primary transition-colors flex items-center gap-1">
@@ -100,7 +100,12 @@
                       {{ request('category') === $cat->slug ? 'border-primary-container shadow-md' : 'border-surface-container hover:border-primary/40' }}">
 
                 @if($cat->image)
-                    <img src="{{ Storage::url($cat->image) }}"
+                    @php
+                        $catPath = file_exists(public_path('storage/' . $cat->image)) 
+                                    ? asset('storage/' . $cat->image) 
+                                    : (file_exists(public_path('uploads/' . $cat->image)) ? asset('uploads/' . $cat->image) : asset('storage/categories/' . $cat->image));
+                    @endphp
+                    <img src="{{ $catPath }}"
                          alt="{{ $cat->name }}"
                          class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
                 @else
@@ -127,6 +132,7 @@
 
     {{-- Difficulty & Sort Row --}}
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-6 p-3.5 rounded-2xl bg-surface-container-lowest shadow-sm">
+
         <div class="flex flex-wrap items-center gap-2">
             <span class="text-[11px] uppercase tracking-wider text-outline font-bold mr-1">Tingkat:</span>
             @foreach (['Mudah', 'Sedang', 'Sulit'] as $level)
@@ -176,27 +182,53 @@
         <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 mb-8">
             @foreach ($recipes as $recipe)
                 @php
-                    $diffColor = match($recipe->difficulty) {
-                        'Mudah'  => 'bg-secondary-container text-on-secondary-container',
-                        'Sedang' => 'bg-primary-fixed text-primary',
-                        'Sulit'  => 'bg-error-container text-on-error-container',
-                        default  => 'bg-surface-container-high',
-                    };
+                    // Path Gambar Resep (Mendukung Storage / Public / Uploads)
+                    $recipePath = null;
+                    if ($recipe->image) {
+                        $cleanImage = str_replace(['storage/', 'uploads/recipes/', 'uploads/'], '', $recipe->image);
+                        if (file_exists(public_path('storage/' . $cleanImage))) {
+                            $recipePath = asset('storage/' . $cleanImage);
+                        } elseif (file_exists(public_path('storage/recipes/' . $cleanImage))) {
+                            $recipePath = asset('storage/recipes/' . $cleanImage);
+                        } elseif (file_exists(public_path('uploads/recipes/' . $cleanImage))) {
+                            $recipePath = asset('uploads/recipes/' . $cleanImage);
+                        } else {
+                            $recipePath = asset('storage/' . $recipe->image);
+                        }
+                    }
+
+                    // Path Avatar User (Mencegah double folder avatars/avatars/ dan mendukung storage)
+                    $avatarFile = null;
+                    if ($recipe->user?->avatar) {
+                        $cleanAvatar = str_replace(['storage/', 'uploads/avatars/', 'avatars/'], '', $recipe->user->avatar);
+                        if (file_exists(public_path('storage/avatars/' . $cleanAvatar))) {
+                            $avatarFile = asset('storage/avatars/' . $cleanAvatar);
+                        } elseif (file_exists(public_path('storage/' . $recipe->user->avatar))) {
+                            $avatarFile = asset('storage/' . $recipe->user->avatar);
+                        } else {
+                            $avatarFile = asset('storage/avatars/' . $cleanAvatar);
+                        }
+                    } else {
+                        $avatarFile = 'https://ui-avatars.com/api/?name=' . urlencode($recipe->user?->name ?? 'Chef') . '&background=5a3a22&color=fff&bold=true';
+                    }
                 @endphp
 
                 <article class="group flex flex-col bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
                     <div class="relative w-full aspect-square sm:aspect-[4/3] shrink-0 overflow-hidden bg-surface-container">
                         <a href="{{ route('recipes.show', $recipe->slug) }}" class="block w-full h-full">
                             <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                src="{{ $recipe->image ? Storage::url($recipe->image) : 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800' }}"
-                                alt="{{ $recipe->title }}" />
+                                 src="{{ $recipePath ?? 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800' }}"
+                                 alt="{{ $recipe->title }}" />
                         </a>
 
+                        {{-- Tombol Simpan (Bookmark) --}}
                         @auth
                             <button type="button" data-recipe-slug="{{ $recipe->slug }}"
                                     class="bookmark-btn absolute top-2 right-2 md:top-3 md:right-3 w-7 h-7 md:w-9 md:h-9 rounded-full bg-white/90 backdrop-blur-md text-outline hover:text-primary flex items-center justify-center shadow-sm transition-all z-10"
                                     title="Simpan resep">
-                                <span class="material-symbols-outlined text-[16px] md:text-[20px]">bookmark_border</span>
+                                <span class="material-symbols-outlined text-[16px] md:text-[20px]">
+                                    {{ auth()->user()->bookmarks()->where('recipe_id', $recipe->id)->exists() ? 'bookmark' : 'bookmark_border' }}
+                                </span>
                             </button>
                         @else
                             <a href="{{ route('login') }}?require_login=1" title="Masuk untuk menyimpan resep"
@@ -206,11 +238,12 @@
                         @endauth
                     </div>
 
+                    {{-- BODY --}}
                     <div class="p-2.5 md:p-5 flex flex-col flex-1 justify-between min-w-0">
                         <div class="flex flex-col gap-1">
                             <div class="hidden md:flex items-center gap-1.5 text-on-tertiary-container mb-1">
                                 <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="text-base font-bold text-on-surface">{{ $recipe->average_rating ?? 0 }}</span>
+                                <span class="text-base font-bold text-on-surface">{{ number_format($recipe->average_rating ?? 0, 1) }}</span>
                                 <span class="text-xs text-outline">({{ $recipe->rating_count ?? 0 }} ulasan)</span>
                             </div>
 
@@ -222,7 +255,7 @@
 
                             <div class="flex items-center gap-1 mt-0.5 md:hidden">
                                 <div class="w-3.5 h-3.5 rounded-full overflow-hidden bg-surface-container shrink-0">
-                                    <img class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($recipe->user?->name ?? 'Chef') }}&background=5a3a22&color=fff&bold=true"/>
+                                    <img class="w-full h-full object-cover" src="{{ $avatarFile }}" alt="{{ $recipe->user?->name ?? 'Chef' }}"/>
                                 </div>
                                 <span class="text-[10px] text-on-surface-variant truncate">
                                     {{ Str::limit($recipe->user?->name ?? 'Tim Dapur', 10) }}
@@ -234,11 +267,12 @@
                             </p>
                         </div>
 
+                        {{-- FOOTER --}}
                         <div>
                             <div class="flex items-center gap-2 mt-1.5 pt-1.5 border-t border-surface-container/50 md:hidden">
                                 <span class="flex items-center gap-0.5 text-[10px] font-bold text-primary">
                                     <span class="material-symbols-outlined text-[12px] text-tertiary-container" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    {{ $recipe->average_rating ?? 0 }}
+                                    {{ number_format($recipe->average_rating ?? 0, 1) }}
                                 </span>
                                 <span class="flex items-center gap-0.5 text-[10px] text-on-surface-variant">
                                     <span class="material-symbols-outlined text-[12px] text-primary" style="font-variation-settings: 'FILL' 1;">bookmark</span>
@@ -271,9 +305,8 @@
 
                             <div class="hidden md:flex mt-auto pt-2 items-center justify-between border-t border-surface-container pt-4">
                                 <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container">
-                                        <img class="w-full h-full object-cover"
-                                             src="https://ui-avatars.com/api/?name={{ urlencode($recipe->user?->name ?? 'Chef') }}&background=5a3a22&color=fff&bold=true"/>
+                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container shrink-0">
+                                        <img class="w-full h-full object-cover" src="{{ $avatarFile }}" alt="{{ $recipe->user?->name ?? 'Chef' }}"/>
                                     </div>
                                     <span class="text-[11px] text-on-surface-variant font-medium">
                                         {{ Str::limit($recipe->user?->name ?? 'Tim Dapur', 12) }}
@@ -291,7 +324,6 @@
             @endforeach
         </div>
     @else
-        {{-- Empty State --}}
         <div class="text-center py-20 bg-surface-container-lowest rounded-3xl shadow-sm mb-12">
             <span class="material-symbols-outlined text-[64px] text-outline block mb-4">search_off</span>
             <h3 class="font-display text-xl font-bold text-primary mb-2">Tidak ada resep ditemukan</h3>
@@ -304,52 +336,46 @@
         </div>
     @endif
 
-    {{-- ✅ PAGINATION (DIPINDAH KE ATAS BANNER & DIBERI JARAK mb-6) --}}
-    {{-- PAGINATION MINIMALIS SESUAI GAMBAR --}}
+    {{-- PAGINATION --}}
     @if ($recipes->hasPages())
-        <div class="flex items-center justify-center gap-2 my-8">
-            {{-- Tombol Previous (Panah Kiri) --}}
-            @if ($recipes->onFirstPage())
-                <span class="w-10 h-10 rounded-full bg-surface-container-low text-outline flex items-center justify-center opacity-40 cursor-not-allowed shadow-sm">
-                    <span class="material-symbols-outlined text-[18px]">chevron_left</span>
-                </span>
-            @else
-                <a href="{{ $recipes->previousPageUrl() }}"
-                   class="w-10 h-10 rounded-full bg-surface-container-lowest text-on-surface hover:bg-surface-container flex items-center justify-center transition shadow-sm border border-outline-variant/30">
-                    <span class="material-symbols-outlined text-[18px]">chevron_left</span>
-                </a>
-            @endif
+        <section class="flex justify-center mb-16">
+            <div class="flex items-center gap-3">
+                @if (!$recipes->onFirstPage())
+                    <a href="{{ $recipes->previousPageUrl() }}"
+                       class="w-12 h-12 rounded-full bg-surface-container-lowest border border-surface-container text-primary flex items-center justify-center hover:bg-surface-container transition shadow-sm">
+                        <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                    </a>
+                @else
+                    <span class="w-12 h-12 rounded-full bg-surface-container/50 text-outline/50 flex items-center justify-center cursor-not-allowed">
+                        <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                    </span>
+                @endif
 
-            {{-- Nomor Halaman --}}
-            <div class="flex items-center gap-1.5">
                 @foreach ($recipes->getUrlRange(max(1, $recipes->currentPage() - 2), min($recipes->lastPage(), $recipes->currentPage() + 2)) as $page => $url)
                     @if ($page == $recipes->currentPage())
-                        {{-- Halaman Aktif (Cokelat Gelap / Primary) --}}
-                        <span class="w-10 h-10 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shadow-md">
+                        <span class="w-12 h-12 rounded-full bg-primary text-white text-sm font-bold flex items-center justify-center shadow-md transform scale-110">
                             {{ $page }}
                         </span>
                     @else
-                        {{-- Halaman Lain --}}
                         <a href="{{ $url }}"
-                           class="w-10 h-10 rounded-full bg-surface-container-lowest text-on-surface-variant text-xs font-bold flex items-center justify-center hover:bg-surface-container transition shadow-sm border border-outline-variant/30">
+                           class="w-12 h-12 rounded-full bg-surface-container-lowest border border-surface-container text-on-surface-variant text-sm font-bold flex items-center justify-center hover:bg-surface-container transition shadow-sm">
                             {{ $page }}
                         </a>
                     @endif
                 @endforeach
-            </div>
 
-            {{-- Tombol Next (Panah Kanan) --}}
-            @if ($recipes->hasMorePages())
-                <a href="{{ $recipes->nextPageUrl() }}"
-                   class="w-10 h-10 rounded-full bg-surface-container-lowest text-on-surface hover:bg-surface-container flex items-center justify-center transition shadow-sm border border-outline-variant/30">
-                    <span class="material-symbols-outlined text-[18px]">chevron_right</span>
-                </a>
-            @else
-                <span class="w-10 h-10 rounded-full bg-surface-container-low text-outline flex items-center justify-center opacity-40 cursor-not-allowed shadow-sm">
-                    <span class="material-symbols-outlined text-[18px]">chevron_right</span>
-                </span>
-            @endif
-        </div>
+                @if ($recipes->hasMorePages())
+                    <a href="{{ $recipes->nextPageUrl() }}"
+                       class="w-12 h-12 rounded-full bg-surface-container-lowest border border-surface-container text-primary flex items-center justify-center hover:bg-surface-container transition shadow-sm">
+                        <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                    </a>
+                @else
+                    <span class="w-12 h-12 rounded-full bg-surface-container/50 text-outline/50 flex items-center justify-center cursor-not-allowed">
+                        <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                    </span>
+                @endif
+            </div>
+        </section>
     @endif
 
     {{-- Pantry Banner --}}
@@ -415,7 +441,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const csrfMeta = document.querySelector('meta[name="csrf-token"]');
             if (!csrfMeta) {
-                showToast('CSRF token tidak ditemukan di layout', 'error');
+                showToast('CSRF token tidak ditemukan', 'error');
                 return;
             }
 

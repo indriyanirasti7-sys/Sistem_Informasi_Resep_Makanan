@@ -6,7 +6,7 @@
 @section('content')
 <div class="flex flex-col w-full">
 
-    
+    {{-- HEADER DASHBOARD --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between pb-8 border-b border-surface-container gap-4 pt-8">
         <div>
             <div class="flex items-center gap-2 mb-1">
@@ -19,11 +19,9 @@
             <h1 class="font-display text-3xl lg:text-4xl text-primary tracking-tight font-bold">
                 {{ $greeting }}, {{ auth()->user()->name }}!
             </h1>
-            <h1 class="font-display text-3xl lg:text-4xl text-primary tracking-tight font-bold">
-                Ikhtisar & Manajemen Dapur Resep
-            </h1>
             <p class="text-sm text-on-surface-variant mt-1">
-                Pantau koleksi resep, atur menu pilihan, dan publikasikan kreasi hidangan terbarumu </p>
+                Pantau koleksi resep, atur menu pilihan, dan publikasikan kreasi hidangan terbarumu
+            </p>
         </div>
 
         <div class="flex items-center gap-3 self-start md:self-auto">
@@ -40,10 +38,9 @@
         </div>
     </div>
 
-    
+    {{-- STATS CARDS --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-8">
-
-        
+        {{-- Total Resep Terbit --}}
         <div class="relative bg-surface-container-lowest rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-surface-container rounded-full opacity-40 group-hover:scale-125 transition-transform duration-500"></div>
             <div class="flex items-start justify-between relative z-10">
@@ -67,7 +64,7 @@
             </div>
         </div>
 
-     
+        {{-- Komunitas Pengguna --}}
         <div class="relative bg-surface-container-lowest rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-secondary-fixed/30 rounded-full opacity-40 group-hover:scale-125 transition-transform duration-500"></div>
             <div class="flex items-start justify-between relative z-10">
@@ -91,7 +88,7 @@
             </div>
         </div>
 
-       
+        {{-- Total Ulasan Resep --}}
         <div class="relative bg-surface-container-lowest rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-tertiary-fixed/40 rounded-full opacity-40 group-hover:scale-125 transition-transform duration-500"></div>
             <div class="flex items-start justify-between relative z-10">
@@ -115,6 +112,7 @@
             </div>
         </div>
 
+        {{-- Resep Terpopuler (Trending #1) --}}
         @php $top = $topRecipes->first(); @endphp
         <div class="relative bg-gradient-to-br from-primary-container to-primary rounded-2xl p-6 text-white shadow-md flex flex-col justify-between overflow-hidden">
             <div class="absolute right-0 bottom-0 opacity-15 pointer-events-none transform translate-x-4 translate-y-4">
@@ -140,54 +138,63 @@
         </div>
     </div>
 
-    
-    <div class="mt-8 bg-surface-container-lowest rounded-2xl p-6 lg:p-8 shadow-sm">
+    {{-- GRAFIK AKTIVITAS (RESPONSIF MOBILE DIPERBAIKI) --}}
+    <{{-- GRAFIK AKTIVITAS (DIPERBAIKI AGAR BULAN TIDAK KEPOTONG) --}}
+    <div class="mt-8 bg-surface-container-lowest rounded-2xl p-5 sm:p-6 lg:p-8 shadow-sm">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-surface-container">
             <div>
                 <div class="flex items-center gap-2">
                     <span class="material-symbols-outlined text-secondary text-[22px]">bar_chart</span>
-                    <h2 class="text-xl text-primary font-bold">Aktivitas Unggahan & Akses Resep 6 Bulan Terakhir</h2>
+                    <h2 class="text-lg sm:text-xl text-primary font-bold">Aktivitas Unggahan & Akses Resep 6 Bulan Terakhir</h2>
                 </div>
                 <p class="text-xs text-on-surface-variant mt-0.5">Perbandingan publikasi kuliner tradisional dengan pastry & dessert.</p>
             </div>
-            <div class="flex items-center gap-5">
+            {{-- Legend responsif --}}
+            <div class="flex flex-wrap items-center gap-4 sm:gap-5">
                 <div class="flex items-center gap-2 text-xs text-on-surface">
-                    <span class="w-3.5 h-3.5 rounded-full bg-primary-container"></span>
+                    <span class="w-3.5 h-3.5 rounded-full bg-primary-container shrink-0"></span>
                     <span>Masakan Tradisional</span>
                 </div>
                 <div class="flex items-center gap-2 text-xs text-on-surface">
-                    <span class="w-3.5 h-3.5 rounded-full bg-secondary"></span>
+                    <span class="w-3.5 h-3.5 rounded-full bg-secondary shrink-0"></span>
                     <span>Pastry & Minuman</span>
                 </div>
             </div>
         </div>
 
-        <div class="pt-6">
-            <div class="grid grid-cols-6 gap-3 sm:gap-6 items-end h-56 w-full px-2 sm:px-6">
-                @foreach ($chartData as $d)
-                    <div class="flex flex-col items-center h-full justify-end group cursor-pointer">
-                        <div class="text-xs text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity mb-2 bg-surface-container-high px-2 py-0.5 rounded shadow-sm">
-                            {{ $d['akses'] }} akses
+        {{-- Container Grafik dengan Padding Bawah (pb-8) agar label bulan aman --}}
+        <div class="pt-6 pb-4">
+            <div class="overflow-x-auto pb-4 -mx-2 px-2 sm:mx-0 sm:px-0">
+                <div class="min-w-[480px] sm:min-w-full grid grid-cols-6 gap-3 sm:gap-6 items-end h-56 sm:h-60 w-full px-2 sm:px-6">
+                    @foreach ($chartData as $d)
+                        <div class="flex flex-col items-center h-full justify-end group cursor-pointer pb-2">
+                            {{-- Tooltip info akses --}}
+                            <div class="text-[10px] sm:text-xs text-on-surface-variant opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity mb-1 sm:mb-2 bg-surface-container-high px-1.5 sm:px-2 py-0.5 rounded shadow-sm whitespace-nowrap">
+                                {{ $d['akses'] }} akses
+                            </div>
+                            <div class="flex items-end gap-1.5 sm:gap-2.5 h-40 sm:h-44 w-full justify-center">
+                                {{-- Bar Tradisional --}}
+                                <div class="w-5 sm:w-8 bg-primary-container rounded-t-md transition-all duration-300 group-hover:opacity-90"
+                                     style="height: {{ $d['tradisional'] }}%;"></div>
+                                
+                                {{-- Bar Pastry --}}
+                                <div class="w-5 sm:w-8 bg-secondary rounded-t-md transition-all duration-300 group-hover:opacity-90"
+                                     style="height: {{ $d['pastry'] }}%;"></div>
+                            </div>
+                            {{-- Label Bulan dengan jarak margin atas yang pas --}}
+                            <span class="text-xs text-on-surface font-semibold mt-3 sm:mt-4 whitespace-nowrap">
+                                {{ $d['month'] }}
+                            </span>
                         </div>
-                        <div class="flex items-end gap-1.5 sm:gap-2.5 h-44 w-full justify-center">
-                            {{-- Bar Tradisional --}}
-                            <div class="w-4 sm:w-8 bg-primary-container rounded-t-md transition-all duration-300 group-hover:opacity-90"
-                                 style="height: {{ $d['tradisional'] }}%;"></div>
-                            
-                            {{-- Bar Pastry --}}
-                            <div class="w-4 sm:w-8 bg-secondary rounded-t-md transition-all duration-300 group-hover:opacity-90"
-                                 style="height: {{ $d['pastry'] }}%;"></div>
-                        </div>
-                        <span class="text-xs text-on-surface font-semibold mt-3">
-                            {{ $d['month'] }}
-                        </span>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
             </div>
+            {{-- Keterangan geser untuk mobile --}}
+            <p class="text-[11px] text-center text-outline mt-2 sm:hidden">← Geser grafik ke samping untuk melihat data lengkap →</p>
         </div>
     </div>
 
-  
+    {{-- DAFTAR & KURASI RESEP MASAKAN --}}
     <div class="mt-10 bg-surface-container-lowest rounded-2xl p-6 lg:p-8 shadow-sm">
         <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pb-6 border-b border-surface-container">
             <div>
@@ -265,7 +272,7 @@
                                 </div>
                             </td>
 
-                            
+                            {{-- Status --}}
                             <td class="py-4 px-3 text-center">
                                 @if ($r->status === 'published')
                                     <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-bold">
@@ -280,16 +287,14 @@
                                 @endif
                             </td>
 
-                            
+                            {{-- Aksi --}}
                             <td class="py-4 px-3 text-center">
                                 <div class="flex items-center justify-center gap-2">
-                                    {{-- Tombol Edit --}}
                                     <a href="{{ route('admin.recipes.edit', $r->slug) }}"
                                     class="p-2 rounded-full hover:bg-surface-container text-primary transition-all" title="Edit">
                                         <span class="material-symbols-outlined text-[19px]">edit</span>
                                     </a>
 
-                                    {{-- Tombol Hapus (WAJIB FORM) --}}
                                     <form method="POST" action="{{ route('admin.recipes.destroy', $r->slug) }}" onsubmit="return confirm('Hapus resep ini?')" class="inline">
                                         @csrf
                                         @method('DELETE')

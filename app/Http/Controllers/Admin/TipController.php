@@ -43,13 +43,14 @@ class TipController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title'   => 'required|string|max:150',
-            'content' => 'required|string',
-            'image'   => 'nullable|image|max:5120',
-            'status'  => 'nullable|in:draft,published', // Toleransi jika form mengirim status
+            'title'      => 'required|string|max:150',
+            'category'   => 'nullable|string|max:50',     // ✅ Ditambahkan
+            'difficulty' => 'nullable|string|max:50',     // ✅ Ditambahkan
+            'content'    => 'required|string',
+            'image'      => 'nullable|image|max:5120',
+            'status'     => 'nullable|in:draft,published',
         ]);
 
-     
         $validated['user_id'] = auth()->id(); 
         
         if ($request->hasFile('image')) {
@@ -63,7 +64,6 @@ class TipController extends Controller
             ->with('success', 'Tips berhasil ditambahkan.');
     }
  
-  
     public function detail(Tip $tip)
     {
         return view('admin.tips.detail', compact('tip'));
@@ -77,10 +77,12 @@ class TipController extends Controller
     public function update(Request $request, Tip $tip)
     {
         $validated = $request->validate([
-            'title'   => 'required|string|max:150',
-            'content' => 'required|string',
-            'image'   => 'nullable|image|max:5120',
-            'status'  => 'nullable|in:draft,published', 
+            'title'      => 'required|string|max:150',
+            'category'   => 'nullable|string|max:50',     
+            'difficulty' => 'nullable|string|max:50',     
+            'content'    => 'required|string',
+            'image'      => 'nullable|image|max:5120',
+            'status'     => 'nullable|in:draft,published', 
         ]);
 
         if ($request->hasFile('image')) {

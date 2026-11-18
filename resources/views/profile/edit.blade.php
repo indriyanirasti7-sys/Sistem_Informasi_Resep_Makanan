@@ -47,7 +47,8 @@
                         <span class="text-sm font-semibold text-on-surface-variant flex items-center gap-2">
                             <span class="material-symbols-outlined text-[18px]">bookmark</span> Bookmark
                         </span>
-                        <span class="text-lg font-bold text-primary">{{ $user->bookmarks()->count() }}</span>
+                        {{-- Menampilkan total gabungan resep dan tips --}}
+                        <span class="text-lg font-bold text-primary">{{ $totalBookmarks ?? $user->bookmarks()->count() }}</span>
                     </div>
                     <div class="flex items-center justify-between p-3 rounded-xl bg-surface-container-low">
                         <span class="text-sm font-semibold text-on-surface-variant flex items-center gap-2">

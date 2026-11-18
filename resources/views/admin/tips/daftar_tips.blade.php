@@ -84,12 +84,30 @@
                 @forelse ($tips as $tip)
                     <tr class="hover:bg-surface-container-low/40 transition group">
                         
-                        {{-- Foto --}}
+                        {{-- Foto Tips (Dengan Penanganan Lokal & Hosting) --}}
                         <td class="py-4 px-4">
                             <div class="flex justify-center">
                                 <div class="w-14 h-14 rounded-xl overflow-hidden shadow-sm bg-surface-container shrink-0">
-                                    @if ($tip->image)
-                                        <img src="{{ asset('storage/' . $tip->image) }}"
+                                    @php
+                                        $tipImg = null;
+                                        if ($tip->image) {
+                                            $cleanTipImg = str_replace(['storage/', 'uploads/tips/', 'uploads/'], '', $tip->image);
+                                            if (file_exists(public_path('storage/' . $tip->image))) {
+                                                $tipImg = asset('storage/' . $tip->image);
+                                            } elseif (file_exists(public_path('storage/' . $cleanTipImg))) {
+                                                $tipImg = asset('storage/' . $cleanTipImg);
+                                            } elseif (file_exists(public_path('storage/tips/' . $cleanTipImg))) {
+                                                $tipImg = asset('storage/tips/' . $cleanTipImg);
+                                            } elseif (file_exists(public_path('uploads/' . $cleanTipImg))) {
+                                                $tipImg = asset('uploads/' . $cleanTipImg);
+                                            } else {
+                                                $tipImg = asset('storage/' . $tip->image);
+                                            }
+                                        }
+                                    @endphp
+
+                                    @if ($tipImg)
+                                        <img src="{{ $tipImg }}"
                                              alt="{{ $tip->title }}"
                                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
                                     @else
@@ -113,13 +131,37 @@
                             </div>
                         </td>
 
-                        {{-- Penulis --}}
+                        {{-- Penulis (Avatar & Nama sesuai akun login/relasi) --}}
                         <td class="py-4 px-4 whitespace-nowrap">
-                            <div class="flex items-center justify-center gap-2">
-                                <div class="w-7 h-7 rounded-full bg-secondary/15 flex items-center justify-center text-secondary shrink-0">
-                                    <span class="material-symbols-outlined text-[16px]">person</span>
+                            @php
+                                $author = $tip->user;
+                                $authorAvatar = null;
+                                if ($author && $author->avatar) {
+                                    $cleanAuthorAvatar = str_replace(['storage/', 'uploads/avatars/', 'avatars/'], '', $author->avatar);
+                                    if (file_exists(public_path('storage/' . $author->avatar))) {
+                                        $authorAvatar = asset('storage/' . $author->avatar);
+                                    } elseif (file_exists(public_path('storage/' . $cleanAuthorAvatar))) {
+                                        $authorAvatar = asset('storage/' . $cleanAuthorAvatar);
+                                    } elseif (file_exists(public_path('storage/avatars/' . $cleanAuthorAvatar))) {
+                                        $authorAvatar = asset('storage/avatars/' . $cleanAuthorAvatar);
+                                    } elseif (file_exists(public_path('uploads/' . $cleanAuthorAvatar))) {
+                                        $authorAvatar = asset('uploads/' . $cleanAuthorAvatar);
+                                    } else {
+                                        $authorAvatar = asset('storage/' . $author->avatar);
+                                    }
+                                }
+                                $authorInitials = collect(explode(' ', $author->name ?? 'A'))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('');
+                            @endphp
+
+                            <div class="flex items-center justify-center gap-2.5">
+                                <div class="w-8 h-8 rounded-full overflow-hidden bg-secondary/15 flex items-center justify-center text-secondary shrink-0 shadow-sm font-bold text-xs">
+                                    @if($authorAvatar)
+                                        <img src="{{ $authorAvatar }}" alt="{{ $author->name ?? 'Anonim' }}" class="w-full h-full object-cover">
+                                    @else
+                                        {{ $authorInitials }}
+                                    @endif
                                 </div>
-                                <span class="text-sm font-semibold text-on-surface">{{ optional($tip->user)->name ?? 'Anonim' }}</span>
+                                <span class="text-sm font-semibold text-on-surface">{{ $author->name ?? 'Anonim' }}</span>
                             </div>
                         </td>
 
@@ -180,7 +222,7 @@
     </div>
 
     {{-- ========================================== --}}
-    {{-- PAGINATION (DESAIN BARU)                  --}}
+    {{-- PAGINATION                                 --}}
     {{-- ========================================== --}}
     @if (method_exists($tips, 'hasPages') && $tips->hasPages())
         <div class="mt-8 pt-6 flex flex-col items-center justify-center gap-4 border-t border-surface-container">
@@ -294,11 +336,9 @@
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.delete-btn');
         if (btn) {
-            // Ambil data langsung dari tombol yang diklik
             deleteTarget.textContent = btn.dataset.title;
             deleteForm.action = btn.dataset.url;
             
-            // Tampilkan Modal
             deleteModal.classList.remove('hidden');
             deleteModal.classList.add('flex');
         }

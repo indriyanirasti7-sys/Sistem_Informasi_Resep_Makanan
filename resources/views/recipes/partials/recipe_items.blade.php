@@ -39,9 +39,9 @@
                     <span class="material-symbols-outlined text-[14px] md:text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
                     {{ $recipe->average_rating }}
                 </div>
-                <div class="flex items-center gap-1 text-on-surface-variant">
-                    <span class="material-symbols-outlined text-[14px] md:text-[16px] text-primary">bookmark</span>
-                    {{ $recipe->bookmarks_count ?? 0 }}
+                <div class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px]">bookmark</span>
+                    <span class="bookmark-count font-bold">{{ $recipe->bookmarks_count ?? 0 }}</span>
                 </div>
                 <div class="flex items-center gap-1 text-on-surface-variant">
                     <span class="material-symbols-outlined text-[14px] md:text-[16px] text-secondary">timer</span>

@@ -21,8 +21,9 @@ class HomeController extends Controller
         // Resep terbaru (tetap menggunakan sistem muat lebih banyak / take 20)
         $latest = Recipe::published()
             ->with(['category'])
+            ->withCount('bookmarks') 
             ->latest()
-            ->take(20) 
+            ->take(12) 
             ->get();
 
         $categories = Category::withCount(['recipes' => function ($q) {
