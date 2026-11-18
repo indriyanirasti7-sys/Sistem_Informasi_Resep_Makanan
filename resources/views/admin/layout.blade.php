@@ -6,7 +6,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <title>@yield('title', 'Admin — Griya Rasa')</title>
 
-    <link rel="icon" type="image/png" href="{{ asset('uploads/images/logo.png') }}">
 
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>

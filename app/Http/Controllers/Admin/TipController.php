@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Tip;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TipController extends Controller
 {
     public function index()
     {
-        $tips = Tip::with('user')->latest()->paginate(9);
+        // Mengurutkan berdasarkan 'updated_at' terbaru agar data yang baru ditambah/diupdate langsung di posisi ke-1
+        $tips = Tip::with('user')->latest('updated_at')->paginate(9);
 
         $totalTips     = Tip::count();
         $tipsThisMonth = Tip::whereMonth('created_at', now()->month)
@@ -44,8 +46,8 @@ class TipController extends Controller
     {
         $validated = $request->validate([
             'title'      => 'required|string|max:150',
-            'category'   => 'nullable|string|max:50',     // ✅ Ditambahkan
-            'difficulty' => 'nullable|string|max:50',     // ✅ Ditambahkan
+            'difficulty' => 'nullable|string|max:50',
+            'summary'    => 'nullable|string|max:300',
             'content'    => 'required|string',
             'image'      => 'nullable|image|max:5120',
             'status'     => 'nullable|in:draft,published',
@@ -78,14 +80,18 @@ class TipController extends Controller
     {
         $validated = $request->validate([
             'title'      => 'required|string|max:150',
-            'category'   => 'nullable|string|max:50',     
-            'difficulty' => 'nullable|string|max:50',     
+            'difficulty' => 'nullable|string|max:50',
+            'summary'    => 'nullable|string|max:300',
             'content'    => 'required|string',
             'image'      => 'nullable|image|max:5120',
             'status'     => 'nullable|in:draft,published', 
         ]);
 
         if ($request->hasFile('image')) {
+            // Hapus foto lama jika ada agar storage tidak menumpuk
+            if ($tip->image && Storage::disk('public')->exists($tip->image)) {
+                Storage::disk('public')->delete($tip->image);
+            }
             $validated['image'] = $request->file('image')->store('tips', 'public');
         }
 
@@ -98,6 +104,10 @@ class TipController extends Controller
 
     public function destroy(Tip $tip)
     {
+        if ($tip->image && Storage::disk('public')->exists($tip->image)) {
+            Storage::disk('public')->delete($tip->image);
+        }
+
         $tip->delete();
 
         return redirect()

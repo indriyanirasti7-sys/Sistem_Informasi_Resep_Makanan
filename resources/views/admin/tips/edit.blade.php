@@ -30,7 +30,7 @@
         </p>
     </header>
 
-    <form method="POST" action="{{ route('admin.tips.update', $tip->slug) }}" enctype="multipart/form-data" class="flex flex-col gap-6">
+    <form id="editTipForm" method="POST" action="{{ route('admin.tips.update', $tip->slug) }}" enctype="multipart/form-data" class="flex flex-col gap-6">
         @csrf
         @method('PUT')
 
@@ -62,35 +62,17 @@
                        class="w-full bg-surface-container-low text-on-surface px-4 py-3 rounded-2xl outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/40 transition-all text-sm font-medium"/>
             </div>
 
-            <!-- Meta Selector Row: Category & Difficulty -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
-                <!-- Kategori Dropdown -->
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-bold text-primary">Kategori Rubrik</label>
-                    <div class="relative">
-                        <select name="category" class="w-full appearance-none bg-surface-container-low text-on-surface px-4 py-3 rounded-2xl text-sm outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/40 transition-all cursor-pointer">
-                            <option value="">— Pilih rubrik —</option>
-                            <option value="knife-skills" {{ old('category', $tip->category ?? '') == 'knife-skills' ? 'selected' : '' }}>Knife Skills (Teknik Pisau)</option>
-                            <option value="sauces" {{ old('category', $tip->category ?? '') == 'sauces' ? 'selected' : '' }}>Saus Dasar</option>
-                            <option value="baking" {{ old('category', $tip->category ?? '') == 'baking' ? 'selected' : '' }}>Pastry & Bakery</option>
-                            <option value="plating" {{ old('category', $tip->category ?? '') == 'plating' ? 'selected' : '' }}>Plating Art</option>
-                        </select>
-                        <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[20px]">expand_more</span>
-                    </div>
-                </div>
-
-                <!-- Tingkat Kesulitan -->
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-bold text-primary">Tingkat Keahlian</label>
-                    <div class="flex items-center gap-2 bg-surface-container-low p-1.5 rounded-2xl shadow-sm h-[46px]">
-                        @foreach (['Pemula', 'Menengah', 'Mahir'] as $level)
-                            <label class="flex-1 cursor-pointer">
-                                <input type="radio" name="difficulty" value="{{ $level }}" class="peer sr-only"
-                                    {{ old('difficulty', $tip->level ?? $tip->difficulty ?? $tip->tingkat ?? '') === $level ? 'checked' : '' }}>
-                                <span class="block text-center py-1.5 rounded-xl text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">{{ $level }}</span>
-                            </label>
-                        @endforeach
-                    </div>
+            <!-- Tingkat Kesulitan -->
+            <div class="flex flex-col gap-1.5 pt-2">
+                <label class="text-xs font-bold text-primary">Tingkat Keahlian</label>
+                <div class="flex items-center gap-2 bg-surface-container-low p-1.5 rounded-2xl shadow-sm h-[46px]">
+                    @foreach (['Pemula', 'Menengah', 'Mahir'] as $level)
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="difficulty" value="{{ $level }}" class="peer sr-only"
+                                {{ old('difficulty', $tip->level ?? $tip->difficulty ?? $tip->tingkat ?? '') === $level ? 'checked' : '' }}>
+                            <span class="block text-center py-1.5 rounded-xl text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">{{ $level }}</span>
+                        </label>
+                    @endforeach
                 </div>
             </div>
 
@@ -189,7 +171,7 @@
 
             <!-- Editor teks kaya -->
             <div id="editor"></div>
-            <input type="hidden" name="content" id="content">
+            <input type="hidden" name="content" id="content" value="{{ old('content', $tip->content) }}">
         </section>
 
         <!-- Grid for Status & Author -->
@@ -273,9 +255,6 @@
     </form>
 </div>
 
-@endsection
-
-@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script>
     function previewImage(event) {
@@ -307,16 +286,26 @@
             }
         });
 
-        const initial = @json(old('content', $tip->content));
-        if (initial) {
-            quill.setContents(quill.clipboard.convert({ html: initial }), 'silent');
+        const contentInput = document.getElementById('content');
+
+        function syncContent() {
+            const isEmpty = quill.getText().trim().length === 0;
+            contentInput.value = isEmpty ? '' : quill.root.innerHTML;
         }
 
-        document.querySelector('form').addEventListener('submit', function () {
-            const html = quill.getSemanticHTML().replace(/&nbsp;/g, ' ');
-            const isEmpty = quill.getText().trim().length === 0;
-            document.getElementById('content').value = isEmpty ? '' : html;
-        });
+        const initial = @json(old('content', $tip->content));
+        if (initial) {
+            quill.clipboard.dangerouslyPasteHTML(initial);
+            syncContent();
+        }
+
+        quill.on('text-change', syncContent);
+
+        const form = document.getElementById('editTipForm');
+        if (form) {
+            form.addEventListener('submit', syncContent);
+        }
     });
 </script>
-@endpush
+
+@endsection

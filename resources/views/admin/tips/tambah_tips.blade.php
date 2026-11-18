@@ -51,7 +51,7 @@
                     </span>
                     <div>
                         <h2 class="text-lg text-primary font-bold">Informasi Dasar Tips</h2>
-                        <p class="text-xs text-on-surface-variant mt-0.5">Tentukan tajuk, rubrik gastronomi, dan tingkat kemahiran pembaca</p>
+                        <p class="text-xs text-on-surface-variant mt-0.5">Tentukan tajuk dan tingkat kemahiran pembaca</p>
                     </div>
                 </div>
             </div>
@@ -65,47 +65,30 @@
                        class="w-full bg-surface-container-low text-on-surface px-4 py-3 rounded-2xl outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/40 transition-all text-sm font-medium"/>
             </div>
 
-            <!-- Category & Skill Level Split -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-bold text-primary" for="category">Kategori Rubrik <span class="text-error">*</span></label>
-                    <div class="relative">
-                        <select id="category" name="category" required class="w-full appearance-none bg-surface-container-low text-on-surface px-4 py-3 rounded-2xl text-sm outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/40 transition-all cursor-pointer">
-                            <option value="" disabled selected>Pilih Kategori</option>
-                            <option value="knife-skills" {{ old('category') == 'knife-skills' ? 'selected' : '' }}>Knife Skills (Teknik Pisau Dapur)</option>
-                            <option value="baking-hacks" {{ old('category') == 'baking-hacks' ? 'selected' : '' }}>Baking &amp; Patisserie Hacks</option>
-                            <option value="kitchen-safety" {{ old('category') == 'kitchen-safety' ? 'selected' : '' }}>Kitchen Safety &amp; Ergonomics</option>
-                            <option value="prep-storage" {{ old('category') == 'prep-storage' ? 'selected' : '' }}>Food Prep, Marinade &amp; Storage</option>
-                        </select>
-                        <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[20px]">unfold_more</span>
-                    </div>
-                </div>
+            <!-- Skill Level -->
+            <div class="flex flex-col gap-1.5 pt-2">
+                <label class="text-xs font-bold text-primary">Tingkat Keahlian <span class="text-error">*</span></label>
+                <div class="flex items-center gap-2 bg-surface-container-low p-1.5 rounded-2xl shadow-sm h-[46px]">
+                    <label class="flex-1 text-center cursor-pointer">
+                        <input type="radio" name="difficulty" value="Pemula" class="peer sr-only" {{ old('difficulty') == 'Pemula' ? 'checked' : '' }} required>
+                        <div class="py-1.5 rounded-xl text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">
+                            Pemula
+                        </div>
+                    </label>
 
-                {{-- PERBAIKAN RADIO BUTTON: Menggunakan metode Label Wrapper --}}
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-bold text-primary">Tingkat Keahlian <span class="text-error">*</span></label>
-                    <div class="flex items-center gap-2 bg-surface-container-low p-1.5 rounded-2xl shadow-sm h-[46px]">
-                        <label class="flex-1 text-center cursor-pointer">
-                            <input type="radio" name="difficulty" value="Pemula" class="peer sr-only" {{ old('difficulty') == 'Pemula' ? 'checked' : '' }} required>
-                            <div class="py-1.5 rounded-xl text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">
-                                Pemula
-                            </div>
-                        </label>
+                    <label class="flex-1 text-center cursor-pointer">
+                        <input type="radio" name="difficulty" value="Menengah" class="peer sr-only" {{ old('difficulty') == 'Menengah' ? 'checked' : '' }}>
+                        <div class="py-1.5 rounded-xl text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">
+                            Menengah
+                        </div>
+                    </label>
 
-                        <label class="flex-1 text-center cursor-pointer">
-                            <input type="radio" name="difficulty" value="Menengah" class="peer sr-only" {{ old('difficulty') == 'Menengah' ? 'checked' : '' }}>
-                            <div class="py-1.5 rounded-xl text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">
-                                Menengah
-                            </div>
-                        </label>
-
-                        <label class="flex-1 text-center cursor-pointer">
-                            <input type="radio" name="difficulty" value="Mahir" class="peer sr-only" {{ old('difficulty') == 'Mahir' ? 'checked' : '' }}>
-                            <div class="py-1.5 rounded-xl text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">
-                                Mahir
-                            </div>
-                        </label>
-                    </div>
+                    <label class="flex-1 text-center cursor-pointer">
+                        <input type="radio" name="difficulty" value="Mahir" class="peer sr-only" {{ old('difficulty') == 'Mahir' ? 'checked' : '' }}>
+                        <div class="py-1.5 rounded-xl text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">
+                            Mahir
+                        </div>
+                    </label>
                 </div>
             </div>
 
