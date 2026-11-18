@@ -8,6 +8,14 @@
 Griya Rasa adalah platform aplikasi web katalog resep masakan Nusantara berbasis digital yang dirancang untuk memudahkan para pencinta kuliner dalam menemukan, mengelola, dan mengeksplorasi ragam resep makanan tradisional khas Indonesia maupun hidangan rumahan sehari-hari.Di tengah kekayaan kuliner Nusantara, Griya Rasa hadir sebagai wadah praktis yang menyajikan informasi resep pilihan secara interaktif dan terstruktur. Website ini dikembangkan dengan teknologi modern menggunakan Laravel 12 dan Tailwind CSS, memastikan performa yang cepat, tampilan antarmuka yang bersih (clean UI), serta pengalaman pengguna (User Experience) yang nyaman di berbagai perangkat.Griya Rasa memiliki dua jenis peran pengguna, yaitu **Admin** dan **Pengguna (User)**, dengan hak akses dan fitur yang berbeda.
 </div>
 
+## 🚀 Deployment & Live Preview
+
+Proyek ini dikembangkan menggunakan Laravel dan telah dipublikasikan secara online agar dapat diakses oleh publik:
+
+- **Domain Utama:** https://griyarasa.web.id
+- **Environment:** Hosting InfinityFree / Production Server
+- **Database:** MySQL (`griyarasa`)
+
 ## ✨ Fitur Utama
 
 ### 👤 Fitur Pengguna (User)
@@ -107,6 +115,34 @@ Griya Rasa adalah platform aplikasi web katalog resep masakan Nusantara berbasis
 
 </div>
 
+
+
+| Pengaturan Sistem | 
+| :---: | 
+| <img src="Screenshoots/erd-rapi.png" alt="Tabel Database Sistem Informasi Resep Makanan" width="100%"> |
+
+### 📊 Struktur Database (14 Tabel)
+
+Berikut adalah daftar tabel beserta fungsi dari masing-masing tabel yang digunakan dalam database aplikasi **Griya Rasa**:
+
+| No | Nama Tabel | Keterangan / Fungsi Tabel |
+| :---: | :--- | :--- |
+| 1 | **users** | Menyimpan data pengguna, peran (role admin/user), dan informasi autentikasi. |
+| 2 | **categories** | Menyimpan kategori resep masakan (misal: Ayam, Ikan, Sapi, dll). |
+| 3 | **recipes** | Tabel utama yang menyimpan data resep masakan, deskripsi, slug, dan status. |
+| 4 | **recipe_ingredients** | Tabel relasi (many-to-many) yang menghubungkan antara resep dan bahan masakan. |
+| 5 | **ingredients** | Menyimpan master data bahan-bahan masakan. |
+| 6 | **recipe_steps** | Menyimpan urutan langkah-langkah memasak beserta foto atau keterangannya. |
+| 7 | **bookmarks** | Menyimpan data resep favorit yang ditandai oleh pengguna. |
+| 8 | **tips** | Menyimpan artikel panduan, tips, dan trik seputar memasak. |
+| 9 | **tip_bookmarks** | Menyimpan data tips memasak yang difavoritkan oleh pengguna. |
+| 10 | **ratings** | Menyimpan ulasan dan rating bintang (1–5) dari pengguna untuk resep. |
+| 11 | **rating_votes** | Menyimpan data vote (membantu/tidak) pada ulasan yang diberikan pengguna. |
+| 12 | **sessions** | Menyimpan data sesi aktif pengguna agar tetap masuk ke dalam sistem. |
+| 13 | **migrations** | Tabel sistem Laravel untuk melacak riwayat migrasi struktur database. |
+| 14 | **password_reset_tokens** | Tabel bawaan Laravel untuk mengelola token pemulihan sandi. |
+
+
 ## Instalasi dan Menjalankan Project
 
 ### Persyaratan
@@ -157,6 +193,7 @@ php artisan key:generate
 
 **7. Konfigurasi database pada file .env**
 
+Buat database dengan nama  `griya_rasa`, kemudian sesuaikan konfigurasi pada file `.env`.
 ```bash
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -199,5 +236,9 @@ Berikut adalah akun bawaan (*default*) yang dapat digunakan untuk menguji fitur 
 | **Admin** | `admin@griyarasa.com` | `12345678` |
 | **User** | `user@griyarasa.com` | `12345678` |
 
+<hr>
 
+<p align="center">
+  &copy; 2026 CampRent. Dikembangkan dengan penuh dedikasi.
+</p>
 
