@@ -1,27 +1,29 @@
 @extends('admin.layout')
 
-@section('title', 'Dashboard — L\'Art de Cuisine')
+@section('title', 'Dashboard — L\'Griya Rasa')
 @section('breadcrumb', 'Dashboard')
 
 @section('content')
 <div class="flex flex-col w-full">
 
-    {{-- TOP BANNER --}}
+    
     <div class="flex flex-col md:flex-row md:items-center justify-between pb-8 border-b border-surface-container gap-4 pt-8">
         <div>
             <div class="flex items-center gap-2 mb-1">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/15 text-secondary text-[11px] font-bold uppercase tracking-wider">
                     <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                    Gastronomie Haute Administration
+                    Manajemen Resep Dapur
                 </span>
                 <span class="text-on-surface-variant text-[11px] tracking-wide">• Versi 3.4.1</span>
             </div>
             <h1 class="font-display text-3xl lg:text-4xl text-primary tracking-tight font-bold">
+                {{ $greeting }}, {{ auth()->user()->name }}!
+            </h1>
+            <h1 class="font-display text-3xl lg:text-4xl text-primary tracking-tight font-bold">
                 Ikhtisar & Manajemen Dapur Resep
             </h1>
             <p class="text-sm text-on-surface-variant mt-1">
-                Pantau performa kuliner nusantara, kurasi arsip resep haute cuisine, dan rilis mahakarya terbaru.
-            </p>
+                Pantau koleksi resep, atur menu pilihan, dan publikasikan kreasi hidangan terbarumu </p>
         </div>
 
         <div class="flex items-center gap-3 self-start md:self-auto">
@@ -30,18 +32,18 @@
                 <span class="material-symbols-outlined text-[20px]">add_circle</span>
                 <span>Tambah Resep Baru</span>
             </a>
-            <a href="{{ route('admin.export.recipes') }}"
-               class="flex items-center gap-2 px-5 py-3 rounded-full bg-secondary text-white text-sm font-bold shadow-[0_4px_14px_rgba(85,100,59,0.2)] hover:opacity-95 transition-all">
-                <span class="material-symbols-outlined text-[20px]">table_view</span>
-                <span>Ekspor ke Excel</span>
+            <a href="{{ route('admin.export.laporan.pdf') }}"
+            class="group inline-flex items-center gap-2.5 px-6 py-3 bg-error text-white text-sm font-bold rounded-full hover:bg-error/90 transition shadow-sm hover:shadow-md">
+                <span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+                <span>Ekspor ke PDF</span>
             </a>
         </div>
     </div>
 
-    {{-- 4 STAT CARDS --}}
+    
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-8">
 
-        {{-- Card 1: Total Resep --}}
+        
         <div class="relative bg-surface-container-lowest rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-surface-container rounded-full opacity-40 group-hover:scale-125 transition-transform duration-500"></div>
             <div class="flex items-start justify-between relative z-10">
@@ -65,7 +67,7 @@
             </div>
         </div>
 
-        {{-- Card 2: Total User --}}
+     
         <div class="relative bg-surface-container-lowest rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-secondary-fixed/30 rounded-full opacity-40 group-hover:scale-125 transition-transform duration-500"></div>
             <div class="flex items-start justify-between relative z-10">
@@ -89,7 +91,7 @@
             </div>
         </div>
 
-        {{-- Card 3: Total Ulasan --}}
+       
         <div class="relative bg-surface-container-lowest rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-tertiary-fixed/40 rounded-full opacity-40 group-hover:scale-125 transition-transform duration-500"></div>
             <div class="flex items-start justify-between relative z-10">
@@ -113,7 +115,6 @@
             </div>
         </div>
 
-        {{-- Card 4: Resep Terpopuler --}}
         @php $top = $topRecipes->first(); @endphp
         <div class="relative bg-gradient-to-br from-primary-container to-primary rounded-2xl p-6 text-white shadow-md flex flex-col justify-between overflow-hidden">
             <div class="absolute right-0 bottom-0 opacity-15 pointer-events-none transform translate-x-4 translate-y-4">
@@ -139,18 +140,7 @@
         </div>
     </div>
 
-    {{-- BAR CHART --}}
-    @php
-        $chartData = [
-            ['month' => 'Jan', 'tradisional' => 60, 'pastry' => 38, 'akses' => '42k'],
-            ['month' => 'Feb', 'tradisional' => 72, 'pastry' => 48, 'akses' => '58k'],
-            ['month' => 'Mar', 'tradisional' => 85, 'pastry' => 62, 'akses' => '79k'],
-            ['month' => 'Apr', 'tradisional' => 94, 'pastry' => 70, 'akses' => '88k'],
-            ['month' => 'Mei', 'tradisional' => 80, 'pastry' => 54, 'akses' => '74k'],
-            ['month' => 'Jun', 'tradisional' => 100, 'pastry' => 78, 'akses' => '96k', 'peak' => true],
-        ];
-    @endphp
-
+    
     <div class="mt-8 bg-surface-container-lowest rounded-2xl p-6 lg:p-8 shadow-sm">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-surface-container">
             <div>
@@ -176,16 +166,19 @@
             <div class="grid grid-cols-6 gap-3 sm:gap-6 items-end h-56 w-full px-2 sm:px-6">
                 @foreach ($chartData as $d)
                     <div class="flex flex-col items-center h-full justify-end group cursor-pointer">
-                        <div class="text-xs {{ !empty($d['peak']) ? 'text-secondary font-bold opacity-100' : 'text-on-surface-variant opacity-0 group-hover:opacity-100' }} transition-opacity mb-2 bg-surface-container-high px-2 py-0.5 rounded shadow-sm">
+                        <div class="text-xs text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity mb-2 bg-surface-container-high px-2 py-0.5 rounded shadow-sm">
                             {{ $d['akses'] }} akses
                         </div>
                         <div class="flex items-end gap-1.5 sm:gap-2.5 h-44 w-full justify-center">
+                            {{-- Bar Tradisional --}}
                             <div class="w-4 sm:w-8 bg-primary-container rounded-t-md transition-all duration-300 group-hover:opacity-90"
                                  style="height: {{ $d['tradisional'] }}%;"></div>
+                            
+                            {{-- Bar Pastry --}}
                             <div class="w-4 sm:w-8 bg-secondary rounded-t-md transition-all duration-300 group-hover:opacity-90"
                                  style="height: {{ $d['pastry'] }}%;"></div>
                         </div>
-                        <span class="text-xs {{ !empty($d['peak']) ? 'text-primary font-bold' : 'text-on-surface font-semibold' }} mt-3">
+                        <span class="text-xs text-on-surface font-semibold mt-3">
                             {{ $d['month'] }}
                         </span>
                     </div>
@@ -194,7 +187,7 @@
         </div>
     </div>
 
-    {{-- RECIPE TABLE --}}
+  
     <div class="mt-10 bg-surface-container-lowest rounded-2xl p-6 lg:p-8 shadow-sm">
         <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pb-6 border-b border-surface-container">
             <div>
@@ -215,52 +208,65 @@
             <table class="w-full text-left border-collapse" id="recipeTable">
                 <thead>
                     <tr class="border-b border-surface-container text-on-surface-variant text-[11px] uppercase tracking-wider">
-                        <th class="py-4 px-3 w-16">Foto</th>
-                        <th class="py-4 px-3">Judul Resep & Chef</th>
-                        <th class="py-4 px-3">Kategori</th>
-                        <th class="py-4 px-3">Porsi & Waktu</th>
-                        <th class="py-4 px-3">Rating</th>
-                        <th class="py-4 px-3">Status</th>
-                        <th class="py-4 px-3 text-right">Aksi</th>
+                        <th class="py-4 px-3 w-16 text-center">Foto</th>
+                        <th class="py-4 px-3 text-center">Judul Resep & Chef</th>
+                        <th class="py-4 px-3 text-center">Kategori</th>
+                        <th class="py-4 px-3 text-center">Porsi & Waktu</th>
+                        <th class="py-4 px-3 text-center">Rating</th>
+                        <th class="py-4 px-3 text-center">Status</th>
+                        <th class="py-4 px-3 text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-surface-container">
                     @forelse ($topRecipes as $r)
                         <tr class="hover:bg-surface-container-low/60 transition-colors group">
+                            
+                            {{-- Foto --}}
                             <td class="py-4 px-3">
-                                <img class="w-14 h-14 rounded-xl object-cover shadow-sm group-hover:scale-105 transition-transform"
-                                     src="{{ $r->image ? Storage::url($r->image) : 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=200' }}"
-                                     alt="{{ $r->title }}"/>
+                                <div class="flex justify-center">
+                                    <img class="w-12 h-12 rounded-xl object-cover shadow-sm group-hover:scale-105 transition-transform"
+                                         src="{{ $r->image ? Storage::url($r->image) : 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=200' }}"
+                                         alt="{{ $r->title }}"/>
+                                </div>
                             </td>
-                            <td class="py-4 px-3">
-                                <span class="text-base text-primary font-bold block leading-tight">{{ $r->title }}</span>
-                                <span class="text-xs text-on-surface-variant flex items-center gap-1 mt-0.5">
-                                    <span class="material-symbols-outlined text-[16px] text-secondary">person</span>
-                                    {{ $r->user->name ?? 'Anonim' }}
-                                </span>
+
+                            <td class="py-4 px-3 text-center">
+                                <div class="flex flex-col items-center justify-center">
+                                    <span class="text-base text-primary font-bold block leading-tight">{{ $r->title }}</span>
+                                    <span class="text-xs text-on-surface-variant flex items-center justify-center gap-1 mt-1">
+                                        <span class="material-symbols-outlined text-[14px] text-secondary">person</span>
+                                        {{ $r->user->name ?? 'Anonim' }}
+                                    </span>
+                                </div>
                             </td>
-                            <td class="py-4 px-3">
+
+                            {{-- Kategori --}}
+                            <td class="py-4 px-3 text-center">
                                 <span class="inline-flex px-3 py-1 rounded-full bg-primary-fixed text-primary text-[11px] font-semibold">
                                     {{ $r->category->name ?? 'Umum' }}
                                 </span>
                             </td>
-                            <td class="py-4 px-3">
-                                <div class="flex flex-col text-xs text-on-surface">
+
+                            <td class="py-4 px-3 text-center">
+                                <div class="flex flex-col items-center text-xs text-on-surface">
                                     <span class="font-semibold">{{ $r->servings }} Porsi</span>
-                                    <span class="text-on-surface-variant text-[11px] flex items-center gap-1">
+                                    <span class="text-on-surface-variant text-[11px] flex items-center justify-center gap-1">
                                         <span class="material-symbols-outlined text-[14px]">timer</span>
                                         {{ $r->duration_minutes ?? '-' }} mnt
                                     </span>
                                 </div>
                             </td>
-                            <td class="py-4 px-3">
-                                <div class="flex items-center gap-1.5">
+
+                            <td class="py-4 px-3 text-center">
+                                <div class="flex items-center justify-center gap-1.5">
                                     <span class="material-symbols-outlined text-tertiary-container text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
                                     <span class="text-xs font-bold text-on-surface">{{ $r->average_rating }}</span>
                                     <span class="text-[11px] text-outline">({{ $r->rating_count }})</span>
                                 </div>
                             </td>
-                            <td class="py-4 px-3">
+
+                            
+                            <td class="py-4 px-3 text-center">
                                 @if ($r->status === 'published')
                                     <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-bold">
                                         <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
@@ -273,14 +279,18 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="py-4 px-3 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('admin.recipes.edit', $r->id) }}"
-                                       class="p-2 rounded-full hover:bg-surface-container text-primary transition-all" title="Edit">
+
+                            
+                            <td class="py-4 px-3 text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    {{-- Tombol Edit --}}
+                                    <a href="{{ route('admin.recipes.edit', $r->slug) }}"
+                                    class="p-2 rounded-full hover:bg-surface-container text-primary transition-all" title="Edit">
                                         <span class="material-symbols-outlined text-[19px]">edit</span>
                                     </a>
-                                    <form method="POST" action="{{ route('admin.recipes.destroy', $r->id) }}"
-                                          onsubmit="return confirm('Hapus resep ini?')" class="inline">
+
+                                    {{-- Tombol Hapus (WAJIB FORM) --}}
+                                    <form method="POST" action="{{ route('admin.recipes.destroy', $r->slug) }}" onsubmit="return confirm('Hapus resep ini?')" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="p-2 rounded-full hover:bg-error-container text-error transition-all" title="Hapus">

@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Kelola Resep — Admin L\'Art de Cuisine')
+@section('title', 'Kelola Resep — Griya Rasa')
 @section('breadcrumb', 'Kelola Resep')
 
 @section('content')
@@ -9,13 +9,9 @@
 <section class="flex flex-col gap-6 mb-8 pt-8">
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div class="flex flex-col gap-1.5">
-            <div class="flex items-center gap-2 text-secondary">
-                <span class="material-symbols-outlined text-lg">restaurant_menu</span>
-                <span class="text-[11px] uppercase tracking-widest text-secondary font-bold">Inventaris Gastronomi</span>
-            </div>
             <h1 class="font-['Playfair_Display'] text-4xl text-primary tracking-tight font-bold">Kelola Resep</h1>
             <p class="text-sm text-on-surface-variant max-w-xl">
-                Tambah, kurasi, ubah, dan atur sajian kuliner nusantara yang tampil di etalase L'Art de Cuisine.
+                Tambah, kurasi, ubah, dan atur sajian kuliner nusantara yang tampil di etalase Griya Rasa.
             </p>
         </div>
 
@@ -122,19 +118,19 @@
 <section class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm overflow-hidden">
 
     <div class="w-full overflow-x-auto">
-        <table class="w-full text-left border-collapse">
+        <table class="w-full text-center border-collapse">
             <thead>
                 <tr class="bg-surface-container-low/60 text-on-surface-variant text-[11px] uppercase tracking-wider font-bold">
-                    <th class="py-3.5 px-4 rounded-l-2xl">Foto</th>
-                    <th class="py-3.5 px-4">Judul Resep</th>
-                    <th class="py-3.5 px-3">Kategori</th>
-                    <th class="py-3.5 px-3">Kesulitan</th>
-                    <th class="py-3.5 px-3">Durasi</th>
-                    <th class="py-3.5 px-3">Kalori</th>
-                    <th class="py-3.5 px-3">Rating</th>
-                    <th class="py-3.5 px-3">Dilihat</th>
-                    <th class="py-3.5 px-3">Status</th>
-                    <th class="py-3.5 px-4 text-right rounded-r-2xl">Aksi</th>
+                    <th class="py-3.5 px-4 rounded-l-2xl text-center">Foto</th>
+                    <th class="py-3.5 px-4 text-center min-w-[200px]">Judul Resep</th>
+                    <th class="py-3.5 px-3 text-center">Kategori</th>
+                    <th class="py-3.5 px-3 text-center">Kesulitan</th>
+                    <th class="py-3.5 px-3 text-center">Durasi</th>
+                    <th class="py-3.5 px-3 text-center">Kalori</th> {{-- KOLOM KALORI BARU --}}
+                    <th class="py-3.5 px-3 text-center">Rating</th>
+                    <th class="py-3.5 px-3 text-center">Dilihat</th>
+                    <th class="py-3.5 px-3 text-center">Status</th>
+                    <th class="py-3.5 px-4 text-center rounded-r-2xl">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-surface-container-high/40 text-on-surface">
@@ -151,16 +147,18 @@
 
                         {{-- Foto --}}
                         <td class="py-4 px-4">
-                            <div class="w-14 h-14 rounded-2xl overflow-hidden shadow-sm bg-surface-container">
-                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                     src="{{ $recipe->image ? Storage::url($recipe->image) : 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=200' }}"
-                                     alt="{{ $recipe->title }}"/>
+                            <div class="flex justify-center">
+                                <div class="w-14 h-14 rounded-2xl overflow-hidden shadow-sm bg-surface-container shrink-0">
+                                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                         src="{{ $recipe->image ? Storage::url($recipe->image) : 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=200' }}"
+                                         alt="{{ $recipe->title }}"/>
+                                </div>
                             </div>
                         </td>
 
                         {{-- Judul --}}
-                        <td class="py-4 px-4 min-w-[200px]">
-                            <div class="flex flex-col">
+                        <td class="py-4 px-4">
+                            <div class="flex flex-col items-center text-center">
                                 <span class="text-base text-primary font-bold group-hover:text-tertiary-container transition line-clamp-1">
                                     {{ $recipe->title }}
                                 </span>
@@ -170,14 +168,14 @@
 
                         {{-- Kategori --}}
                         <td class="py-4 px-3 whitespace-nowrap">
-                            <span class="px-3 py-1 rounded-full bg-secondary-container/70 text-on-secondary-container text-[11px] font-bold">
+                            <span class="inline-block px-3 py-1 rounded-full bg-secondary-container/70 text-on-secondary-container text-[11px] font-bold">
                                 {{ $recipe->category->name ?? 'Umum' }}
                             </span>
                         </td>
 
                         {{-- Kesulitan --}}
                         <td class="py-4 px-3 whitespace-nowrap">
-                            <span class="px-2.5 py-0.5 rounded-full {{ $diffColor }} text-[11px] font-bold">
+                            <span class="inline-block px-2.5 py-0.5 rounded-full {{ $diffColor }} text-[11px] font-bold">
                                 {{ $recipe->difficulty }}
                             </span>
                         </td>
@@ -185,12 +183,12 @@
                         {{-- Durasi --}}
                         <td class="py-4 px-3 text-xs whitespace-nowrap text-on-surface-variant">{{ $recipe->duration_minutes ?? '-' }} mnt</td>
 
-                        {{-- Kalori --}}
-                        <td class="py-4 px-3 text-xs whitespace-nowrap text-on-surface-variant">{{ $recipe->calories ?? '-' }} kkal</td>
+                        {{-- KALORI BARU --}}
+                        <td class="py-4 px-3 text-xs whitespace-nowrap text-on-surface-variant">{{ $recipe->calories ? $recipe->calories . ' kkal' : '-' }}</td>
 
                         {{-- Rating --}}
                         <td class="py-4 px-3 whitespace-nowrap">
-                            <div class="flex items-center gap-1">
+                            <div class="flex items-center justify-center gap-1">
                                 <span class="material-symbols-outlined text-[16px] text-tertiary" style="font-variation-settings: 'FILL' 1;">star</span>
                                 <span class="text-xs font-bold text-primary">{{ $recipe->average_rating }}</span>
                                 <span class="text-[11px] text-on-surface-variant/70">({{ $recipe->rating_count }})</span>
@@ -203,12 +201,12 @@
                         {{-- Status --}}
                         <td class="py-4 px-3 whitespace-nowrap">
                             @if ($recipe->status === 'published')
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-bold">
+                                <span class="inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-bold">
                                     <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
                                     Published
                                 </span>
                             @else
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant text-[11px] font-bold">
+                                <span class="inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant text-[11px] font-bold">
                                     <span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
                                     Draft
                                 </span>
@@ -216,30 +214,29 @@
                         </td>
 
                         {{-- Aksi --}}
-                        <td class="py-4 px-4 text-right whitespace-nowrap">
-                            <div class="flex items-center justify-end gap-1">
-                                <a href="{{ route('recipes.show', $recipe->slug) }}" target="_blank"
+                        <td class="py-4 px-4 whitespace-nowrap">
+                            <div class="flex items-center justify-center gap-1">
+                                <a href="{{ route('admin.recipes.detail_tampilan', $recipe->slug) }}" target="_blank"
                                    class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-full transition" title="Lihat">
                                     <span class="material-symbols-outlined text-[18px]">visibility</span>
                                 </a>
-                                <a href="{{ route('admin.recipes.edit', $recipe->id) }}"
+                                <a href="{{ route('admin.recipes.edit', $recipe->slug) }}"
                                    class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-full transition" title="Edit">
                                     <span class="material-symbols-outlined text-[18px]">edit</span>
                                 </a>
-                                <form method="POST" action="{{ route('admin.recipes.destroy', $recipe->id) }}"
-                                      onsubmit="return confirm('Hapus resep {{ $recipe->title }}?')" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                            class="p-2 text-error hover:bg-error-container/60 rounded-full transition" title="Hapus">
-                                        <span class="material-symbols-outlined text-[18px]">delete</span>
-                                    </button>
-                                </form>
+                                {{-- TOMBOL HAPUS (Memanggil Modal) --}}
+                                <button type="button"
+                                        class="delete-recipe-btn p-2 rounded-full hover:bg-error-container text-error transition-all" title="Hapus"
+                                        data-title="{{ $recipe->title }}"
+                                        data-url="{{ route('admin.recipes.destroy', $recipe->slug) }}">
+                                    <span class="material-symbols-outlined text-[19px]">delete</span>
+                                </button>
                             </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
+                        {{-- Colspan diubah jadi 10 karena ada tambahan kolom kalori --}}
                         <td colspan="10" class="py-16 text-center">
                             <div class="flex flex-col items-center gap-3">
                                 <div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center text-secondary">
@@ -247,7 +244,7 @@
                                 </div>
                                 <h3 class="font-['Playfair_Display'] text-xl text-primary font-bold">Belum Ada Resep</h3>
                                 <p class="text-sm text-on-surface-variant max-w-md">
-                                    Mulai tambahkan resep pertama ke kurasi L'Art de Cuisine.
+                                    Mulai tambahkan resep pertama ke kurasi Griya Rasa.
                                 </p>
                                 <a href="{{ route('admin.recipes.create') }}"
                                    class="mt-2 inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-full hover:bg-primary-container transition">
@@ -262,44 +259,136 @@
         </table>
     </div>
 
-    {{-- Pagination --}}
+    {{-- Pagination (Ditengah & Dirapikan) --}}
     @if ($recipes->hasPages())
-        <div class="mt-6 pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-surface-container">
-            <span class="text-xs text-on-surface-variant">
-                Menampilkan <strong class="text-primary font-bold">{{ $recipes->firstItem() }}-{{ $recipes->lastItem() }}</strong>
-                dari <strong class="text-primary font-bold">{{ $recipes->total() }}</strong> resep
-            </span>
-
+        <div class="mt-8 pt-6 flex flex-col items-center justify-center gap-4 border-t border-surface-container">
+            
             <div class="flex items-center gap-1.5">
+                {{-- Prev --}}
                 @if ($recipes->onFirstPage())
-                    <span class="px-3.5 py-1.5 rounded-full text-outline text-xs font-bold cursor-not-allowed">← Sebelumnya</span>
+                    <span class="w-9 h-9 flex items-center justify-center rounded-full text-outline/50 cursor-not-allowed">
+                        <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                    </span>
                 @else
                     <a href="{{ $recipes->previousPageUrl() }}"
-                       class="px-3.5 py-1.5 rounded-full text-on-surface-variant hover:bg-surface-container text-xs font-bold transition">
-                        ← Sebelumnya
+                       class="w-9 h-9 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container transition">
+                        <span class="material-symbols-outlined text-[20px]">chevron_left</span>
                     </a>
                 @endif
 
+                {{-- Page Numbers --}}
                 @foreach ($recipes->getUrlRange(max(1, $recipes->currentPage() - 2), min($recipes->lastPage(), $recipes->currentPage() + 2)) as $page => $url)
                     @if ($page == $recipes->currentPage())
-                        <span class="w-8 h-8 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shadow-sm">{{ $page }}</span>
+                        <span class="w-9 h-9 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shadow-md transform scale-110">
+                            {{ $page }}
+                        </span>
                     @else
                         <a href="{{ $url }}"
-                           class="w-8 h-8 rounded-full text-on-surface-variant hover:bg-surface-container text-xs font-bold flex items-center justify-center transition">{{ $page }}</a>
+                           class="w-9 h-9 rounded-full text-on-surface-variant text-xs font-bold flex items-center justify-center hover:bg-surface-container transition">
+                            {{ $page }}
+                        </a>
                     @endif
                 @endforeach
 
+                {{-- Next --}}
                 @if ($recipes->hasMorePages())
                     <a href="{{ $recipes->nextPageUrl() }}"
-                       class="px-3.5 py-1.5 rounded-full text-on-surface-variant hover:bg-surface-container text-xs font-bold transition">
-                        Berikutnya →
+                       class="w-9 h-9 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container transition">
+                        <span class="material-symbols-outlined text-[20px]">chevron_right</span>
                     </a>
                 @else
-                    <span class="px-3.5 py-1.5 rounded-full text-outline text-xs font-bold cursor-not-allowed">Berikutnya →</span>
+                    <span class="w-9 h-9 flex items-center justify-center rounded-full text-outline/50 cursor-not-allowed">
+                        <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                    </span>
                 @endif
             </div>
+
+            <span class="text-[11px] text-on-surface-variant font-medium">
+                Menampilkan <strong class="text-primary">{{ $recipes->firstItem() }}-{{ $recipes->lastItem() }}</strong>
+                dari <strong class="text-primary">{{ $recipes->total() }}</strong> resep
+            </span>
         </div>
     @endif
 </section>
 
+{{-- ============================================================
+     MODAL: Konfirmasi Hapus Resep
+     ============================================================ --}}
+<div id="deleteRecipeModal"
+     class="fixed inset-0 z-50 bg-inverse-surface/40 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-surface-container-lowest rounded-3xl max-w-md w-full p-8 shadow-[0_16px_40px_-6px_rgba(90,58,34,0.18)] flex flex-col items-center text-center">
+
+        <div class="w-16 h-16 rounded-full bg-error-container text-error flex items-center justify-center mb-5">
+            <span class="material-symbols-outlined text-[32px]">warning</span>
+        </div>
+
+        <h3 class="font-['Playfair_Display'] text-2xl text-primary font-bold">Hapus Resep Ini?</h3>
+        <p class="text-sm text-on-surface-variant mt-2 leading-relaxed">
+            Resep <strong class="text-primary font-bold" id="deleteRecipeTitle">—</strong>
+            akan dihapus permanen dari portal. Tindakan ini tidak dapat dibatalkan.
+        </p>
+
+        <div class="flex items-center gap-3 mt-8 w-full">
+            {{-- Tombol Batal --}}
+            <button type="button" id="cancelDeleteRecipeBtn" class="flex-1 py-2.5 rounded-full bg-surface-container-high text-on-surface font-bold text-sm hover:bg-surface-container-highest transition">
+                Batal
+            </button>
+            
+            {{-- Form Hapus (Action diisi oleh JS) --}}
+            <form id="deleteRecipeForm" method="POST" action="" class="flex-1">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="w-full py-2.5 rounded-full bg-error text-white font-bold text-sm hover:bg-error/90 transition">
+                    Ya, Hapus
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    const deleteModal  = document.getElementById('deleteRecipeModal');
+    const deleteForm   = document.getElementById('deleteRecipeForm');
+    const deleteTarget = document.getElementById('deleteRecipeTitle');
+    const cancelDelete = document.getElementById('cancelDeleteRecipeBtn');
+
+    function openDeleteModal(btn) {
+        // Ambil data dari tombol yang diklik
+        deleteTarget.textContent = btn.dataset.title;
+        deleteForm.action = btn.dataset.url;
+        
+        // Tampilkan Modal
+        deleteModal.classList.remove('hidden');
+        deleteModal.classList.add('flex');
+    }
+
+    function closeDeleteModal() {
+        deleteModal.classList.add('hidden');
+        deleteModal.classList.remove('flex');
+    }
+
+    // Delegasi Event Listener untuk Tombol Hapus
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.delete-recipe-btn');
+        if (btn) {
+            openDeleteModal(btn);
+        }
+    });
+
+    // Tombol Batal & Tombol ESC
+    cancelDelete.addEventListener('click', closeDeleteModal);
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeDeleteModal();
+    });
+
+    // Klik di luar area modal untuk menutup
+    deleteModal.addEventListener('click', (e) => {
+        if (e.target === deleteModal) closeDeleteModal();
+    });
+})();
+</script>
+@endpush

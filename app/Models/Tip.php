@@ -16,6 +16,7 @@ class Tip extends Model
         'content',
         'image',
         'user_id',
+        'status',
     ];
 
     protected static function booted()
@@ -32,7 +33,13 @@ class Tip extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getRouteKeyName()
+    // Relasi ke tabel simpanan tips
+    public function bookmarks()
+    {
+        return $this->hasMany(TipBookmark::class);
+    }
+
+    public function getRouteKeyName():string
     {
         return 'slug';
     }

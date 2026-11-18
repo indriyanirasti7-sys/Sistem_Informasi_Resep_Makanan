@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Tip;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class TipController extends Controller
 {
@@ -38,7 +37,7 @@ class TipController extends Controller
 
     public function create()
     {
-        return view('admin.tips.tambah');
+        return view('admin.tips.tambah_tips');
     }
 
     public function store(Request $request)
@@ -46,12 +45,13 @@ class TipController extends Controller
         $validated = $request->validate([
             'title'   => 'required|string|max:150',
             'content' => 'required|string',
-            'image'   => 'nullable|image|max:2048',
+            'image'   => 'nullable|image|max:5120',
+            'status'  => 'nullable|in:draft,published', // Toleransi jika form mengirim status
         ]);
 
-        $validated['slug']    = Str::slug($validated['title']);
-        $validated['user_id'] = auth()->id();
-
+     
+        $validated['user_id'] = auth()->id(); 
+        
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('tips', 'public');
         }
@@ -62,10 +62,11 @@ class TipController extends Controller
             ->route('admin.tips.index')
             ->with('success', 'Tips berhasil ditambahkan.');
     }
-
-    public function show(Tip $tip)
+ 
+  
+    public function detail(Tip $tip)
     {
-        return view('admin.tips.show', compact('tip'));
+        return view('admin.tips.detail', compact('tip'));
     }
 
     public function edit(Tip $tip)
@@ -78,10 +79,9 @@ class TipController extends Controller
         $validated = $request->validate([
             'title'   => 'required|string|max:150',
             'content' => 'required|string',
-            'image'   => 'nullable|image|max:2048',
+            'image'   => 'nullable|image|max:5120',
+            'status'  => 'nullable|in:draft,published', 
         ]);
-
-        $validated['slug'] = Str::slug($validated['title']);
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('tips', 'public');

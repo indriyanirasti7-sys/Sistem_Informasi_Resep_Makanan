@@ -94,10 +94,14 @@
     {{-- Reviews List --}}
     <div class="flex flex-col gap-6 divide-y divide-surface-container">
         @forelse ($recipe->ratings()->with('user')->latest()->take(10)->get() as $rating)
-            <div class="pt-6 flex flex-col gap-3 first:pt-0">
-                <div class="flex items-center justify-between">
+            <div class="pt-6 flex flex-col gap-4 first:pt-0">
+                
+                {{-- Header: User Info (Kiri) & Bintang + Vote (Kanan) --}}
+                <div class="flex items-start justify-between gap-4">
+                    
+                    {{-- Kiri: Info User --}}
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center font-bold">
+                        <div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center font-bold shrink-0">
                             {{ strtoupper(substr($rating->user->name ?? 'A', 0, 2)) }}
                         </div>
                         <div class="flex flex-col">
@@ -105,16 +109,49 @@
                             <span class="text-xs text-on-surface-variant">{{ $rating->created_at->diffForHumans() }}</span>
                         </div>
                     </div>
-                    <div class="flex items-center text-on-tertiary-container">
-                        @for ($i = 0; $i < 5; $i++)
-                            <span class="material-symbols-outlined text-[18px]"
-                                  style="font-variation-settings: 'FILL' {{ $i < $rating->rating ? 1 : 0 }};">
-                                star
-                            </span>
-                        @endfor
+
+                    {{-- Kanan: Bintang & Tombol Jempol --}}
+                    <div class="flex flex-col items-end gap-2">
+                        {{-- Bintang --}}
+                        <div class="flex items-center text-on-tertiary-container">
+                            @for ($i = 0; $i < 5; $i++)
+                                <span class="material-symbols-outlined text-[18px]"
+                                      style="font-variation-settings: 'FILL' {{ $i < $rating->rating ? 1 : 0 }};">
+                                    star
+                                </span>
+                            @endfor
+                        </div>
+
+                        {{-- Tombol Like & Dislike --}}
+                        @php
+                            $userVote = $rating->userVote; 
+                            $likesCount = $rating->votes()->where('vote_type', 'like')->count();
+                            $dislikesCount = $rating->votes()->where('vote_type', 'dislike')->count();
+                        @endphp
+
+                        <div class="flex items-center gap-3">
+                            {{-- Tombol Like --}}
+                            <button type="button" onclick="submitVote({{ $rating->id }}, 'like')"
+                                    class="flex items-center gap-1 text-xs font-semibold transition-colors {{ $userVote && $userVote->vote_type === 'like' ? 'text-primary' : 'text-on-surface-variant hover:text-primary' }}">
+                                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' {{ $userVote && $userVote->vote_type === 'like' ? 1 : 0 }};">thumb_up</span>
+                                <span>{{ $likesCount }}</span>
+                            </button>
+
+                            {{-- Tombol Dislike --}}
+                            <button type="button" onclick="submitVote({{ $rating->id }}, 'dislike')"
+                                    class="flex items-center gap-1 text-xs font-semibold transition-colors {{ $userVote && $userVote->vote_type === 'dislike' ? 'text-error' : 'text-on-surface-variant hover:text-error' }}">
+                                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' {{ $userVote && $userVote->vote_type === 'dislike' ? 1 : 0 }};">thumb_down</span>
+                                <span>{{ $dislikesCount }}</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <p class="text-sm text-on-surface-variant leading-relaxed">"{{ $rating->comment }}"</p>
+
+                {{-- Kotak Komentar --}}
+                <div class="bg-surface-container-low p-4 rounded-2xl text-sm text-on-surface-variant leading-relaxed mt-1">
+                    "{{ $rating->comment }}"
+                </div>
+
             </div>
         @empty
             <div class="text-center text-on-surface-variant py-6 text-sm">
@@ -123,3 +160,30 @@
         @endforelse
     </div>
 </div>
+
+<script>
+    function submitVote(ratingId, voteType) {
+        @guest
+            window.location.href = "{{ route('login') }}"; 
+            return;
+        @endguest
+
+        fetch(`/reviews/${ratingId}/vote`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ vote_type: voteType })
+        })
+        .then(response => response.json())
+        .then(data => {
+            window.location.reload(); 
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Gagal memberikan vote. Pastikan Anda sudah login.');
+        });
+    }
+</script>

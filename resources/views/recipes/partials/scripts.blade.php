@@ -2,7 +2,7 @@
 // ========== 1. INGREDIENTS SCALER ==========
 const basePortions = {{ $recipe->servings }};
 let currentPortion = {{ $recipe->servings }};
-const recipeId = {{ $recipe->id }};
+const recipeSlug = '{{ $recipe->slug }}';
 
 const ingredientsData = JSON.parse(document.getElementById('recipe-ingredients-data')?.textContent || '[]');
 const cookingStepsData = JSON.parse(document.getElementById('recipe-steps-data')?.textContent || '[]');
@@ -57,30 +57,43 @@ function copyIngredientsList() {
 
 // ========== 2. BOOKMARK (AJAX) ==========
 function toggleBookmark() {
-    const btn = document.getElementById('bookmarkBtn');
-    const icon = document.getElementById('bookmarkIcon');
-    const count = document.getElementById('bookmarkCount');
-    const isBookmarked = btn.dataset.bookmarked === 'true';
+    // 1. JIKA BELUM LOGIN (GUEST)
+    @guest
+        const modal = document.getElementById('loginPromptModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        return; // Hentikan proses, jangan jalankan fetch
+    @endguest
 
-    fetch(`/bookmark/${recipeId}`, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-    })
-    .then(res => res.json())
-    .then(data => {
-        const nowBookmarked = data.status === 'added';
-        btn.dataset.bookmarked = nowBookmarked ? 'true' : 'false';
-        icon.textContent = nowBookmarked ? 'bookmark' : 'bookmark_border';
-        icon.style.fontVariationSettings = `'FILL' ${nowBookmarked ? 1 : 0}`;
-        let n = parseInt(count.textContent.replace(/[^\d]/g, '')) || 0;
-        count.textContent = nowBookmarked ? n + 1 : Math.max(0, n - 1);
-        showToast(data.message);
-    })
-    .catch(() => showToast('Gagal. Coba lagi.'));
+    // 2. JIKA SUDAH LOGIN (AUTH)
+    @auth
+        const btn = document.getElementById('bookmarkBtn');
+        const icon = document.getElementById('bookmarkIcon');
+        const count = document.getElementById('bookmarkCount');
+        const isBookmarked = btn.dataset.bookmarked === 'true';
+
+        fetch(`/bookmark/${recipeSlug}`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(res => res.json())
+        .then(data => {
+            const nowBookmarked = data.status === 'added';
+            btn.dataset.bookmarked = nowBookmarked ? 'true' : 'false';
+            icon.textContent = nowBookmarked ? 'bookmark' : 'bookmark_border';
+            icon.style.fontVariationSettings = `'FILL' ${nowBookmarked ? 1 : 0}`;
+            let n = parseInt(count.textContent.replace(/[^\d]/g, '')) || 0;
+            count.textContent = nowBookmarked ? n + 1 : Math.max(0, n - 1);
+            showToast(data.message);
+        })
+        .catch(() => showToast('Gagal. Coba lagi.'));
+    @endauth
 }
 
 function copyRecipeLink() {
@@ -110,7 +123,9 @@ function showToast(msg) {
 const stepTimers = {};
 
 function formatTime(s) {
-    return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+    const minutes = Math.floor(s / 60);
+    const seconds = s % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
 function toggleStepTimer(id, defaultSec) {
@@ -254,7 +269,8 @@ function resetModalTimer() {
 }
 
 // ========== 6. RATING ==========
-let userRating = {{ $userRating->rating ?? 5 }};
+// ✅ FIX: Gunakan optional chaining (?) agar tidak error jika user belum login/rating
+let userRating = {{ $userRating?->rating ?? 5 }};
 const ratingLabels = ['', '1 Bintang', '2 Bintang', '3 Bintang', '4 Bintang', '5 Bintang (Sempurna)'];
 
 function setRating(val) {

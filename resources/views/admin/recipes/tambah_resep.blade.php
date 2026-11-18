@@ -1,352 +1,357 @@
 @extends('admin.layout')
 
-@section('title', 'Tambah Resep Baru — Admin L\'Art de Cuisine')
-@section('breadcrumb', 'Tambah Resep Baru')
+@section('title', 'Tambah Resep — Griya Rasa')
+@section('breadcrumb', 'Tambah Resep')
 
 @section('content')
 
-{{-- ========== HEADER ========== --}}
-<header class="flex flex-col gap-4 mb-8 pt-8">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-        <nav class="flex items-center gap-1.5 text-xs text-on-surface-variant font-medium">
-            <span class="hover:text-primary cursor-pointer">Portal Admin</span>
-            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-            <a href="{{ route('admin.recipes.index') }}" class="hover:text-primary cursor-pointer">Kelola Resep</a>
-            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-            <span class="text-primary font-bold">Tambah Resep Baru</span>
-        </nav>
+<div class="w-full mx-auto pb-12">
+    
+    {{-- Header --}}
+    <header class="flex flex-col gap-2 mb-8 pt-8">
+        <a href="{{ route('admin.recipes.index') }}" 
+           class="inline-flex items-center gap-2 px-4 py-2 bg-surface-container-high hover:bg-surface-container-highest text-primary text-sm font-bold rounded-full transition-all w-fit mb-3 shadow-sm">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            Kembali ke Daftar Resep
+        </a>
 
-        <div class="flex items-center gap-2 bg-secondary-container/60 text-on-secondary-container px-4 py-1.5 rounded-full text-[11px] font-bold shadow-sm">
-            <span class="material-symbols-outlined text-[16px] text-secondary">check_circle</span>
-            <span>Draf Tersimpan Otomatis</span>
+        <div class="flex flex-col gap-1.5">
+            <h1 class="font-['Playfair_Display'] text-4xl text-primary tracking-tight font-bold">Tambah & Kurasi Resep Baru</h1>
+            <p class="text-sm text-on-surface-variant max-w-xl">
+                Buat resep kuliner baru dengan detail bahan, takaran, langkah memasak, dan foto hasil masakan untuk ditampilkan.
+            </p>
         </div>
-    </div>
+    </header>
 
-    <div>
-        <h1 class="font-['Playfair_Display'] text-4xl text-primary tracking-tight font-bold">Tambah Resep Baru</h1>
-        <p class="text-sm text-on-surface-variant max-w-3xl mt-1">
-            Lengkapi formulir kurasi gastronomi dengan takaran presisi dan panduan naratif khas L'Art de Cuisine.
-        </p>
-    </div>
-</header>
+    <form id="recipeForm" action="{{ route('admin.recipes.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-6">
+        @csrf
 
-{{-- ========== FORM ========== --}}
-<form method="POST" action="{{ route('admin.recipes.store') }}" enctype="multipart/form-data" class="flex flex-col gap-6 pb-24">
-    @csrf
-
-    @if ($errors->any())
-        <div class="p-4 rounded-2xl bg-error-container text-on-error-container text-sm">
-            <ul class="list-disc list-inside space-y-1">
-                @foreach ($errors->all() as $e) <li>{{ $e }}</li> @endforeach
-            </ul>
-        </div>
-    @endif
-
-    {{-- ========== KARTU 1: INFORMASI DASAR ========== --}}
-    <section class="bg-surface-container-lowest rounded-2xl p-6 lg:p-8 shadow-sm flex flex-col gap-6">
-        <div class="flex items-center gap-3 pb-2">
-            <span class="w-9 h-9 rounded-full bg-secondary text-white flex items-center justify-center text-base font-bold shadow-sm">1</span>
-            <div>
-                <h2 class="font-['Playfair_Display'] text-xl text-primary font-bold">Informasi Dasar Resep</h2>
-                <p class="text-xs text-on-surface-variant">Identitas utama hidangan, klasifikasi menu kurasi, dan estetika fotografi saji.</p>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-            {{-- Left: Text Inputs --}}
-            <div class="lg:col-span-7 flex flex-col gap-4">
-                <div class="flex flex-col gap-1.5">
-                    <label for="title" class="text-sm font-bold text-primary">
-                        Judul Resep <span class="text-error">*</span>
-                    </label>
-                    <input type="text" id="title" name="title" value="{{ old('title') }}" required
-                           placeholder="contoh: Rendang Daging Sapi Karamel Khas Minang"
-                           class="w-full bg-surface-container-low text-on-surface placeholder:text-outline px-4 py-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-secondary/40 transition"/>
+        {{-- ========== PESAN ERROR VALIDASI ========== --}}
+        @if ($errors->any())
+            <div class="p-5 rounded-2xl bg-error-container text-on-error-container text-sm shadow-sm">
+                <div class="flex items-center gap-2 mb-2 font-bold">
+                    <span class="material-symbols-outlined">error</span>
+                    Gagal Menyimpan! Periksa kembali isian Anda:
                 </div>
+                <ul class="list-disc list-inside pl-2 space-y-1">
+                    @foreach ($errors->all() as $e) <li>{{ $e }}</li> @endforeach
+                </ul>
+            </div>
+        @endif
+        {{-- ============================================ --}}
 
-                <div class="flex flex-col gap-1.5">
-                    <label for="category_id" class="text-sm font-bold text-primary">
-                        Kategori Resep <span class="text-error">*</span>
-                    </label>
+        {{-- SECTION 1: INFORMASI DASAR --}}
+        <div class="bg-surface-container-lowest rounded-3xl p-6 lg:p-8 shadow-sm flex flex-col gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {{-- Judul --}}
+                <div class="md:col-span-2 flex flex-col gap-2">
+                    <label class="text-xs font-bold text-primary" for="title">Judul Resep Kuliner <span class="text-error">*</span></label>
+                    <input type="text" id="title" name="title" value="{{ old('title') }}" required
+                           placeholder="Contoh: Bebek Betutu Gilimanuk Warisan Puri"
+                           class="w-full px-5 py-3 rounded-2xl bg-surface-container-low text-on-surface text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all placeholder:text-outline"/>
+                </div>
+                {{-- Kategori --}}
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold text-primary" for="category_id">Kategori Kuliner <span class="text-error">*</span></label>
                     <div class="relative">
-                        <select id="category_id" name="category_id" required
-                                class="w-full appearance-none bg-surface-container-low text-on-surface px-4 py-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-secondary/40 cursor-pointer pr-10">
-                            <option value="">— Pilih Kategori —</option>
-                            @foreach ($categories as $cat)
-                                <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                        <select id="category_id" name="category_id" required class="w-full appearance-none px-5 py-3 rounded-2xl bg-surface-container-low text-on-surface text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all pr-10 cursor-pointer">
+                            <option value="" disabled selected>Pilih Kategori</option>
+                            @foreach($categories as $cat)
+                                <option value="{{ $cat->id }}" @selected(old('category_id') == $cat->id)>{{ $cat->name }}</option>
                             @endforeach
                         </select>
-                        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-secondary">expand_more</span>
+                        <span class="material-symbols-outlined absolute right-4 top-3.5 text-outline pointer-events-none">expand_more</span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Deskripsi --}}
+            <div class="flex flex-col gap-2">
+                <label class="text-xs font-bold text-primary" for="description">Deskripsi Resep &amp; Filosofi Rasa</label>
+                <textarea id="description" name="description" rows="3"
+                          placeholder="Ceritakan latar belakang kuliner, profil aroma rempah, dan tekstur istimewa yang diharapkan..."
+                          class="w-full px-5 py-3 rounded-2xl bg-surface-container-low text-on-surface text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all resize-none placeholder:text-outline">{{ old('description') }}</textarea>
+            </div>
+
+            {{-- Porsi, Waktu, Kalori, Kesulitan (Grid 4 Kolom) --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-2">
+                {{-- Porsi --}}
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold text-primary" for="servings">Jumlah Porsi <span class="text-error">*</span></label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-3 text-[18px] text-outline">restaurant</span>
+                        <input type="number" id="servings" name="servings" value="{{ old('servings', 1) }}" min="1" required
+                               class="w-full pl-11 pr-5 py-3 rounded-2xl bg-surface-container-low text-on-surface text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all"/>
+                    </div>
+                </div>
+                
+                {{-- Waktu --}}
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold text-primary" for="duration_minutes">Total Waktu (Menit) <span class="text-error">*</span></label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-3 text-[18px] text-outline">schedule</span>
+                        <input type="number" id="duration_minutes" name="duration_minutes" value="{{ old('duration_minutes') }}" min="1" required
+                               class="w-full pl-11 pr-5 py-3 rounded-2xl bg-surface-container-low text-on-surface text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all"/>
                     </div>
                 </div>
 
-                <div class="flex flex-col gap-1.5">
-                    <label for="description" class="text-sm font-bold text-primary">Deskripsi Singkat</label>
-                    <textarea id="description" name="description" rows="4"
-                              placeholder="Tuliskan pengantar menggugah selera, sejarah budaya hidangan, atau profil aroma khas rempah..."
-                              class="w-full bg-surface-container-low text-on-surface placeholder:text-outline p-4 rounded-xl text-sm outline-none focus:ring-2 focus:ring-secondary/40 resize-y">{{ old('description') }}</textarea>
-                </div>
-            </div>
-
-            {{-- Right: Photo Upload --}}
-            <div class="lg:col-span-5 flex flex-col gap-1.5">
-                <label class="text-sm font-bold text-primary">Foto Utama</label>
-                <div class="min-h-[260px] bg-surface-container-low/80 rounded-2xl p-4 flex flex-col justify-center items-center text-center border-2 border-dashed border-outline-variant">
-                    <div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center text-primary mb-3">
-                        <span class="material-symbols-outlined text-[32px]">add_photo_alternate</span>
+                {{-- KALORI --}}
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold text-primary" for="calories">Kalori (kkal)</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-3 text-[18px] text-outline">local_fire_department</span>
+                        <input type="number" id="calories" name="calories" value="{{ old('calories') }}" min="0"
+                               class="w-full pl-11 pr-5 py-3 rounded-2xl bg-surface-container-low text-on-surface text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary/40 transition-all" placeholder="Contoh: 250"/>
                     </div>
-                    <label class="cursor-pointer">
-                        <span class="px-5 py-2 rounded-full bg-primary text-white text-xs font-bold inline-block">
-                            Pilih Foto
-                        </span>
-                        <input type="file" name="image" accept="image/*" class="hidden">
-                    </label>
-                    <p class="text-[11px] text-on-surface-variant mt-3">
-                        Maks 5MB (JPG, PNG, WebP)<br>Rasio 16:9 disarankan
-                    </p>
+                </div>
+
+                {{-- Kesulitan --}}
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold text-primary">Tingkat Kesulitan <span class="text-error">*</span></label>
+                    <div class="flex items-center gap-2 bg-surface-container-low p-1.5 rounded-2xl shadow-sm h-[46px]">
+                        @foreach(['Mudah', 'Sedang', 'Sulit'] as $diff)
+                            <label class="flex-1 text-center cursor-pointer">
+                                <input type="radio" name="difficulty" value="{{ $diff }}" class="peer sr-only" @checked(old('difficulty', 'Mudah') == $diff)>
+                                <div class="py-1.5 rounded-xl text-xs font-semibold text-on-surface-variant peer-checked:bg-secondary peer-checked:text-white transition-all">
+                                    {{ $diff }}
+                                </div>
+                            </label>
+                        @endforeach
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    {{-- ========== KARTU 2: DETAIL MASAK ========== --}}
-    <section class="bg-surface-container-lowest rounded-2xl p-6 lg:p-8 shadow-sm flex flex-col gap-6">
-        <div class="flex items-center gap-3 pb-2">
-            <span class="w-9 h-9 rounded-full bg-secondary text-white flex items-center justify-center text-base font-bold shadow-sm">2</span>
-            <div>
-                <h2 class="font-['Playfair_Display'] text-xl text-primary font-bold">Detail & Karakteristik</h2>
-                <p class="text-xs text-on-surface-variant">Parameter teknis porsi, estimasi durasi dapur, kalori, dan tingkat kesulitan.</p>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {{-- Porsi --}}
-            <div class="bg-surface-container-low/70 rounded-xl p-4 flex flex-col gap-2">
-                <div class="flex items-center gap-2 text-secondary text-sm font-semibold">
-                    <span class="material-symbols-outlined text-[20px]">room_service</span>
-                    <span>Porsi Saji</span>
+            {{-- Upload Foto --}}
+            <div class="flex flex-col gap-2 pt-2">
+                <label class="text-xs font-bold text-primary">Foto Hasil Masakan (Maks. 5MB)</label>
+                <div class="relative w-full h-32 rounded-2xl border-2 border-dashed border-outline-variant hover:border-secondary bg-surface-container-lowest flex flex-col items-center justify-center cursor-pointer transition-colors overflow-hidden group">
+                    <input type="file" id="image" name="image" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewImage(event)">
+                    <img id="imagePreview" class="hidden absolute inset-0 w-full h-full object-cover z-10"/>
+                    <div id="imagePlaceholder" class="flex flex-col items-center justify-center gap-1 z-0">
+                        <span class="material-symbols-outlined text-[28px] text-primary group-hover:scale-110 transition-transform">add_photo_alternate</span>
+                        <span class="text-sm font-bold text-primary">Pilih foto atau seret ke area ini</span>
+                        <span class="text-[11px] text-on-surface-variant">Format: JPG, PNG, WEBP</span>
+                    </div>
                 </div>
-                <input type="number" name="servings" value="{{ old('servings', 4) }}" min="1" max="50" required
-                       class="w-full bg-surface-container-lowest text-on-surface px-4 py-2.5 rounded-full text-base text-center outline-none focus:ring-2 focus:ring-secondary/40"/>
-            </div>
-
-            {{-- Durasi --}}
-            <div class="bg-surface-container-low/70 rounded-xl p-4 flex flex-col gap-2">
-                <div class="flex items-center gap-2 text-secondary text-sm font-semibold">
-                    <span class="material-symbols-outlined text-[20px]">hourglass_bottom</span>
-                    <span>Durasi (Menit)</span>
-                </div>
-                <input type="number" name="duration_minutes" value="{{ old('duration_minutes', 60) }}" min="1"
-                       class="w-full bg-surface-container-lowest text-on-surface px-4 py-2.5 rounded-full text-base text-center outline-none focus:ring-2 focus:ring-secondary/40"/>
-            </div>
-
-            {{-- Kesulitan --}}
-            <div class="bg-surface-container-low/70 rounded-xl p-4 flex flex-col gap-2">
-                <div class="flex items-center gap-2 text-secondary text-sm font-semibold">
-                    <span class="material-symbols-outlined text-[20px]">psychology</span>
-                    <span>Kesulitan</span>
-                </div>
-                <select name="difficulty" required
-                        class="w-full bg-surface-container-lowest text-on-surface px-4 py-2.5 rounded-full text-base text-center outline-none focus:ring-2 focus:ring-secondary/40 cursor-pointer">
-                    <option value="Mudah" {{ old('difficulty') === 'Mudah' ? 'selected' : '' }}>Mudah</option>
-                    <option value="Sedang" {{ old('difficulty') == 'Sedang' ? 'selected' : '' }}>Sedang</option>
-                    <option value="Sulit" {{ old('difficulty') == 'Sulit' ? 'selected' : '' }}>Sulit</option>
-                </select>
-            </div>
-
-            {{-- Kalori --}}
-            <div class="bg-surface-container-low/70 rounded-xl p-4 flex flex-col gap-2">
-                <div class="flex items-center gap-2 text-secondary text-sm font-semibold">
-                    <span class="material-symbols-outlined text-[20px]">local_fire_department</span>
-                    <span>Kalori</span>
-                </div>
-                <input type="number" name="calories" value="{{ old('calories', 400) }}" min="1"
-                       class="w-full bg-surface-container-lowest text-on-surface px-4 py-2.5 rounded-full text-base text-center outline-none focus:ring-2 focus:ring-secondary/40"/>
-            </div>
-        </div>
-    </section>
-
-    {{-- ========== KARTU 3: BAHAN ========== --}}
-    <section class="bg-surface-container-lowest rounded-2xl p-6 lg:p-8 shadow-sm flex flex-col gap-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2">
-            <div class="flex items-center gap-3">
-                <span class="w-9 h-9 rounded-full bg-secondary text-white flex items-center justify-center text-base font-bold shadow-sm">3</span>
-                <div>
-                    <h2 class="font-['Playfair_Display'] text-xl text-primary font-bold">Bahan & Takaran</h2>
-                    <p class="text-xs text-on-surface-variant">Pilih bahan dari database + tentukan jumlah.</p>
-                </div>
-            </div>
-            <button type="button" onclick="addIngredientRow()"
-                    class="self-start sm:self-auto flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-white text-xs font-bold hover:opacity-90 transition">
-                <span class="material-symbols-outlined text-[18px]">add</span>
-                Tambah Baris
-            </button>
-        </div>
-
-        <div class="flex flex-col gap-3" id="ingredients-container"></div>
-    </section>
-
-    {{-- ========== KARTU 4: LANGKAH ========== --}}
-    <section class="bg-surface-container-lowest rounded-2xl p-6 lg:p-8 shadow-sm flex flex-col gap-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2">
-            <div class="flex items-center gap-3">
-                <span class="w-9 h-9 rounded-full bg-secondary text-white flex items-center justify-center text-base font-bold shadow-sm">4</span>
-                <div>
-                    <h2 class="font-['Playfair_Display'] text-xl text-primary font-bold">Langkah Memasak</h2>
-                    <p class="text-xs text-on-surface-variant">Uraikan instruksi langkah demi langkah.</p>
-                </div>
-            </div>
-            <button type="button" onclick="addStepRow()"
-                    class="self-start sm:self-auto flex items-center gap-2 px-4 py-2 rounded-full bg-primary-container text-white text-xs font-bold hover:bg-primary transition">
-                <span class="material-symbols-outlined text-[18px]">add_task</span>
-                Tambah Langkah
-            </button>
-        </div>
-
-        <div class="flex flex-col gap-4" id="steps-container"></div>
-    </section>
-
-    {{-- ========== KARTU 5: PUBLIKASI ========== --}}
-    <section class="bg-surface-container-lowest rounded-2xl p-6 lg:p-8 shadow-sm flex flex-col gap-6">
-        <div class="flex items-center gap-3 pb-2">
-            <span class="w-9 h-9 rounded-full bg-secondary text-white flex items-center justify-center text-base font-bold shadow-sm">5</span>
-            <div>
-                <h2 class="font-['Playfair_Display'] text-xl text-primary font-bold">Status Publikasi</h2>
-                <p class="text-xs text-on-surface-variant">Tentukan visibilitas resep di portal.</p>
+                @error('image')
+                    <span class="text-xs text-error font-semibold">{{ $message }}</span>
+                @enderror
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <label class="flex items-start gap-3 p-4 rounded-2xl bg-surface-container-low/50 hover:bg-surface-container-low cursor-pointer transition">
-                <input type="radio" name="status" value="draft" {{ old('status') === 'draft' ? 'checked' : '' }}
-                       class="mt-1 w-4 h-4 accent-[#5a3a22]"/>
-                <div>
-                    <span class="text-base text-primary font-bold block">Draf Internal</span>
-                    <span class="text-xs text-on-surface-variant">Hanya dapat ditinjau admin.</span>
+        {{-- SECTION 2: BAHAN & TAKARAN --}}
+        <div class="bg-surface-container-lowest rounded-3xl p-6 lg:p-8 shadow-sm flex flex-col gap-6">
+            <div class="flex items-center justify-between border-b border-surface-container-high pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+                        <span class="material-symbols-outlined text-[18px]">grocery</span>
+                    </div>
+                    <div>
+                        <h2 class="font-display text-xl text-primary font-bold">Daftar Bahan &amp; Takaran <span class="text-error">*</span></h2>
+                        <p class="text-sm text-on-surface-variant">Tentukan komposisi bahan pokok, rempah, dan bumbu.</p>
+                    </div>
                 </div>
-            </label>
-
-            <label class="flex items-start gap-3 p-4 rounded-2xl bg-surface-container-low hover:bg-surface-container-high/60 cursor-pointer transition shadow-sm">
-                <input type="radio" name="status" value="published" {{ old('status', 'published') === 'published' ? 'checked' : '' }}
-                       class="mt-1 w-4 h-4 accent-[#5a3a22]"/>
-                <div>
-                    <span class="text-base text-primary font-bold block">Terbitkan Sekarang</span>
-                    <span class="text-xs text-on-surface-variant">Langsung tayang di etalase publik.</span>
-                </div>
-            </label>
-        </div>
-    </section>
-
-    {{-- ========== STICKY ACTION BAR ========== --}}
-    <aside class="fixed bottom-0 left-72 right-0 bg-surface-container-lowest/95 backdrop-blur-xl z-40 p-4 shadow-[0_-8px_24px_-4px_rgba(90,58,34,0.08)]">
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-4">
-            <div class="flex items-center gap-2 text-on-surface-variant text-xs font-semibold">
-                <span class="w-2.5 h-2.5 rounded-full bg-on-tertiary-container animate-pulse"></span>
-                <span>Perubahan akan disimpan ke database</span>
-            </div>
-            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                <a href="{{ route('admin.recipes.index') }}"
-                   class="px-5 py-2.5 rounded-full bg-surface-container-high/60 hover:bg-surface-container-high text-primary text-sm font-bold transition">
-                    Batal
-                </a>
-                <button type="submit" name="status" value="draft"
-                        class="px-6 py-2.5 rounded-full bg-surface-container text-primary hover:bg-surface-container-high text-sm font-bold transition flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-[18px]">save_as</span>
-                    Simpan Draf
+                <button type="button" onclick="addIngredient()" class="px-4 py-2 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold hover:bg-secondary/20 transition">
+                    + Tambah Bahan
                 </button>
-                <button type="submit" name="status" value="published"
-                        class="px-8 py-3 rounded-full bg-primary text-white hover:bg-primary-container text-sm font-bold transition shadow-md flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[20px]">restaurant</span>
-                    Publikasikan
+            </div>
+
+            <div id="ingredients-container" class="flex flex-col gap-3">
+                @php
+                    $oldIngredients = old('ingredients', [['name' => '']]);
+                @endphp
+                @foreach($oldIngredients as $index => $ing)
+                    <div class="ingredient-row flex gap-3 items-center">
+                        <div class="flex-1">
+                            <input type="text" name="ingredients[{{ $index }}][name]" value="{{ $ing['name'] ?? '' }}" placeholder="Contoh: Garam 1 sdt, atau Daging Sapi 500 gram" required
+                                   class="w-full px-4 py-2.5 rounded-xl bg-surface-container-low text-sm focus:ring-2 focus:ring-secondary/40 outline-none"/>
+                        </div>
+                        <div class="w-12 shrink-0">
+                            <button type="button" onclick="removeRow(this)" class="w-10 h-10 rounded-full bg-error-container/50 text-error hover:bg-error-container flex items-center justify-center transition">
+                                <span class="material-symbols-outlined text-[18px]">remove</span>
+                            </button>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        {{-- SECTION 3: LANGKAH MEMASAK --}}
+        <div class="bg-surface-container-lowest rounded-3xl p-6 lg:p-8 shadow-sm flex flex-col gap-6">
+            <div class="flex items-center justify-between border-b border-surface-container-high pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+                        <span class="material-symbols-outlined text-[18px]">skillet</span>
+                    </div>
+                    <div>
+                        <h2 class="font-display text-xl text-primary font-bold">Tahapan &amp; Panduan Memasak <span class="text-error">*</span></h2>
+                        <p class="text-sm text-on-surface-variant">Uraikan langkah memasak berurutan dengan durasi timer praktis.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="addStep()" class="px-4 py-2 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold hover:bg-secondary/20 transition">
+                    + Tambah Tahapan
+                </button>
+            </div>
+
+            <div id="steps-container" class="flex flex-col gap-4">
+                @php
+                    $oldSteps = old('steps', [['instruction' => '', 'duration_minutes' => '']]);
+                @endphp
+                @foreach($oldSteps as $index => $step)
+                    <div class="step-row relative bg-surface-container-low p-5 rounded-2xl flex flex-col md:flex-row gap-4 items-start">
+                        <div class="flex flex-col items-center gap-1 w-10 shrink-0 pt-1">
+                            <span class="step-number w-7 h-7 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">{{ $index + 1 }}</span>
+                        </div>
+                        <div class="flex-1 flex flex-col gap-3">
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <textarea name="steps[{{ $index }}][instruction]" placeholder="Tuliskan instruksi detail langkah ini..." rows="2" required
+                                          class="w-full px-4 py-2.5 rounded-xl bg-surface-container-lowest text-sm focus:ring-2 focus:ring-secondary/40 outline-none resize-none">{{ $step['instruction'] ?? '' }}</textarea>
+                                <div class="w-full sm:w-32 shrink-0">
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined absolute left-3 top-2.5 text-[16px] text-outline">timer</span>
+                                        <input type="number" name="steps[{{ $index }}][duration_minutes]" value="{{ $step['duration_minutes'] ?? '' }}" placeholder="Menit" min="1"
+                                               class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-surface-container-lowest text-sm focus:ring-2 focus:ring-secondary/40 outline-none"/>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {{-- UPLOAD GAMBAR STEP --}}
+                            <div class="flex items-center gap-3">
+                                <input type="file" name="steps[{{ $index }}][image]" accept="image/*" onchange="previewStepImage(event, 'preview-{{ $index }}')" class="block w-full text-xs text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-secondary-container file:text-on-secondary-container hover:file:bg-secondary/20 transition-all cursor-pointer"/>
+                                <img id="preview-{{ $index }}" class="w-10 h-10 rounded-lg object-cover hidden shadow-sm">
+                            </div>
+                        </div>
+                        <button type="button" onclick="removeRow(this)" class="absolute top-4 right-4 md:static w-8 h-8 rounded-full bg-error-container/50 text-error hover:bg-error-container flex items-center justify-center transition shrink-0">
+                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                        </button>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        {{-- ACTIONS --}}
+        <div class="flex items-center justify-between pt-4 border-t border-surface-container-high mt-2">
+            <button type="submit" name="status" value="draft" class="px-6 py-3 rounded-full bg-surface-container-high text-primary text-sm font-bold hover:bg-surface-container transition">
+                Simpan sebagai Draft
+            </button>
+
+            <div class="flex items-center gap-3">
+                <button type="submit" name="status" value="published" class="px-6 py-3 rounded-full bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary-container transition flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                    Publikasikan Resep
                 </button>
             </div>
         </div>
-    </aside>
-</form>
+
+    </form>
+</div>
 
 @endsection
 
 @push('scripts')
 <script>
-// ============================================================
-// BAHAN DINAMIS
-// ============================================================
-const ingredientsData = @json($ingredients->map(fn($i) => ['id' => $i->id, 'name' => $i->name, 'unit' => $i->unit]) ?? []);
-let ingredientIdx = 0;
+    // Inisialisasi index berdasarkan jumlah data yang sudah ada di layar (jika error)
+    let ingredientIndex = {{ count($oldIngredients) }};
+    let stepIndex = {{ count($oldSteps) }};
 
-function addIngredientRow() {
-    const c = document.getElementById('ingredients-container');
-    const options = ingredientsData.map(i => `<option value="${i.id}">${i.name} (${i.unit})</option>`).join('');
+    // FUNGSI TAMBAH BAHAN (Sudah disesuaikan jadi 1 kolom)
+    function addIngredient() {
+        const container = document.getElementById('ingredients-container');
+        const newRow = document.createElement('div');
+        newRow.className = 'ingredient-row flex gap-3 items-center';
+        newRow.innerHTML = `
+            <div class="flex-1">
+                <input type="text" name="ingredients[\${ingredientIndex}][name]" placeholder="Contoh: Garam 1 sdt, atau Daging Sapi 500 gram" required class="w-full px-4 py-2.5 rounded-xl bg-surface-container-low text-sm focus:ring-2 focus:ring-secondary/40 outline-none"/>
+            </div>
+            <div class="w-12 shrink-0">
+                <button type="button" onclick="removeRow(this)" class="w-10 h-10 rounded-full bg-error-container/50 text-error hover:bg-error-container flex items-center justify-center transition">
+                    <span class="material-symbols-outlined text-[18px]">remove</span>
+                </button>
+            </div>
+        `;
+        container.appendChild(newRow);
+        ingredientIndex++;
+    }
 
-    const row = document.createElement('div');
-    row.className = 'ingredient-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-surface-container-low/40 p-3 rounded-xl';
-    row.innerHTML = `
-        <div class="md:col-span-6">
-            <select name="ingredients[${ingredientIdx}][id]" required
-                    class="w-full bg-surface-container-lowest text-on-surface px-4 py-2.5 rounded-full text-sm outline-none focus:ring-2 focus:ring-secondary/40">
-                <option value="">— Pilih Bahan —</option>
-                ${options}
-            </select>
-        </div>
-        <div class="md:col-span-3">
-            <input type="number" name="ingredients[${ingredientIdx}][amount]" step="0.01" min="0" required
-                   placeholder="Jumlah"
-                   class="w-full bg-surface-container-lowest text-on-surface px-4 py-2.5 rounded-full text-sm text-center outline-none focus:ring-2 focus:ring-secondary/40"/>
-        </div>
-        <div class="md:col-span-2">
-            <input type="text" name="ingredients[${ingredientIdx}][unit]" placeholder="Satuan (opsional)"
-                   class="w-full bg-surface-container-lowest text-on-surface px-4 py-2.5 rounded-full text-sm outline-none focus:ring-2 focus:ring-secondary/40"/>
-        </div>
-        <div class="md:col-span-1 flex justify-end">
-            <button type="button" onclick="this.closest('.ingredient-row').remove()"
-                    class="w-9 h-9 rounded-full bg-error-container/60 hover:bg-error text-error hover:text-white flex items-center justify-center transition">
-                <span class="material-symbols-outlined text-[18px]">remove</span>
+    // FUNGSI TAMBAH LANGKAH (Sudah ditambahkan upload gambar)
+    function addStep() {
+        const container = document.getElementById('steps-container');
+        const newRow = document.createElement('div');
+        newRow.className = 'step-row relative bg-surface-container-low p-5 rounded-2xl flex flex-col md:flex-row gap-4 items-start';
+        newRow.innerHTML = `
+            <div class="flex flex-col items-center gap-1 w-10 shrink-0 pt-1">
+                <span class="step-number w-7 h-7 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">?</span>
+            </div>
+            <div class="flex-1 flex flex-col gap-3">
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <textarea name="steps[\${stepIndex}][instruction]" placeholder="Tuliskan instruksi detail langkah ini..." rows="2" required class="w-full px-4 py-2.5 rounded-xl bg-surface-container-lowest text-sm focus:ring-2 focus:ring-secondary/40 outline-none resize-none"></textarea>
+                    <div class="w-full sm:w-32 shrink-0">
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-2.5 text-[16px] text-outline">timer</span>
+                            <input type="number" name="steps[\${stepIndex}][duration_minutes]" placeholder="Menit" min="1" class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-surface-container-lowest text-sm focus:ring-2 focus:ring-secondary/40 outline-none"/>
+                        </div>
+                    </div>
+                </div>
+                
+                {{-- Upload Gambar Step --}}
+                <div class="flex items-center gap-3">
+                    <input type="file" name="steps[\${stepIndex}][image]" accept="image/*" onchange="previewStepImage(event, 'preview-new-\${stepIndex}')" class="block w-full text-xs text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-secondary-container file:text-on-secondary-container hover:file:bg-secondary/20 transition-all cursor-pointer"/>
+                    <img id="preview-new-\${stepIndex}" class="w-10 h-10 rounded-lg object-cover hidden shadow-sm">
+                </div>
+            </div>
+            <button type="button" onclick="removeRow(this)" class="absolute top-4 right-4 md:static w-8 h-8 rounded-full bg-error-container/50 text-error hover:bg-error-container flex items-center justify-center transition shrink-0">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
             </button>
-        </div>
-    `;
-    c.appendChild(row);
-    ingredientIdx++;
-}
+        `;
+        container.appendChild(newRow);
+        stepIndex++;
+        updateStepNumbers();
+    }
 
-// ============================================================
-// LANGKAH DINAMIS
-// ============================================================
-let stepIdx = 0;
+    function removeRow(button) {
+        const row = button.closest('.ingredient-row') || button.closest('.step-row');
+        if (row) {
+            row.remove();
+            updateStepNumbers();
+        }
+    }
 
-function addStepRow() {
-    const c = document.getElementById('steps-container');
-    const num = stepIdx + 1;
+    function updateStepNumbers() {
+        const steps = document.querySelectorAll('#steps-container .step-number');
+        steps.forEach((el, index) => {
+            el.innerText = index + 1;
+        });
+    }
 
-    const row = document.createElement('div');
-    row.className = 'step-card bg-surface-container-low/40 rounded-xl p-4 flex flex-col gap-3';
-    row.innerHTML = `
-        <div class="flex items-center justify-between">
-            <span class="font-['Playfair_Display'] text-base text-primary font-bold">Langkah ${num}</span>
-            <button type="button" onclick="this.closest('.step-card').remove()"
-                    class="text-error hover:bg-error-container p-1 rounded-full transition">
-                <span class="material-symbols-outlined text-[20px]">delete</span>
-            </button>
-        </div>
-        <textarea name="steps[${stepIdx}][instruction]" rows="3" required
-                  placeholder="Tuliskan petunjuk teknik memasak, indikator kematangan visual..."
-                  class="w-full bg-surface-container-lowest text-on-surface p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-secondary/40"></textarea>
-        <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-secondary text-[20px]">timer</span>
-            <label class="text-xs font-bold text-primary">Timer (menit):</label>
-            <input type="number" name="steps[${stepIdx}][duration_minutes]" min="1" placeholder="0"
-                   class="w-20 bg-surface-container-low text-center text-sm rounded-full py-1.5 outline-none"/>
-            <span class="text-[11px] text-outline">Kosongkan jika tanpa timer</span>
-        </div>
-    `;
-    c.appendChild(row);
-    stepIdx++;
-}
+    // FUNGSI PREVIEW GAMBAR UTAMA
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById('imagePreview');
+        const placeholder = document.getElementById('imagePlaceholder');
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 
-// Tambah 1 bahan & 1 langkah default saat halaman dibuka
-document.addEventListener('DOMContentLoaded', () => {
-    addIngredientRow();
-    addStepRow();
-});
+    // FUNGSI PREVIEW GAMBAR LANGKAH (BARU)
+    function previewStepImage(event, previewId) {
+        const input = event.target;
+        const preview = document.getElementById(previewId);
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 </script>
 @endpush

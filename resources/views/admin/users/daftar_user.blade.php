@@ -1,20 +1,16 @@
 @extends('admin.layout')
 
-@section('title', 'Data User — L\'Art de Cuisine')
+@section('title', 'Data User — Griya Rasa')
 @section('breadcrumb', 'Data User')
 
 @section('content')
 
 {{-- ========== HEADER ========== --}}
 <header class="flex flex-col gap-6 mb-8 pt-8">
-    <div class="flex flex-col gap-1.5 max-w-2xl">
-        <div class="flex items-center gap-2 text-secondary">
-            <span class="material-symbols-outlined text-lg">group</span>
-            <span class="text-[11px] uppercase tracking-widest text-secondary font-bold">Direktori &amp; Hak Akses</span>
-        </div>
-        <h1 class="font-display text-4xl text-primary tracking-tight font-bold">Data User</h1>
-        <p class="text-sm text-on-surface-variant">
-            Pantau pengguna yang terdaftar di situs dan kelola hak aksesnya.
+    <div class="flex flex-col gap-1.5">
+        <h1 class="font-['Playfair_Display'] text-4xl text-primary tracking-tight font-bold">Data User</h1>
+        <p class="text-sm text-on-surface-variant max-w-xl">
+            Kelola akun pengguna, termasuk admin dan anggota komunitas, untuk mengatur hak akses dan aktivitas di portal Griya Rasa.
         </p>
     </div>
 
@@ -73,8 +69,6 @@
     </div>
 </header>
 
-
-
 {{-- ========== FILTER & SEARCH ========== --}}
 <section class="bg-surface-container-lowest rounded-3xl p-4 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 mb-5">
     <form method="GET" action="{{ route('admin.users.index') }}"
@@ -124,16 +118,16 @@
 {{-- ========== TABEL USER ========== --}}
 <section class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm">
     <div class="w-full overflow-x-auto">
-        <table class="w-full text-left border-collapse">
+        <table class="w-full text-center border-collapse">
             <thead>
                 <tr class="bg-surface-container-low/70 text-on-surface-variant text-[11px] uppercase tracking-wider font-bold">
-                    <th class="py-3.5 px-4 rounded-l-2xl">Pengguna</th>
-                    <th class="py-3.5 px-4">Email</th>
-                    <th class="py-3.5 px-4">Peran</th>
+                    <th class="py-3.5 px-4 rounded-l-2xl text-center">Pengguna</th>
+                    <th class="py-3.5 px-4 text-center">Email</th>
+                    <th class="py-3.5 px-4 text-center">Peran</th>
                     <th class="py-3.5 px-4 text-center">Resep Disimpan</th>
                     <th class="py-3.5 px-4 text-center">Ulasan Dibuat</th>
-                    <th class="py-3.5 px-4">Bergabung</th>
-                    <th class="py-3.5 px-4 text-right rounded-r-2xl">Aksi</th>
+                    <th class="py-3.5 px-4 text-center">Bergabung</th>
+                    <th class="py-3.5 px-4 text-center rounded-r-2xl">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-surface-container-high/40 text-on-surface">
@@ -143,28 +137,34 @@
                         $initials = collect(explode(' ', $user->name))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('');
                     @endphp
                     <tr class="hover:bg-surface-container-low/40 transition-colors {{ $isMe ? 'bg-surface-container-high/20' : '' }}">
-                        {{-- Pengguna --}}
+                        
+                        {{-- Kolom Pengguna --}}
                         <td class="py-4 px-4">
-                            <div class="flex items-center gap-3">
-                                @if ($user->avatar)
-                                    <img src="{{ asset('storage/' . $user->avatar) }}"
-                                         alt="{{ $user->name }}"
-                                         class="w-10 h-10 rounded-full object-cover ring-2 ring-primary-container/20"/>
-                                @else
-                                    <div class="w-10 h-10 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-bold text-sm">
-                                        {{ $initials }}
+                            <div class="flex items-center justify-center">
+                                <div class="flex items-center gap-3 w-full max-w-[200px]"> 
+                                    {{-- Avatar --}}
+                                    @if ($user->avatar)
+                                        <img src="{{ asset('storage/' . $user->avatar) }}"
+                                             alt="{{ $user->name }}"
+                                             class="w-10 h-10 rounded-full object-cover ring-2 ring-primary-container/20 shrink-0"/>
+                                    @else
+                                        <div class="w-10 h-10 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-bold text-sm shrink-0">
+                                            {{ $initials }}
+                                        </div>
+                                    @endif
+                                    
+                                    {{-- Nama & Role --}}
+                                    <div class="flex flex-col text-left min-w-0">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="font-bold text-primary truncate">{{ $user->name }}</span>
+                                            @if ($isMe)
+                                                <span class="px-1.5 py-0.5 rounded-md bg-primary-fixed text-on-primary-fixed text-[9px] font-bold shrink-0">Anda</span>
+                                            @endif
+                                        </div>
+                                        <span class="text-[11px] text-on-surface-variant truncate">
+                                            {{ $user->role === 'admin' ? 'Kepala Kurator Gastronomi' : 'Anggota Komunitas' }}
+                                        </span>
                                     </div>
-                                @endif
-                                <div class="flex flex-col min-w-0">
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-bold text-primary truncate">{{ $user->name }}</span>
-                                        @if ($isMe)
-                                            <span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed text-[10px] font-bold">Anda</span>
-                                        @endif
-                                    </div>
-                                    <span class="text-[11px] text-on-surface-variant">
-                                        {{ $user->role === 'admin' ? 'Kepala Kurator Gastronomi' : 'Anggota Komunitas' }}
-                                    </span>
                                 </div>
                             </div>
                         </td>
@@ -174,30 +174,32 @@
 
                         {{-- Peran --}}
                         <td class="py-4 px-4">
-                            @if ($user->role === 'admin')
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-container text-white text-[11px] font-bold">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
-                                    <span>Admin</span>
-                                </span>
-                            @else
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-fixed-variant text-[11px] font-bold">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                                    <span>User</span>
-                                </span>
-                            @endif
+                            <div class="flex justify-center">
+                                @if ($user->role === 'admin')
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-container text-white text-[11px] font-bold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                        <span>Admin</span>
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-fixed-variant text-[11px] font-bold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                                        <span>User</span>
+                                    </span>
+                                @endif
+                            </div>
                         </td>
 
                         {{-- Resep Disimpan --}}
-                        <td class="py-4 px-4 text-center">
-                            <div class="inline-flex items-center gap-1.5 text-sm text-on-surface">
+                        <td class="py-4 px-4">
+                            <div class="inline-flex items-center justify-center gap-1.5 text-sm text-on-surface">
                                 <span class="material-symbols-outlined text-[16px] text-secondary">bookmark</span>
                                 <span class="font-bold">{{ $user->bookmarks_count ?? 0 }}</span>
                             </div>
                         </td>
 
                         {{-- Ulasan Dibuat --}}
-                        <td class="py-4 px-4 text-center">
-                            <div class="inline-flex items-center gap-1.5 text-sm text-on-surface">
+                        <td class="py-4 px-4">
+                            <div class="inline-flex items-center justify-center gap-1.5 text-sm text-on-surface">
                                 <span class="material-symbols-outlined text-[16px] text-tertiary-container" style="font-variation-settings: 'FILL' 1;">star</span>
                                 <span class="font-bold">{{ $user->ratings_count ?? 0 }}</span>
                             </div>
@@ -209,8 +211,8 @@
                         </td>
 
                         {{-- Aksi --}}
-                        <td class="py-4 px-4 text-right">
-                            <div class="inline-flex items-center justify-end gap-1">
+                        <td class="py-4 px-4">
+                            <div class="inline-flex items-center justify-center gap-1">
                                 <a href="{{ route('admin.users.show', $user->id) }}"
                                    class="w-9 h-9 rounded-full bg-surface-container-high hover:bg-surface-container text-on-surface-variant hover:text-primary flex items-center justify-center transition" title="Lihat Detail">
                                     <span class="material-symbols-outlined text-[18px]">visibility</span>
@@ -257,9 +259,56 @@
         </table>
     </div>
 
+    {{-- ========================================== --}}
+    {{-- PAGINATION (DESAIN BARU)                  --}}
+    {{-- ========================================== --}}
     @if ($users->hasPages())
-        <div class="mt-6 pt-4 border-t border-surface-container-high">
-            {{ $users->links() }}
+        <div class="mt-8 pt-6 flex flex-col items-center justify-center gap-4 border-t border-surface-container">
+            
+            <div class="flex items-center gap-1.5">
+                {{-- Prev --}}
+                @if ($users->onFirstPage())
+                    <span class="w-9 h-9 flex items-center justify-center rounded-full text-outline/50 cursor-not-allowed">
+                        <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                    </span>
+                @else
+                    <a href="{{ $users->previousPageUrl() }}"
+                       class="w-9 h-9 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container transition">
+                        <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                    </a>
+                @endif
+
+                {{-- Page Numbers --}}
+                @foreach ($users->getUrlRange(max(1, $users->currentPage() - 2), min($users->lastPage(), $users->currentPage() + 2)) as $page => $url)
+                    @if ($page == $users->currentPage())
+                        <span class="w-9 h-9 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shadow-md transform scale-110">
+                            {{ $page }}
+                        </span>
+                    @else
+                        <a href="{{ $url }}"
+                           class="w-9 h-9 rounded-full text-on-surface-variant text-xs font-bold flex items-center justify-center hover:bg-surface-container transition">
+                            {{ $page }}
+                        </a>
+                    @endif
+                @endforeach
+
+                {{-- Next --}}
+                @if ($users->hasMorePages())
+                    <a href="{{ $users->nextPageUrl() }}"
+                       class="w-9 h-9 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container transition">
+                        <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                    </a>
+                @else
+                    <span class="w-9 h-9 flex items-center justify-center rounded-full text-outline/50 cursor-not-allowed">
+                        <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                    </span>
+                @endif
+            </div>
+
+            <span class="text-[11px] text-on-surface-variant font-medium">
+                Menampilkan <strong class="text-primary">{{ $users->firstItem() }}-{{ $users->lastItem() }}</strong>
+                dari <strong class="text-primary">{{ $users->total() }}</strong> pengguna
+            </span>
         </div>
     @endif
 </section>
@@ -312,7 +361,7 @@
             <div class="mt-5 p-4 rounded-2xl bg-tertiary-fixed/60 flex items-start gap-3">
                 <span class="material-symbols-outlined text-[20px] text-tertiary-container mt-0.5">info</span>
                 <p class="text-sm text-on-tertiary-fixed-variant leading-relaxed">
-                    <strong>Peringatan:</strong> Admin dapat mengelola, menyunting, dan menghapus seluruh isi situs L'Art de Cuisine.
+                    <strong>Peringatan:</strong> Admin dapat mengelola, menyunting, dan menghapus seluruh isi situs Griya Rasa.
                 </p>
             </div>
             <div class="flex items-center justify-end gap-3 mt-6 pt-5 border-t border-surface-container-high">
@@ -328,6 +377,7 @@
         </form>
     </div>
 </div>
+
 {{-- ========== MODAL: Konfirmasi Hapus ========== --}}
 <div id="deleteUserModal" class="fixed inset-0 z-50 bg-inverse-surface/40 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-surface-container-lowest rounded-3xl max-w-md w-full p-8 shadow-[0_16px_40px_-6px_rgba(90,58,34,0.18)]">

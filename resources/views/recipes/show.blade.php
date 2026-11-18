@@ -1,92 +1,210 @@
 @extends('layouts.app')
 
-@section('title', $recipe->title . " — L'Art de Cuisine")
+@section('title', $recipe->title . " — Griya Rasa")
 
 @section('content')
-<div class="flex flex-col w-full">
+{{-- ✅ HAPUS overflow-x-hidden DARI SINI --}}
+<div class="flex flex-col w-full relative">
+        
+    {{-- Ambient Background Glow --}}
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary-fixed/20 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+    <div class="absolute top-96 right-0 w-96 h-96 bg-secondary-fixed/20 rounded-full blur-[100px] pointer-events-none -z-10"></div>
 
     {{-- Toast Notification --}}
-    <div class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-full shadow-lg"
+    <div class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2 px-5 py-3 bg-primary text-white rounded-full shadow-2xl"
          id="toastNotification">
         <span class="material-symbols-outlined text-[20px]">check_circle</span>
-        <span class="text-sm font-semibold" id="toastMessage">Tautan berhasil disalin!</span>
+        <span class="text-sm font-semibold" id="toastMessage">Berhasil!</span>
     </div>
 
-    <div class="max-w-[1280px] w-full mx-auto px-5 lg:px-12 py-6 flex flex-col gap-12">
-
-        {{-- Breadcrumbs & Top Actions --}}
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-2">
-            <nav class="flex items-center gap-2 text-sm text-on-surface-variant flex-wrap">
+    <div class="max-w-[1280px] w-full mx-auto px-5 lg:px-12 pt-28 lg:pt-32 pb-12 flex flex-col gap-6">
+    
+        {{-- BREADCRUMB & ACTION BUTTONS --}}
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            
+            {{-- Breadcrumb --}}
+            <nav class="flex items-center gap-1.5 text-xs sm:text-sm text-on-surface-variant flex-wrap">
                 <a href="{{ route('home') }}" class="hover:text-primary transition-colors">Beranda</a>
-                <span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
-                <a href="{{ route('recipes.index') }}" class="hover:text-primary transition-colors">Daftar Resep</a>
-                <span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
+                <span class="material-symbols-outlined text-[14px] opacity-50">chevron_right</span>
+                <a href="{{ route('recipes.daftar_resep') }}" class="hover:text-primary transition-colors">Resep</a>
+                <span class="material-symbols-outlined text-[14px] opacity-50">chevron_right</span>
                 @if ($recipe->category)
-                    <a href="{{ route('recipes.index', ['category' => $recipe->category->slug]) }}"
-                       class="hover:text-primary transition-colors">{{ $recipe->category->name }}</a>
-                    <span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
+                    <a href="{{ route('recipes.daftar_resep', ['category' => $recipe->category->slug]) }}" class="hover:text-primary transition-colors">
+                        {{ $recipe->category->name }}
+                    </a>
+                    <span class="material-symbols-outlined text-[14px] opacity-50">chevron_right</span>
                 @endif
-                <span class="text-primary font-semibold truncate max-w-[200px] md:max-w-none">{{ $recipe->title }}</span>
+                <span class="text-primary font-bold truncate max-w-[150px] sm:max-w-none">{{ $recipe->title }}</span>
             </nav>
 
-            <div class="flex items-center gap-2 flex-wrap">
-                <button type="button" onclick="window.print()"
-                        class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container hover:bg-surface-container-high text-on-surface rounded-full text-xs font-semibold shadow-sm">
-                    <span class="material-symbols-outlined text-[18px]">print</span>
-                    <span class="hidden sm:inline">Cetak</span>
-                </button>
-
+            {{-- Action Buttons --}}
+            <div class="grid grid-cols-3 md:flex md:items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
+                
+                {{-- Tombol Simpan --}}
                 <button type="button" id="bookmarkBtn"
-                        data-recipe-id="{{ $recipe->id }}"
+                        data-recipe-slug="{{ $recipe->slug }}"
                         data-bookmarked="{{ $isBookmarked ? 'true' : 'false' }}"
                         onclick="toggleBookmark()"
-                        class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container hover:bg-surface-container-high text-on-surface rounded-full text-xs font-semibold shadow-sm">
-                    <span class="material-symbols-outlined text-[18px] text-primary" id="bookmarkIcon"
+                        class="w-full justify-center flex items-center gap-1.5 px-3 py-2.5 border rounded-full text-[11px] sm:text-xs font-bold transition shadow-sm
+                               {{ $isBookmarked ? 'bg-primary border-primary text-white' : 'bg-surface-container-lowest border-surface-container-high hover:bg-surface-container text-on-surface' }}">
+                    
+                    <span class="material-symbols-outlined text-[18px] transition-colors {{ $isBookmarked ? 'text-white' : 'text-outline' }}" id="bookmarkIcon"
                           style="font-variation-settings: 'FILL' {{ $isBookmarked ? 1 : 0 }};">
                         {{ $isBookmarked ? 'bookmark' : 'bookmark_border' }}
                     </span>
-                    <span class="font-semibold" id="bookmarkCount">{{ $recipe->bookmarks()->count() }}</span>
-                    <span class="hidden sm:inline">disimpan</span>
+                    <span class="hidden sm:inline ml-1" id="bookmarkText">{{ $isBookmarked ? 'Tersimpan' : 'Simpan' }}</span>
+                    <span class="hidden sm:inline ml-1" id="bookmarkCount">({{ $recipe->bookmarks()->count() }})</span>
                 </button>
 
-                <a href="https://api.whatsapp.com/send?text=Lihat resep {{ urlencode($recipe->title) }}"
-                   target="_blank" rel="noopener noreferrer"
-                   class="flex items-center gap-1.5 px-3 py-1.5 bg-[#25D366]/15 hover:bg-[#25D366]/25 text-[#128C7E] rounded-full text-xs font-semibold shadow-sm">
-                    <span class="material-symbols-outlined text-[18px]">chat</span>
-                    <span>WhatsApp</span>
-                </a>
-
-                <button type="button" onclick="copyRecipeLink()"
-                        class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container hover:bg-surface-container-high text-on-surface rounded-full text-xs font-semibold shadow-sm">
+                {{-- Tombol Bagikan --}}
+                <button type="button" onclick="shareRecipe()" title="Bagikan Resep"
+                        class="w-full justify-center flex items-center gap-1.5 px-3 py-2.5 bg-surface-container-lowest border border-surface-container-high hover:bg-surface-container rounded-full text-on-surface text-[11px] sm:text-xs font-bold transition shadow-sm">
                     <span class="material-symbols-outlined text-[18px]">share</span>
-                    <span>Salin Link</span>
+                    <span class="hidden sm:inline">Bagikan</span>
                 </button>
+
+
+                
             </div>
         </div>
 
-        {{-- HERO --}}
+        {{-- MAIN CONTENT AREA --}}
         @include('recipes.partials.hero', ['recipe' => $recipe])
 
-        {{-- INGREDIENTS + STEPS --}}
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start" id="recipeCoreSection">
+        {{-- ✅ PASTIKAN ADA items-start DI SINI --}}
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start mt-4" id="recipeCoreSection">
             @include('recipes.partials.ingredients', ['recipe' => $recipe])
             @include('recipes.partials.steps', ['recipe' => $recipe])
         </div>
 
-        {{-- REVIEWS --}}
-        @include('recipes.partials.reviews', ['recipe' => $recipe, 'userRating' => $userRating])
+        <div class="mt-4">
+            @include('recipes.partials.reviews', ['recipe' => $recipe, 'userRating' => $userRating])
+        </div>
 
-        {{-- RELATED --}}
         @include('recipes.partials.related', ['related' => $related])
 
     </div>
 
-    {{-- COOKING MODE MODAL --}}
     @include('recipes.partials.cooking_modal')
+
+    {{-- MODAL LOGIN PROMPT --}}
+    <div id="loginPromptModal" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden">
+        <div class="bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-2xl max-w-sm w-full text-center flex flex-col items-center gap-4 relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-32 h-32 bg-primary-fixed/30 rounded-full blur-2xl pointer-events-none"></div>
+            
+            <div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center text-secondary relative z-10 shadow-inner">
+                <span class="material-symbols-outlined text-[32px]">lock</span>
+            </div>
+            <div class="relative z-10">
+                <h3 class="font-display text-2xl font-bold text-primary mb-2">Harus Login Dulu</h3>
+                <p class="text-sm text-on-surface-variant leading-relaxed">Silakan masuk ke akun Anda untuk menyimpan resep favorit ini ke koleksi pribadi.</p>
+            </div>
+            <div class="flex items-center gap-3 w-full mt-2 relative z-10">
+                <button type="button" onclick="document.getElementById('loginPromptModal').classList.add('hidden')" 
+                        class="flex-1 px-4 py-2.5 rounded-full bg-surface-container text-primary text-sm font-bold hover:bg-surface-container-high transition">
+                    Batal
+                </button>
+                <a href="{{ route('login') }}" 
+                   class="flex-1 px-4 py-2.5 rounded-full bg-primary text-white text-sm font-bold hover:bg-primary-container transition shadow-md">
+                    Ke Login
+                </a>
+            </div>
+        </div>
+    </div>
 
 </div>
 @endsection
 
 @push('scripts')
-    @include('recipes.partials.scripts', ['recipe' => $recipe])
+<script>
+// Toast Notification
+function showToast(msg) {
+    const t = document.getElementById('toastNotification');
+    const m = document.getElementById('toastMessage');
+    if (!t) return;
+    m.textContent = msg;
+    t.classList.remove('translate-y-24', 'opacity-0');
+    t.classList.add('translate-y-0', 'opacity-100');
+    setTimeout(() => {
+        t.classList.add('translate-y-24', 'opacity-0');
+        t.classList.remove('translate-y-0', 'opacity-100');
+    }, 2500);
+}
+
+// Share via HP
+function shareRecipe() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ $recipe->title }}',
+            text: 'Lihat resep lezat ini di Griya Rasa!',
+            url: window.location.href
+        }).catch((error) => console.log('Error sharing', error));
+    } else {
+        navigator.clipboard.writeText(window.location.href)
+            .then(() => showToast('Tautan resep berhasil disalin!'))
+            .catch(() => showToast('Gagal menyalin tautan.'));
+    }
+}
+
+// BOOKMARK (AJAX & Ubah Warna)
+async function toggleBookmark() {
+    const btn = document.getElementById('bookmarkBtn');
+    if (!btn) return;
+
+    @guest
+        document.getElementById('loginPromptModal').classList.remove('hidden');
+        return;
+    @endguest
+
+    @auth
+        const recipeSlug = btn.getAttribute('data-recipe-slug');
+        const icon = document.getElementById('bookmarkIcon');
+        const text = document.getElementById('bookmarkText');
+        const countSpan = document.getElementById('bookmarkCount');
+        const isBookmarked = btn.getAttribute('data-bookmarked') === 'true';
+
+        if (!isBookmarked) {
+            btn.classList.add('bg-primary', 'border-primary', 'text-white');
+            btn.classList.remove('bg-surface-container-lowest', 'text-on-surface', 'border-surface-container-high');
+            icon.textContent = 'bookmark';
+            icon.style.fontVariationSettings = "'FILL' 1";
+            icon.classList.add('text-white');
+            icon.classList.remove('text-outline');
+            if(text) text.textContent = 'Tersimpan';
+        } else {
+            btn.classList.remove('bg-primary', 'border-primary', 'text-white');
+            btn.classList.add('bg-surface-container-lowest', 'text-on-surface', 'border-surface-container-high');
+            icon.textContent = 'bookmark_border';
+            icon.style.fontVariationSettings = "'FILL' 0";
+            icon.classList.remove('text-white');
+            icon.classList.add('text-outline');
+            if(text) text.textContent = 'Simpan';
+        }
+
+        try {
+            const res = await fetch(`/bookmark/${recipeSlug}`, { 
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                },
+            });
+            const data = await res.json();
+            if (data.status === 'added') {
+                btn.setAttribute('data-bookmarked', 'true');
+                if(countSpan) countSpan.textContent = `(${parseInt(countSpan.textContent.replace(/\D/g,'')) + 1})`;
+                showToast('Resep berhasil disimpan!');
+            } else {
+                btn.setAttribute('data-bookmarked', 'false');
+                if(countSpan) countSpan.textContent = `(${Math.max(0, parseInt(countSpan.textContent.replace(/\D/g,'')) - 1)})`;
+                showToast('Resep dihapus dari simpanan.');
+            }
+        } catch (err) {
+            console.error(err);
+            showToast('Gagal menyimpan. Coba lagi.');
+        }
+    @endauth
+}
+</script>
+@include('recipes.partials.scripts')
 @endpush

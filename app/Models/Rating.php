@@ -29,4 +29,14 @@ class Rating extends Model
     {
         return $this->belongsTo(Recipe::class);
     }
+
+     public function votes()
+    {
+        return $this->hasMany(RatingVote::class);
+    }
+
+    public function userVote()
+    {
+        return $this->hasOne(RatingVote::class)->where('user_id', auth()->id());
+    }
 }

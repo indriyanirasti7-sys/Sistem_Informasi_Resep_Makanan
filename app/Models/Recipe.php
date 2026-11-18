@@ -132,7 +132,7 @@ class Recipe extends Model
         return $h > 0 ? "{$h} jam {$m} menit" : "{$m} menit";
     }
 
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'slug';
     }

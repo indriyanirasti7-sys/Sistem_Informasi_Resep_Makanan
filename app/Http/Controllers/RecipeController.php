@@ -15,29 +15,38 @@ class RecipeController extends Controller
     {
         $query = Recipe::published()->with(['category', 'ratings']);
 
-        // Filter kategori
+        // 1. Filter kategori
         if ($request->filled('category')) {
             $query->whereHas('category', fn($q) =>
                 $q->where('slug', $request->category)
             );
         }
 
-        // Filter difficulty
+        // 2. Filter difficulty
         if ($request->filled('difficulty')) {
             $query->where('difficulty', $request->difficulty);
         }
 
-        // Filter durasi maksimal
+        // 3. Filter durasi maksimal
         if ($request->filled('max_duration')) {
             $query->where('duration_minutes', '<=', $request->max_duration);
         }
 
-        // Search
+        // 4. Search Text
         if ($request->filled('q')) {
             $query->search($request->q);
         }
 
-        // Sorting
+        // 5. Filter Bahan Dapur (Smart Pantry)
+        if ($request->filled('ingredients')) {
+            $ingredientList = explode(',', $request->ingredients);
+            // Cari resep yang mengandung salah satu bahan yang dipilih
+            $query->whereHas('recipeIngredients.ingredient', function($q) use ($ingredientList) {
+                $q->whereIn('name', $ingredientList);
+            });
+        }
+
+        // 6. Sorting
         $sort = $request->get('sort', 'latest');
         match ($sort) {
             'popular'   => $query->orderByDesc('views'),
@@ -47,7 +56,7 @@ class RecipeController extends Controller
             default     => $query->latest(),
         };
 
-        $recipes    = $query->paginate(9)->withQueryString();
+        $recipes    = $query->paginate(8)->withQueryString();
         $categories = Category::all();
 
         return view('recipes.daftar_resep', compact('recipes', 'categories'));
@@ -55,10 +64,13 @@ class RecipeController extends Controller
 
     public function show(Recipe $recipe)
     {
-        // Hanya tampilkan published, kecuali admin
-        if ($recipe->status !== 'published' && !Auth::check() || 
-            ($recipe->status !== 'published' && !Auth::user()?->isAdmin())) {
-            abort(404);
+        // PERBAIKAN LOGIKA DRAFT: 
+        // Jika statusnya BUKAN published, cek apakah user sudah login DAN admin.
+        // Jika bukan admin, tendang dengan error 404.
+        if ($recipe->status !== 'published') {
+            if (!Auth::check() || !Auth::user()->isAdmin()) {
+                abort(404);
+            }
         }
 
         // Increment views
@@ -84,11 +96,22 @@ class RecipeController extends Controller
                     ->first()
             : null;
 
+        // Ambil resep terkait (Diperbarui menjadi 6 dan diacak)
         $related = Recipe::published()
             ->where('category_id', $recipe->category_id)
             ->where('id', '!=', $recipe->id)
-            ->limit(3)
+            ->inRandomOrder()
+            ->take(6)
             ->get();
+
+        // Jika resep terkait kurang dari 2, ambil resep acak dari kategori lain
+        if ($related->count() < 2) {
+            $related = Recipe::published()
+                ->where('id', '!=', $recipe->id)
+                ->inRandomOrder()
+                ->take(6)
+                ->get();
+        }
 
         return view('recipes.show', compact(
             'recipe', 'isBookmarked', 'userRating', 'related'

@@ -1,3 +1,17 @@
+@php
+    use Illuminate\Support\Facades\Storage;
+    
+    // Ambil data settings dari JSON
+    $globalSettings = Storage::exists('settings.json') 
+        ? json_decode(Storage::get('settings.json'), true) 
+        : [];
+        
+    // Set variabel dengan nilai default jika belum ada data
+    $siteName = 'Griya Rasa '; // Nama dikunci
+    $siteTagline = $globalSettings['tagline'] ?? 'Inspirasi & Resep Kuliner';
+    $siteDescription = $globalSettings['description'] ?? 'Eksplorasi cita rasa haute cuisine berpadu dengan kekayaan rempah gastronomi Nusantara.';
+@endphp
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -5,7 +19,9 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-    <title>@yield('title', "L'Art de Cuisine — Inspirasi & Resep Kuliner")</title>
+    <title>@yield('title', $siteName . " — " . $siteTagline)</title>
+
+    <link rel="icon" type="image/png" href="{{ Storage::url('images/logo.png') }}">
 
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
@@ -23,6 +39,32 @@
         ::-webkit-scrollbar { display: none; }
         .line-clamp-1 { display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; }
         .line-clamp-2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+
+        /* ====================================================
+           CSS KHUSUS UNTUK CETAK (PRINT)
+           ==================================================== */
+        @media print {
+            nav, header, footer, .no-print, button, .fixed, #toastNotification, .absolute.top-0.left-1\/4 {
+                display: none !important;
+            }
+            body, main { background: white !important; color: black !important; padding: 0 !important; margin: 0 !important; }
+            .max-w-\[1280px\] { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+            img { max-width: 100% !important; page-break-inside: avoid; }
+            h1, h2, h3, h4, h5, p, div { page-break-inside: avoid; }
+            .grid-cols-12, .lg\:grid-cols-12 { display: block !important; }
+            .lg\:col-span-5, .lg\:col-span-7 { width: 100% !important; display: block !important; margin-bottom: 20px; }
+        }
+
+        /* ✅ CSS STICKY YANG PASTI JALAN */
+        @media (min-width: 1024px) {
+            .lg\:col-span-5 {
+                position: -webkit-sticky !important;
+                position: sticky !important;
+                top: 120px !important; /* Jarak dari navbar atas */
+                align-self: flex-start !important; /* Memastikan tingginya tidak dipaksa sama dengan kolom kanan */
+                height: max-content !important; /* Tinggi mengikuti isi kotak */
+            }
+        }
     </style>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -96,11 +138,11 @@
     @stack('styles')
 </head>
 <body class="bg-surface-container-low font-body-md text-on-surface antialiased">
-
     @include('partials.navbar')
 
-    <main class="w-full pt-20 bg-surface-container-low min-h-screen">
-        @yield('content')
+    {{-- ✅ MAIN SUDAH BERSIH TANPA overflow-x-hidden --}}
+   <main class="w-full pt-28 sm:pt-32 bg-surface-container-low min-h-screen overflow-x-clip">
+    @yield('content')
     </main>
 
     @include('partials.footer')

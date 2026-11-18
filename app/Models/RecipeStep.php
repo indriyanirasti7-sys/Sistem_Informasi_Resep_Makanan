@@ -14,6 +14,7 @@ class RecipeStep extends Model
         'step_number',
         'instruction',
         'duration_minutes',
+        'image', 
     ];
 
     protected $casts = [

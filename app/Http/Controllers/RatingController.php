@@ -9,10 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class RatingController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     public function store(Request $request, Recipe $recipe)
     {
@@ -42,6 +38,36 @@ class RatingController extends Controller
         }
 
         return back()->with('success', 'Ulasan berhasil disimpan.');
+    }
+
+        public function toggleVote(Request $request, \App\Models\Rating $rating)
+    {
+        $request->validate(['vote_type' => 'required|in:like,dislike']);
+        $userId = auth()->id();
+
+        $existingVote = \App\Models\RatingVote::where('user_id', $userId)
+                        ->where('rating_id', $rating->id)
+                        ->first();
+
+        if ($existingVote) {
+            if ($existingVote->vote_type === $request->vote_type) {
+                $existingVote->delete();
+                return response()->json(['status' => 'removed']);
+            } else {
+                
+                $existingVote->update(['vote_type' => $request->vote_type]);
+                return response()->json(['status' => 'updated']);
+            }
+        }
+
+        
+        \App\Models\RatingVote::create([
+            'user_id' => $userId,
+            'rating_id' => $rating->id,
+            'vote_type' => $request->vote_type
+        ]);
+
+        return response()->json(['status' => 'added']);
     }
 
     public function destroy(Rating $rating)

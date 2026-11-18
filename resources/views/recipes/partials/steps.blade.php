@@ -25,7 +25,7 @@
                 @endif
             </div>
 
-            <div class="flex-1 bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col gap-3">
+            <div class="flex-1 bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col gap-4">
                 <div class="flex items-center justify-between flex-wrap gap-2">
                     <span class="text-lg font-bold text-primary">Langkah {{ str_pad($step->step_number, 2, '0', STR_PAD_LEFT) }}</span>
                     <span class="text-[11px] px-3 py-1 bg-surface-container rounded-full text-on-surface-variant font-semibold">
@@ -37,14 +37,24 @@
                     {{ $step->instruction }}
                 </p>
 
+                {{-- TAMPILKAN GAMBAR JIKA ADA --}}
+                @if ($step->image)
+                    <div class="w-full rounded-xl overflow-hidden mt-2 bg-surface-container border border-surface-container-high shadow-sm group">
+                        <img src="{{ asset('storage/'.$step->image) }}" 
+                             alt="Ilustrasi Langkah {{ $step->step_number }}" 
+                             class="w-full h-auto max-h-[350px] object-cover group-hover:scale-[1.02] transition-transform duration-500">
+                    </div>
+                @endif
+
                 @if ($step->duration_minutes)
-                    <div class="p-3 bg-surface-container rounded-xl flex flex-wrap items-center justify-between gap-3">
+                    <div class="p-3 bg-surface-container rounded-xl flex flex-wrap items-center justify-between gap-3 mt-2">
                         <div class="flex items-center gap-3">
                             <span class="material-symbols-outlined text-primary text-[24px]">timer</span>
                             <div>
                                 <span class="text-[11px] text-on-surface-variant block">Timer Langkah {{ $step->step_number }}</span>
                                 <span class="text-lg font-bold text-primary font-mono" id="stepTimerDisplay_{{ $stepIdx }}">
-                                    {{ str_pad(intval($step->duration_minutes / 60), 2, '0', STR_PAD_LEFT) }}:{{ str_pad($step->duration_minutes % 60, 2, '0', STR_PAD_LEFT) }}
+                                    {{-- ✅ UBAH FORMAT JADI 05:00 --}}
+                                    {{ str_pad(intval($step->duration_minutes), 2, '0', STR_PAD_LEFT) }}:00
                                 </span>
                             </div>
                         </div>
@@ -93,6 +103,7 @@
             'detail'       => $s->instruction,
             'timerSeconds' => (int) (($s->duration_minutes ?? 0) * 60),
             'timerLabel'   => $s->duration_minutes ? 'Timer ' . $s->duration_minutes . ' menit' : 'Tanpa Timer',
+            'image'        => $s->image ? asset('storage/'.$s->image) : null,
         ];
     }
 @endphp

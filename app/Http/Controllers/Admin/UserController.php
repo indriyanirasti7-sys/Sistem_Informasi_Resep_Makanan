@@ -10,7 +10,8 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::withCount(['bookmarks', 'ratings']);
+        // Tambahkan 'tipBookmarks' jika ingin menghitungnya juga di halaman index
+        $query = User::withCount(['bookmarks', 'ratings', 'tipBookmarks']);
 
         /* Filter role */
         if ($request->filled('role') && $request->role !== 'all') {
@@ -51,7 +52,9 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        $user->loadCount(['bookmarks', 'ratings']);
+        // SUDAH DIPERBAIKI: Menggunakan 'tipBookmarks' sesuai Model User
+        $user->loadCount(['bookmarks', 'ratings', 'tipBookmarks']);
+        
         $user->load([
             'bookmarks.recipe.category',
             'ratings.recipe',
